@@ -1,7 +1,14 @@
 const initialState = {
+    title: '',
+    description: '',
+    keywords: '',
+    h1: '',
+    footer: {},
     load: true,
     api_path: 'http://apprendrefr-new2.local',
     show_modal: false,
+    modal_registration: false,
+    modal_lost_password: false,
     modal_data: {},
     page_data: { words: [], proverb: [], user: [], auth: false, statistics: [], users_online: [] },
 };
@@ -36,6 +43,20 @@ const reducer = (state  = initialState, action) => {
         case 'PAGE_DATA':
             return newState;
         case 'SHOW_MODAL':
+            return newState;
+        case 'TITLE':
+            return newState;
+        case 'DESCRIPTION':
+            return newState;
+        case 'KEYWORDS':
+            return newState;
+        case 'H1':
+            return newState;
+        case 'FOOTER':
+            return newState;
+        case 'MODAL_REGISTRATION':
+            return newState;
+        case 'MODAL_LOST_PASSWORD':
             return newState;
         default:
             return state;

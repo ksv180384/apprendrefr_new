@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import './Right.css';
 
-import AuthPanel from './auth_panel/AuthPanel';
-import UserPanel from './user_panel/UserPanel';
-import Statistics from './statistics/Statistics';
-import OnlineList from './online_list/OnlineList';
-import store from "../../store";
+
+import store from "../../../store";
+import AuthPanel from "../../../components/auth_panel/AuthPanel";
+import UserPanel from "../../../components/user_panel/UserPanel";
+import Statistics from "../../../components/statistics/Statistics";
+import OnlineList from "../../../components/online_list/OnlineList";
 
 class Right extends Component{
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './UserPanel.css';
 
-import { userAuth, loadPage } from "../../../actions";
-import store from "../../../store";
+import { userAuth, loadPage } from "./../../actions";
+import store from "./../../store";
 
 import Axios from "axios/index";
 

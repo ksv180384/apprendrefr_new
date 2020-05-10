@@ -3,16 +3,15 @@ import './AuthPanel.css';
 
 import ReactTooltip from 'react-tooltip';
 
-import BtnLoad from './../../../components/btn_load/BtnLoad';
+import BtnLoad from './../btn_load/BtnLoad';
 
 import Axios from 'axios';
 Axios.defaults.headers.common = {
     'Authorization':localStorage.getItem('user-token'),
 };
 
-import { userAuth } from './../../../actions';
-import store from "../../../store";
-import {loadPage} from "../../../actions";
+import { userAuth, loadPage, modalRegistration } from './../../actions';
+import store from "./../../store";
 
 
 class AuthPanel extends Component{
@@ -27,16 +26,21 @@ class AuthPanel extends Component{
             loadFormLoginUser: false,
         };
 
-        this.handleChangeFormInpitText = (event) => {
-            this.setState({ [event.target.name]: event.target.value });
+        this.showModalRegistration = (e) => {
+            e.preventDefault();
+            store.dispatch(modalRegistration({ modal_registration: true }));
+        }
+
+        this.handleChangeFormInpitText = (e) => {
+            this.setState({ [e.target.name]: e.target.value });
         };
 
-        this.handleChangeRemember = (event) => {
-            this.setState({ remember: event.target.checked });
+        this.handleChangeRemember = (e) => {
+            this.setState({ remember: e.target.checked });
         };
 
-        this.handleSubmit = (event) => {
-            event.preventDefault();
+        this.handleSubmit = (e) => {
+            e.preventDefault();
 
             this.setState({ loadFormLoginUser: true });
 
@@ -142,7 +146,11 @@ class AuthPanel extends Component{
                             </div>
                             <div className="login-registration-link-block">
                                 <a href="#" className="link">Забыли пароль?</a>
-                                <a href="#" className="link" data-tip data-for="tooltipRegistrationLink">Регистрация</a>
+                                <a href="#"
+                                   className="link"
+                                   data-tip data-for="tooltipRegistrationLink"
+                                   onClick={ this.showModalRegistration }
+                                >Регистрация</a>
                                 <ReactTooltip id="tooltipRegistrationLink" effect="solid" delayShow={1000} className="tooltip-header">
                                     S'inscrire
                                 </ReactTooltip>

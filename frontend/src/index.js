@@ -3,15 +3,19 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import ErrorBoundry from './components/error-boundry/ErrorBoundry';
-import Main from './Main';
+//import Main from './Main';
 import './index.css';
 
 import store from './store';
 import { loadPage } from './actions';
 
-import menu from './config/menu';
+import Index from "./pages/index/Index";
+import './pages/index/Index.css';
 
 import Axios from "axios/index";
+import Preloader from "./components/preloader/Preloader";
+import ModalWindow from "./components/modals_windows/ModalWindow";
+
 Axios.defaults.headers.common = {
     'Authorization':localStorage.getItem('user-token'),
 };
@@ -39,7 +43,9 @@ const update = () => {
     ReactDOM.render(
         <Provider store={store}>
             <ErrorBoundry>
-                <Main menu={menu} />
+                <Index/>
+                <Preloader/>
+                <ModalWindow/>
             </ErrorBoundry>
         </Provider>,
         document.getElementById('root')

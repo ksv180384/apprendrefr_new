@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './LearningWrite.css';
-import { showModal } from "../../../../actions";
-import store from "../../../../store";
+import { showModal } from "../../../actions";
+import store from "../../../store";
 
 class LearningWrite extends Component{
 

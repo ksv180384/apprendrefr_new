@@ -5,7 +5,7 @@ import ReactTooltip from 'react-tooltip';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import store from "../../../store";
+import store from "./../../store";
 
 class WordsList extends Component{
 

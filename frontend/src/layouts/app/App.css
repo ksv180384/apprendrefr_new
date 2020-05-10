@@ -1,18 +1,18 @@
-.Content{
+.App{
     min-height: calc(100vh - 146px);
     display: flex;
     flex-direction: row;
     margin-top: 56px;
 }
 
-.Content-left-block{
+.App-left-block{
     flex: 1 0 280px;
 }
 
-.Content-center-block{
+.App-center-block{
     flex: 100%;
 }
 
-.Content-right-block{
+.App-right-block{
     flex: 1 0 220px;
 }

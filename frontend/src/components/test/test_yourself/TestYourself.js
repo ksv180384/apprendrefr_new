@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import './TestYourself.css';
 
 
-import { showModal } from './../../../../actions';
-import store from "../../../../store";
+import { showModal } from './../../../actions';
+import store from "../../../store";
 
 class TestYourself extends Component{
 

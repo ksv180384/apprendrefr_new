@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import './Left.css';
+import Player from "../../../components/player/Player";
+import Test from "../../../components/test/Test";
+import WordsList from "../../../components/words_list/WordsList";
+import Joke from "../../../components/joke/Joke";
 
-import Player from './player/Player';
-import Test from './test/Test';
-import WordsList from './words_list/WordsList';
-import Joke from './joke/Joke';
+
 
 class Left extends Component{
 

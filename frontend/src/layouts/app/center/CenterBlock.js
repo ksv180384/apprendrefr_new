@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './CenterBlock.css';
 
-import Proverb from './proverb/Proverb';
+import Proverb from "../../../components/proverb/Proverb";
 
 class CenterBlock extends Component{
 
