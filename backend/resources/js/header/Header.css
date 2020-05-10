@@ -1,0 +1,22 @@
+header{
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: calc(100% - 20px);;
+    background-color: #e6f0f6;
+    color: #fff;
+    padding: 0 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,.3);
+    z-index: 1;
+}
+
+header>.navigation{
+    flex: 100%;
+}
+
+header>.search-block{
+    flex: 1 0 360px;
+    padding: 13px 0;
+}

@@ -1,0 +1,19 @@
+.LearningWrite-block{
+
+}
+
+.LearningWrite-block>button{
+    width: 100%;
+    border: none;
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: #4caf50;
+    border-radius: 2px;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.LearningWrite-block>button:hover{
+    background-color: #59bf5d;
+}

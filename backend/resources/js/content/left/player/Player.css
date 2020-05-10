@@ -1,0 +1,59 @@
+.Player-info-panel{
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.Player-control-panel{
+
+}
+
+.Player-control-panel>ul{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    justify-content: space-evenly;
+    margin: 10px 0;
+    flex-direction: row;
+}
+
+.Player-control-panel>ul>li{
+    list-style: none;
+    font-size: 18px;
+    background-color: #8db3ce;
+    color: #fff;
+    border: 1px solid #fff;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 33px;
+}
+
+.Player-control-panel>ul>li:hover{
+    background-color: #75a7ca;
+}
+
+#playerBTNPlay.play>svg.fa-play{
+    display: none !important;
+}
+
+#playerBTNPlay.play>svg.fa-pause{
+    display: initial !important;
+}
+
+#playerBTNPlay>svg.fa-play{
+    display: initial;
+}
+
+#playerBTNPlay>svg.fa-pause{
+    display: none;
+}
+
+.player-block:hover #playerBTNOpen{
+    background-color: #59bf5d;
+}
+
+.player-block:hover #playerBTNOpen.open{
+    background-color: #8db3ce;
+}

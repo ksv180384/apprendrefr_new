@@ -1,0 +1,21 @@
+.WordsList-block{
+
+}
+
+.WordsList-block ul{
+
+}
+
+.WordsList-block ul>li{
+    font-size: 14px;
+    list-style: none;
+    padding: 8px 0;
+}
+
+.WordsList-block ul>li>svg{
+    color: #1e88e5;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: -2px;
+
+}

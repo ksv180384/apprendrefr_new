@@ -1,0 +1,21 @@
+.User-panel{
+    background-color: #E6EFF5;
+}
+
+.User-panel .user-name{
+    text-align: center;
+    font-weight: bold;
+}
+
+.User-panel .avatar-right-mini-panel{
+    width: 180px;
+    height: 220px;
+    margin: 4px auto;
+    background-color: transparent;
+    border: 1px solid #649ec2;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(http://apprendrefr.ru/img/avatar/none_avatar.png);
+    border-radius: 8px;
+}
