@@ -1,0 +1,23 @@
+.Footer{
+    background-color: #aacadd;
+    color: #373737;
+    font-size: 12px;
+}
+
+.Footer-block{
+    display:  flex;
+}
+
+.Footer-content{
+    flex: 100%;
+    padding: 20px 10px;
+}
+
+.Footer-block ul{
+    list-style: none;
+    flex: 300px;
+}
+
+.Footer-block ul li{
+    margin-bottom: 10px;
+}
