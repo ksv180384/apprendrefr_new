@@ -10,6 +10,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   color: #373737;
+  min-height: 100vh;
 }
 
 .panel{
@@ -67,71 +68,71 @@ body {
 }
 
 .mt-20{
-  margin-top: 20px;
+  margin-top: 20px !important;
 }
 
 .mt-25{
-  margin-top: 25px;
+  margin-top: 25px !important;
 }
 
 .mt-30{
-  margin-top: 30px;
+  margin-top: 30px !important;
 }
 
 .mt-35{
-  margin-top: 35px;
+  margin-top: 35px !important;
 }
 
 .mt-40{
-  margin-top: 40px;
+  margin-top: 40px !important;
 }
 
 .mt-45{
-  margin-top: 45px;
+  margin-top: 45px !important;
 }
 
 .mt-50{
-  margin-top: 50px;
+  margin-top: 50px !important;
 }
 
 .mb-5{
-  margin-bottom: 5px;
+  margin-bottom: 5px !important;
 }
 
 .mb-10{
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;
 }
 
 .mb-15{
-  margin-bottom: 15px;
+  margin-bottom: 15px !important;
 }
 
 .mb-20{
-  margin-bottom: 20px;
+  margin-bottom: 20px !important;
 }
 
 .mb-25{
-  margin-bottom: 25px;
+  margin-bottom: 25px !important;
 }
 
 .mb-30{
-  margin-bottom: 30px;
+  margin-bottom: 30px !important;
 }
 
 .mb-35{
-  margin-bottom: 35px;
+  margin-bottom: 35px !important;
 }
 
 .mb-40{
-  margin-bottom: 40px;
+  margin-bottom: 40px !important;
 }
 
 .mb-45{
-  margin-bottom: 45px;
+  margin-bottom: 45px !important;
 }
 
 .mb-50{
-  margin-bottom: 50px;
+  margin-bottom: 50px !important;
 }
 
 .ml-10{
@@ -527,4 +528,64 @@ body {
 
 .modal-content{
   padding: 10px;
+}
+
+.panel-registration{
+  text-align: center;
+  background: #8db3ce;
+  box-shadow:0px 0px 18px 28px #8db3ce ;
+  width: 400px;
+}
+
+.panel-registration-header{
+  text-transform: uppercase;
+  color: #fff;
+  border-bottom:1px dashed #fff;
+  padding-bottom: 20px;
+}
+
+.panel-registration-content{
+  padding: 0 30px;
+}
+
+.panel-registration-content .form-item{
+  margin: 10px 0;
+  display: block;
+  width: 100%;
+}
+
+.form-item label{
+  display: block;
+  text-align: left;
+  padding: 4px 4px;
+}
+
+.form-item input{
+  background-color: rgba(255, 255, 255, .7);
+  border: none;
+  padding: 10px 10px;
+  font-size: 16px;
+  outline: none;
+  width: calc(100% - 20px);
+  border-bottom: 1px solid rgba(255, 255, 255, .7);
+}
+
+.form-item input:focus{
+  background-color: #fff;
+  border-bottom: 1px solid #4285f4;
+}
+
+.panel-registration-content  .form-item button{
+  padding: 10px 20px;
+  background-color: #66a0ff;
+  border-color: #4285f4;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  transition: all 0.5s ease 0s;
+}
+
+.panel-registration-content  .form-item button:hover{
+  background-color: #3b5998;
+  border-color: #3b5998;
 }

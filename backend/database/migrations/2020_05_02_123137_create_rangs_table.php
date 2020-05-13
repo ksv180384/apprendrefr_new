@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserTokensTable extends Migration
+class CreateRangsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateUserTokensTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_tokens', function (Blueprint $table) {
+        Schema::create('rangs', function (Blueprint $table) {
             $table->engine = "InnoDB";
 
-            $table->unsignedBigInteger('id_user')->index();
-            $table->string('token', 80)->primary();
-            $table->timestamps();
-
-            $table->foreign('id_user')->references('id')->on('users');
+            $table->id();
+            $table->string('title');
         });
     }
 
@@ -31,6 +28,6 @@ class CreateUserTokensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_tokens');
+        Schema::dropIfExists('rangs');
     }
 }

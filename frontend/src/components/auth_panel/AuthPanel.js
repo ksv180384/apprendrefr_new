@@ -53,7 +53,8 @@ class AuthPanel extends Component{
                 remember: this.state.remember
             })
                 .then((response) => {
-                    console.log(response.data.user_data);
+                    //const result = JSON.parse(response.data)
+                    console.log(response.data);
 
                     this.setState({
                         email: '',

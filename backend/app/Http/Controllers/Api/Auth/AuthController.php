@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 
-use App\Models\User\UserToken;
+use App\Http\Requests\JsonData\Auth\RegisterFormRequest;
+use App\Http\Requests\Api\Auth\RegistrationFormApiRequest;
+use App\Models\User;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -18,7 +20,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'registration']]);
     }
 
     /**
@@ -28,40 +30,10 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        /*
-        $credentials = request(['email', 'password']);
-
-        if (!$token = \Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        return $this->respondWithToken($token);
-//*/
-        /*
         $credentialsEmail = $request->only('email', 'password');
+        $credentialsEmail['password'] = md5($credentialsEmail['password']);
         $credentialsLogin = ['login' => $credentialsEmail['email'], 'password' => $credentialsEmail['password']];
-
-        // При неудачной авторизации отправляем сообщение об ошибке
-        if (!\Auth::attempt($credentialsEmail) && !\Auth::attempt($credentialsLogin)) {
-            return response()->json([
-                'message' => 'Неверный логин или пароль.',
-                'errors' => 'Unauthorised'
-            ], 401);
-        }
-
-        $token = Str::random(80);
-        if(!UserToken::create(['token' => $token, 'id_user' => \Auth::id()])){
-            return response()->json([
-                'message' => 'Ошибка при авторизации. Попробуйте позже.',
-                'errors' => 'Unauthorised'
-            ], 401);
-        }
-
-        return $this->respondWithToken($token);
-//*/
-        $credentialsEmail = $request->only('email', 'password');
-        $credentialsLogin = ['login' => $credentialsEmail['email'], 'password' => $credentialsEmail['password']];
-
+        
         if (!($token = $this->guard()->attempt($credentialsLogin)) && !($token = $this->guard()->attempt($credentialsEmail))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -78,6 +50,19 @@ class AuthController extends Controller
     {
         return response()->json($this->guard()->user());
         //return response()->json(['mess' => 'ok']);
+    }
+
+    public function registration(RegistrationFormApiRequest $request)
+    {
+        $user = User::create(array_merge(
+            $request->only('email', 'login'),
+            ['password' => bcrypt(md5($request->password))]
+        ));
+
+
+        return response()->json([
+            'message' => 'Вы успешно прошли регистрацию. Для входа в систему используйте свой адрес электронной почты и пароль.'
+        ], 200);
     }
 
     /**
@@ -114,17 +99,6 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        /*
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            //'expires_in' => auth()->factory()->getTTL() * 60,
-            'user_data' => [
-                'auth' => true,
-                'user' => \Auth::user()->toArray(),
-            ],
-        ], 200);
-        */
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',

@@ -1,10 +1,15 @@
 <?php
 
-namespace App\Http\Requests\JsonData\Auth;
+namespace App\Http\Requests\Api\Auth;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
-class RegisterFormRequest extends FormRequest
+
+class RegistrationFormApiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +29,10 @@ class RegisterFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'login' => 'required|min:3',
             'password' => 'required|confirmed|min:6',
+            'sex' => 'exists:sex,id',
         ];
     }
 
@@ -39,11 +45,12 @@ class RegisterFormRequest extends FormRequest
     {
         return [
             'email.required' => 'email обязательно для запонения.',
-            'email.email:3' => 'Вы ввели некорректный email.',
+            'email.unique' => 'Пользователь с таким email уже существует.',
+            'email.email' => 'Вы ввели некорректный email.',
             'login.required' => 'Имя/login обязательно для запонения.',
             'login.min' => 'Имя/login должно быть нге короче 3-х символов.',
             'password.required' => 'Пароль обязателен для запонения.',
-            'password.min:6' => 'Пароль должен быть не короче 6 символов.',
+            'password.min' => 'Пароль должен быть не короче 6 символов.',
             'password.confirmed' => 'Неверно подтвержден пароль.',
         ];
     }
@@ -56,14 +63,10 @@ class RegisterFormRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    /*
-    protected function failedValidation(\Validator $validator)
+    protected function failedValidation(Validator $validator)
     {
-        $errors = (new ValidationException($validator))->errors();
-
         throw new HttpResponseException(
-            response()->json(['errors' => $errors], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
+            new JsonResponse($validator->errors(), 422)
         );
     }
-    */
 }

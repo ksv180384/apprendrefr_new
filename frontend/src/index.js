@@ -15,6 +15,8 @@ import './pages/index/Index.css';
 import Axios from "axios/index";
 import Preloader from "./components/preloader/Preloader";
 import ModalWindow from "./components/modals_windows/ModalWindow";
+import Registration from "./pages/registration/Registration";
+import LostPassword from "./pages/lost_password/LostPassword";
 
 Axios.defaults.headers.common = {
     'Authorization':localStorage.getItem('user-token'),
@@ -27,10 +29,8 @@ Axios.post(store.getState().api_path + '/api/index', {
 
 })
     .then((response) => {
-        //console.log(userAuth(response.data));
         store.dispatch(loadPage(response.data));
         store.dispatch(loadPage({ load: false }));
-        //console.log(store.getState());
 
     })
     .catch((error) => {
