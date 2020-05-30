@@ -1,0 +1,99 @@
+.BtnDropdown{
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    background: #fff;
+    font-weight: 400;
+    border: 1px solid rgba(34,36,38,.15);
+    box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+    border-radius: 2px;
+    font-size: 14px;
+    min-height: 30px;
+}
+
+.BtnDropdown-title{
+    display: flex;
+    flex: 1 1 auto;
+    width: 1%;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0 8px;
+    background-color: #f7fbff;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.BtnDropdown-title>span{
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.BtnDropdown-list-block{
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    position: relative;
+}
+
+.BtnDropdown-list-block>span{
+    display: inline-block;
+    font-size: 12px;
+    padding: 0 6px 0;
+    text-align: center;
+    height: 100%;
+    cursor: pointer;
+    user-select: none;
+    line-height: 28px;
+    border-left: 1px solid rgba(34,36,38,.15);
+}
+
+.BtnDropdown-list-block>span:hover{
+    background-color: #e9f1f7;
+}
+
+.BtnDropdown-list-block.active>span{
+    background-color: #e9f1f7;
+    box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28);
+}
+
+.BtnDropdown-list-block>span>svg{
+    display: inline-block;
+    float: right;
+    margin-left: 6px;
+    margin-top: 6px;
+    margin-right: 4px;
+}
+
+.BtnDropdown-list-block>ul{
+    /*width: 100%;*/
+    padding-top: 2px;
+    list-style: none;
+    position: absolute;
+    z-index: 1;
+    top: 28px;
+    right: 0;
+    background: #e9f1f7;
+    display: none;
+}
+
+.BtnDropdown-list-block.active>ul{
+    display: initial;
+    box-shadow: 0 4px 6px 0 rgba(32,33,36,0.28);
+}
+
+.BtnDropdown-list-block>ul>li{
+    padding: 6px 6px;
+    border-radius: 0 0 2px 2px;
+    white-space: nowrap;
+    background-color: #fff;
+    cursor: pointer;
+    user-select: none;
+}
+
+.BtnDropdown-list-block>ul>li:hover{
+    background-color: #f7fbff;
+}

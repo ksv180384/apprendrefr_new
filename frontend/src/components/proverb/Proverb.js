@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import './Proverb.css';
 
-import store from "./../../store";
+//import index from "../../store/store";
 
 class Proverb extends Component{
 
 
     render(){
 
-        const { proverb } = store.getState().page_data;
+        //const { proverb } = index.getState().page_data;
+        const proverb = {};
 
         return(
             <div className="Proverb-block">

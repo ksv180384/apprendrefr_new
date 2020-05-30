@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->string('password')->comment('пароль пользователя');
             $table->string('avatar', 500)->nullable()->default(null)->comment('аватар пользователя');
             $table->unsignedBigInteger('sex')->nullable()->default(null)->comment('пол пользователя');
+            $table->timestamp('birthday')->nullable()->default(null)->comment('дата рождения пользователя');
             $table->text('info')->nullable()->default(null)->comment('информация о себе'); // Информация о себе
             $table->text('signature')->nullable()->default(null)->comment('Подпись отображается под сообщениями форума');
             $table->string('residence', 500)->nullable()->default(null)->comment('масто жительства'); // Место жительства

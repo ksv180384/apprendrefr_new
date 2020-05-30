@@ -20,7 +20,7 @@
 .search>.select>span{
     display: inline-block;
     color: #fff;
-    background-color: green;
+    background-color: #8db3ce;
     width: calc(100% - 6px);
     line-height: 26px;
     border-radius: 4px;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-
 import './Navigation.css';
+
+import { Link } from 'react-router-dom';
 
 class Navigation extends Component{
 
@@ -12,7 +13,7 @@ class Navigation extends Component{
             <nav>
                 <ul>
                     {Object.keys(menu).map(key => {
-                        return <li key={key}><a href={key}>{menu[key]}</a></li>
+                        return <Link key={key} to={ key }>{ menu[key] }</Link>
                     })}
                 </ul>
             </nav>

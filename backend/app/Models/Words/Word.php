@@ -14,4 +14,6 @@ class Word extends Model
         'example', // Пример
         'pronunciation', // Произношение
     ];
+
+    public $timestamps = false;
 }

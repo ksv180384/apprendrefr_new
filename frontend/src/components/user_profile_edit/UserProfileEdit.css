@@ -1,0 +1,14 @@
+.UserProfileEdit{
+    margin: 2px 0 0 2px;
+    background-color: #e9f1f7;
+    min-height: calc(100% - 3px);
+}
+
+.UserProfileEdit-contacts-block{
+    display: flex;
+    justify-content: space-around;
+}
+
+.UserProfileEdit-contacts-item{
+    margin: 10px 0;
+}

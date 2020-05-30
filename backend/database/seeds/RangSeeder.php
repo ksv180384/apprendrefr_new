@@ -13,9 +13,10 @@ class RangSeeder extends Seeder
     {
         //
         DB::table('rangs')->insert([
-            ['title' => 'Пользователь',],
-            ['title' => 'Модератор',],
-            ['title' => 'Администратор',],
+            ['title' => 'Пользователь', 'alias' => \Illuminate\Support\Str::slug('Пользователь')],
+            ['title' => 'Модератор', 'alias' => \Illuminate\Support\Str::slug('Модератор')],
+            ['title' => 'Администратор', 'alias' => \Illuminate\Support\Str::slug('Администратор')],
+            ['title' => 'Забанен', 'alias' => \Illuminate\Support\Str::slug('Забанен')],
         ]);
     }
 }

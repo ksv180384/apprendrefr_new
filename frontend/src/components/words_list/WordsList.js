@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import './WordsList.css';
+import { connect } from 'react-redux';
+import { loadWords } from '../../store/actions/wordActions';
 
 import ReactTooltip from 'react-tooltip';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import store from "./../../store";
+//import index from "../../store/store";
+
+import './WordsList.css';
+import store from "../../store";
 
 class WordsList extends Component{
 
@@ -32,15 +36,16 @@ class WordsList extends Component{
             const voices = window.speechSynthesis.getVoices();
             let lang = false;
 
-            voices.map((voice) => {
-                if(voice.lang === 'fr-FR'){
+            for(let key in voices){
+                if(voices[key].lang === 'fr-FR'){
                     lang = true;
                 }
-            });
-            if(!lang){
+            }
 
+            if(!lang){
                 alert('Ваш браузер не поддерживает Французкий язык. Используйте Chrome.')
             }
+            return lang;
         };
 
         this.voice = (e) =>{
@@ -56,12 +61,23 @@ class WordsList extends Component{
         // Запускаем пустую функцию проговаривания текста для подгрузки массива
         // со списком поддерживаемых языков
         this.speak('');
+
+
+        store.subscribe(() => {
+            this.setState({ words: store.getState().wordReducer });
+        });
+    }
+
+    componentDidMount(){
+        this.props.loadWords();
+
     }
 
     render(){
 
-        const { words } = store.getState().page_data;
-        //const words = {};
+        //const { words } = index.getState().page_data;
+        const { words } = this.state;
+
 
         return(
             <div className="WordsList-block">
@@ -91,4 +107,10 @@ class WordsList extends Component{
     }
 }
 
-export default WordsList;
+const mapStateToProps = (state) => {
+    return {
+        words: state.wordReducer
+    };
+};
+
+export default connect(mapStateToProps, { loadWords })(WordsList);

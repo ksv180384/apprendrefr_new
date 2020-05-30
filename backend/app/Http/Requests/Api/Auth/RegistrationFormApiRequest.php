@@ -56,7 +56,7 @@ class RegistrationFormApiRequest extends FormRequest
     }
 
     /**
-     * Handle a failed validation attempt.
+     * Если данные не прошли валидацию, возвращаем Json ответ
      *
      * @param  \Illuminate\Contracts\Validation\Validator $validator
      * @return void

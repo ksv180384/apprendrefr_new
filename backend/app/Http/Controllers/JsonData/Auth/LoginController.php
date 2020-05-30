@@ -7,13 +7,26 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
+
+    public function index(){
+        return response()->json([
+            'title' => 'Авторизация',
+            'description' => 'Авторизация',
+            'keywords' => 'Авторизация',
+            'footer' => [
+                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
+                'E-mail: admin@apprendrefr.ru'
+            ],
+        ]);
+    }
+
     /**
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request)
+    public function login(Request $request)
     {
         //
         $credentialsEmail = $request->only('email', 'password');

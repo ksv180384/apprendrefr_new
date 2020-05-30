@@ -9,13 +9,25 @@ use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
+    public function index(){
+        return response()->json([
+            'title' => 'Регистрация',
+            'description' => 'Регистрация',
+            'keywords' => 'Регистрация',
+            'footer' => [
+                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
+                'E-mail: admin@apprendrefr.ru'
+            ],
+        ]);
+    }
+
     /**
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(RegisterFormRequest $request)
+    public function registration(RegisterFormRequest $request)
     {
         //
         $user = User::create(array_merge(

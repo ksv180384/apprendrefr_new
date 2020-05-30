@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Word;
+namespace App\Http\Controllers\JsonData\Word;
 
 use App\Http\Controllers\Api\BaseController;
 use App\Models\Words\Word;

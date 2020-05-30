@@ -15,8 +15,8 @@ class CreateProverbsTable extends Migration
     {
         Schema::create('proverbs', function (Blueprint $table) {
             $table->id();
-            $table->text('text');
-            $table->text('translation');
+            $table->text('text')->comment('текст');
+            $table->text('translation')->comment('перевод');
         });
     }
 /*

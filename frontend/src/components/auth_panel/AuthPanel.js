@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import './AuthPanel.css';
+import { connect } from 'react-redux';
+import { config } from '../../config';
+import store from '../../store';
+import { setUser } from '../../store/actions/userActions';
+import { setAuth } from '../../store/actions/authActions';
+import { setLoader } from '../../store/actions/loaderActions';
 
 import ReactTooltip from 'react-tooltip';
+import { Link } from 'react-router-dom';
 
 import BtnLoad from './../btn_load/BtnLoad';
 
@@ -10,9 +16,9 @@ Axios.defaults.headers.common = {
     'Authorization':localStorage.getItem('user-token'),
 };
 
-import { userAuth, loadPage, modalRegistration } from './../../actions';
-import store from "./../../store";
+//import { userAuth, loadPage } from '../../store/actions';
 
+import './AuthPanel.css';
 
 class AuthPanel extends Component{
 
@@ -26,11 +32,6 @@ class AuthPanel extends Component{
             loadFormLoginUser: false,
         };
 
-        this.showModalRegistration = (e) => {
-            e.preventDefault();
-            store.dispatch(modalRegistration({ modal_registration: true }));
-        }
-
         this.handleChangeFormInpitText = (e) => {
             this.setState({ [e.target.name]: e.target.value });
         };
@@ -42,19 +43,15 @@ class AuthPanel extends Component{
         this.handleSubmit = (e) => {
             e.preventDefault();
 
+            store.dispatch(setLoader(true));
             this.setState({ loadFormLoginUser: true });
-
-            const url = event.target.attributes.getNamedItem('action').value;
-
-            store.dispatch(loadPage({ load: true }));
-            Axios.post(url, {
+            console.log(store.getState());
+            Axios.post(config.path + 'api/auth/login', {
                 email: this.state.email,
                 password: this.state.password,
                 remember: this.state.remember
             })
                 .then((response) => {
-                    //const result = JSON.parse(response.data)
-                    console.log(response.data);
 
                     this.setState({
                         email: '',
@@ -63,25 +60,27 @@ class AuthPanel extends Component{
                         loadFormLoginUser: false,
                     });
                     localStorage.setItem('user-token', response.data.token_type + ' ' + response.data.access_token);
-                    store.dispatch(userAuth(response.data.user_data));
-                    store.dispatch(loadPage({ load: false }));
+                    store.dispatch(setUser(response.data.user_data.user));
+                    store.dispatch(setAuth(response.data.user_data.auth));
+                    store.dispatch(setLoader(false));
                 })
                 .catch((error) => {
-                    //console.log(error.response.data);
-                    store.dispatch(loadPage({ load: false }));
+                    store.dispatch(setLoader(false));
                     this.setState({
                         password: '',
                         loadFormLoginUser: false,
                     });
                 });
         };
+    }
+
+    componentDidMount(){
 
     }
 
     render(){
 
         const { email, password, remember, loadFormLoginUser } = this.state;
-        const { api_path } = store.getState();
 
         return(
             <div className="AuthPanel-block">
@@ -90,7 +89,7 @@ class AuthPanel extends Component{
                         Панель авторизации
                     </div>
                     <div className="panel_content">
-                        <form action={ api_path + '/api/auth/login' }
+                        <form action={ config.path + 'api/auth/login' }
                               method="post"
                               onSubmit={ this.handleSubmit }
                         >
@@ -146,12 +145,11 @@ class AuthPanel extends Component{
                                 </ReactTooltip>
                             </div>
                             <div className="login-registration-link-block">
-                                <a href="#" className="link">Забыли пароль?</a>
-                                <a href="#"
+                                <Link to='/lost-password' className="link">Забыли пароль?</Link>
+                                <Link to="/registration"
                                    className="link"
                                    data-tip data-for="tooltipRegistrationLink"
-                                   onClick={ this.showModalRegistration }
-                                >Регистрация</a>
+                                >Регистрация</Link>
                                 <ReactTooltip id="tooltipRegistrationLink" effect="solid" delayShow={1000} className="tooltip-header">
                                     S'inscrire
                                 </ReactTooltip>
@@ -164,4 +162,11 @@ class AuthPanel extends Component{
     }
 }
 
-export default AuthPanel;
+const mapStateToProps = (state) => {
+    return {
+        user: state.userReducer,
+        loader: state.loaderReducer,
+    };
+};
+
+export default connect(mapStateToProps, { setUser, setLoader })(AuthPanel);

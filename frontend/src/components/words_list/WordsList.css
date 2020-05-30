@@ -17,5 +17,8 @@
     cursor: pointer;
     font-size: 18px;
     margin-bottom: -2px;
+}
 
+.word-text{
+    cursor: pointer;
 }

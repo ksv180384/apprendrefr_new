@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './LearningWrite.css';
-import { showModal } from "../../../actions";
-import store from "../../../store";
+//import { showModal } from "../../../store/actions";
+//import index from "../../../store/store";
 
 class LearningWrite extends Component{
 
@@ -9,7 +9,7 @@ class LearningWrite extends Component{
         super();
 
         this.showModal = () => {
-            store.dispatch(showModal({ show_modal: true }));
+            //index.dispatch(showModal({ show_modal: true }));
         };
     }
 

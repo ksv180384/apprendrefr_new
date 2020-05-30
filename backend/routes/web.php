@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/{path?}', function () {
     return view('index');
 });
 
@@ -22,8 +22,11 @@ Route::group(['namespace' => 'JsonData', 'prefix' => 'json'], function () {
     Route::post('index', 'IndexController@index')->name('json.index');
 
     Route::group(['namespace' => 'Auth'], function () {
-        Route::post('register', 'RegisterController')->name('json.register');
-        Route::post('login', 'LoginController')->name('json.login');
+        Route::post('register-page', 'RegisterController@index')->name('registration');
+        Route::post('login-page', 'LoginController@index')->name('login');
+
+        Route::post('register', 'RegisterController@registration')->name('json.register');
+        Route::post('login', 'LoginController@login')->name('json.login');
         Route::post('logout', 'LogoutController')->name('json.logout');
     });
 });

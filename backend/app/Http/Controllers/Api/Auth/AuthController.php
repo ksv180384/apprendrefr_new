@@ -7,12 +7,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\JsonData\Auth\RegisterFormRequest;
 use App\Http\Requests\Api\Auth\RegistrationFormApiRequest;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
     /**
      * Create a new AuthController instance.
      *
@@ -20,7 +27,15 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'registration']]);
+        $this->middleware('auth:api', [
+            'except' => [
+                'login',
+                'registration',
+                'register_page',
+                'login_page'
+            ]
+        ]);
+        $this->userRepository = app(UserRepository::class);
     }
 
     /**
@@ -105,7 +120,35 @@ class AuthController extends Controller
             'expires_in' => $this->guard()->factory()->getTTL() * 60,
             'user_data' => [
                 'auth' => \Auth::check(),
-                'user' => \Auth::user()->toArray(),
+                'user' => $this->userRepository->getById(\Auth::id())->toArray(),
+            ],
+        ]);
+    }
+
+    public function login_page(){
+        return response()->json([
+            'auth' => \Auth::check(),
+            'user' => \Auth::check() ? \Auth::user() : [],
+            'title' => 'Авторизация',
+            'description' => 'Авторизация',
+            'keywords' => 'Авторизация',
+            'footer' => [
+                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
+                'E-mail: admin@apprendrefr.ru'
+            ],
+        ]);
+    }
+
+    public function register_page(){
+        return response()->json([
+            'auth' => \Auth::check(),
+            'user' => \Auth::check() ? \Auth::user() : [],
+            'title' => 'Регистрация',
+            'description' => 'Регистрация',
+            'keywords' => 'Регистрация',
+            'footer' => [
+                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
+                'E-mail: admin@apprendrefr.ru'
             ],
         ]);
     }

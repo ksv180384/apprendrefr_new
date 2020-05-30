@@ -7,8 +7,7 @@ Axios.defaults.headers.common = {
     'Authorization':localStorage.getItem('user-token'),
 };
 
-import { loadPage } from './../../actions';
-import store from "./../../store";
+import { loadPage } from '../../store/actions';
 
 class Registration extends Component{
 
@@ -31,9 +30,10 @@ class Registration extends Component{
         this.registrationSubmit = (e) => {
             e.preventDefault();
 
+            /*
             const url = event.target.attributes.getNamedItem('action').value;
 
-            store.dispatch(loadPage({ load: true }));
+            index.dispatch(loadPage({ load: true }));
             Axios.post(url, {
                 email: this.state.email,
                 login: this.state.login,
@@ -46,23 +46,25 @@ class Registration extends Component{
                         password: '',
                         password_confirmation: '',
                     });
-                    store.dispatch(loadPage({ load: false }));
+                    index.dispatch(loadPage({ load: false }));
                 })
                 .catch((error) => {
-                    store.dispatch(loadPage({ load: false }));
+                    index.dispatch(loadPage({ load: false }));
                     this.setState({
                         password: '',
                         password_confirmation: '',
                     });
                 });
-
+            */
         }
 
     }
 
     render(){
 
-        const { api_path, load } = store.getState();
+        //const { api_path, load } = index.getState();
+        const api_path = {};
+        const load = {};
         const { email, login, password, password_confirmation } = this.state;
 
         return(

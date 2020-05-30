@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { config } from '../../config';
+import { getUser, setUser } from '../../store/actions/userActions';
+import { setLoader } from "../../store/actions/loaderActions";
+import { setAuth } from "../../store/actions/authActions";
+
+import store from "../../store";
+
+import { Link } from 'react-router-dom';
+import axios from "axios/index";
+
 import './UserPanel.css';
-
-import { userAuth, loadPage } from "./../../actions";
-import store from "./../../store";
-
-import Axios from "axios/index";
 
 class UserPanel extends Component{
 
@@ -13,24 +19,32 @@ class UserPanel extends Component{
 
         this.logout = (e) => {
             e.preventDefault();
-            store.dispatch(loadPage({ load: true }));
-            Axios.defaults.headers.common = {
+
+            store.dispatch(setLoader(true));
+            axios.defaults.headers.common = {
                 'Authorization':localStorage.getItem('user-token'),
             };
-            Axios.post(store.getState().api_path + '/api/auth/logout', {})
+            axios.post(config.path + 'api/auth/logout', {})
                 .then((response) => {
-                    //console.log(response.data);
-                    store.dispatch(userAuth(response.data));
-                    store.dispatch(loadPage({ load: false }));
+                    store.dispatch(setLoader(false));
+                    store.dispatch(setAuth(response.data.auth));
+                    store.dispatch(setUser(response.data.user));
                 })
                 .catch((error) => {
-                    store.dispatch(loadPage({ load: false }));
+                    store.dispatch(setLoader(false));
                 });
         }
     }
+
+    componentDidUpdate(){
+        //this.props.user = this.props.getUser();
+        this.props.user = store.getState().userReducer;
+    }
     
     render(){
-        
+
+        const { login, avatar, rang_title } = this.props.user;
+
         return(
             <div className="User-panel">
                 <div className="panel">
@@ -39,16 +53,18 @@ class UserPanel extends Component{
                     </div>
                     <div className="panel_content">
                         <div className="user-name">
-                            Admin
+                            { login }
                         </div>
-                        <div className="avatar-right-mini-panel">
+                        <div className="avatar-right-mini-panel" style={ { backgroundImage: 'url(' + avatar + ')' }  }>
 
                         </div>
                         <div className="user-name mt-5 mb-10">
-                            Администратор
+                            { rang_title }
                         </div>
                         <ul className="panel-list">
-                            <li><a href="#">Профиль</a></li>
+                            <li>
+                                <Link to='/profile' className="link">Профиль</Link>
+                            </li>
                             <li><a href="#">Личные сообщения</a></li>
                             <li><a href="#">Пользователи</a></li>
                             <li><a href="#" onClick={ this.logout }>Вход</a></li>
@@ -60,4 +76,10 @@ class UserPanel extends Component{
     }
 }
 
-export default UserPanel;
+const mapStateToProps = (state) => {
+    return {
+        user: state.userReducer,
+    }
+};
+
+export default connect(mapStateToProps, { getUser })(UserPanel);

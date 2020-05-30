@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,6 +12,10 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    const NO_AVATAR = '/img/none_avatar.png';
+
+    public $preventAttrGet = false;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -18,19 +23,19 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'login',
-        'password',
         'email',
         'email_verified_at',
+        //'password',
         'avatar',
         'sex',
-        'o_sebe',
-        'podpis',
-        'gorod',
+        'birthday',
+        'info',
+        'signature',
+        'residence',
         'rang',
-        'hash',
+        'admin',
         'created_at',
         'updated_at',
-        'deleted_at',
     ];
 
     /**
@@ -48,8 +53,19 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime:d.m.Y H:i:s',
+        'birthday' => 'datetime:Y-m-d',
+        'created_at' => 'datetime:d.m.Y H:i:s',
+        'updated_at' => 'datetime:d.m.Y H:i:s',
     ];
+
+    //protected $dateFormat = 'c';
+
+    /*
+    protected $dates = [
+        'birthday',
+    ];
+    */
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -73,5 +89,38 @@ class User extends Authenticatable implements JWTSubject
 
     public function isAdmin(){
         return $this->admin == 1;
+    }
+
+    /**
+     * Установить аватар пользователя.
+     *
+     * @return void
+     */
+    public function getAvatarAttribute($avatar)
+    {
+        if(empty($avatar)){
+            $avatar = asset(self::NO_AVATAR);
+        }else{
+            // Если не нужен мутатор
+            if ($this->preventAttrGet) {
+                $avatar = '/storage/' . $avatar;
+            }else{
+                $avatar = asset('/storage/' . $avatar);
+            }
+        }
+
+        return $avatar;
+    }
+
+    /**
+     * Меняем формат даты
+     *
+     * @return void
+     */
+
+    public function setBirthdayAttribute($birthday)
+    {
+        $birthday = Carbon::parse($birthday)->format('Y-m-d H:i:s');
+        return $birthday;
     }
 }

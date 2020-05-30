@@ -1,8 +1,8 @@
 import React,  { Component } from 'react';
 import './Registration.css';
 
-import store from './../../../store';
-import { modalRegistration } from './../../../actions';
+import index from '../../../store/store';
+import { modalRegistration } from '../../../store/actions';
 
 import BtnLoad from "../../btn_load/BtnLoad";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,14 +15,14 @@ class Registration extends Component{
 
         this.modalToggle = (e) =>{
             e.stopPropagation();
-            store.dispatch(modalRegistration({ modal_registration: !store.getState().modal_registration }));
+            index.dispatch(modalRegistration({ modal_registration: !index.getState().modal_registration }));
         };
 
     }
 
     render(){
 
-        const { modal_registration } = store.getState();
+        const { modal_registration } = index.getState();
 
 
         let classModalState = '';

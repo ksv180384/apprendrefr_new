@@ -1,23 +1,31 @@
 import React,  { Component } from 'react';
-import Header from "../../header/Header";
-import Footer from "../../footer/Footer";
-import App from "../../layouts/app/App";
-import Registration from "../../components/modals_windows/registration/Registration";
+import { connect } from 'react-redux';
 
+import App from "../../layouts/app/App";
+
+import './Index.css';
+import { getPage } from '../../store/actions/pageActions';
 
 class Index extends Component {
 
+    componentDidMount(){
+        this.props.getPage('api/index');
+    }
+
     render(){
 
+        const page = this.props.page;
+
         return(
-            <React.Fragment>
-                <Header/>
-                <App/>
-                <Footer/>
-                <Registration />
-            </React.Fragment>
+            <App/>
         );
     }
 }
 
-export default Index;
+const mapStateToProps = (state) => {
+    return {
+        page: state.pageReducer.page,
+    };
+};
+
+export default connect(mapStateToProps, { getPage })(Index);

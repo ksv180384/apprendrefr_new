@@ -1,0 +1,33 @@
+.TabProfile{
+    padding: 10px 0;
+}
+
+.profile-edit-block{
+    display: flex;
+}
+
+.profile-edit-avatar{
+    flex: 1 0 200px;
+    text-align: center;
+}
+
+.profile-edit-data{
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+.upload-avatar-block{
+    display: inline-block;
+    width: 180px;
+    height: 220px;
+    border: 1px solid #649ec2;
+    border-radius: 8px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    cursor: pointer;
+}
+
+.upload-avatar-block input{
+    display: none;
+}

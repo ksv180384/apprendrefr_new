@@ -1,0 +1,16 @@
+.AppNoRight{
+    min-height: calc(100vh - 146px);
+    display: flex;
+    flex-direction: row;
+    /*margin-top: 56px;*/
+    max-width: 1300px;
+    margin: 58px auto 0 auto;
+}
+
+.AppNoRight-left-block{
+    flex: 1 0 280px;
+}
+
+.AppNoRight-center-block{
+    flex: 100%;
+}

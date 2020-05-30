@@ -1,0 +1,86 @@
+.TabProfile{
+    padding: 10px 0;
+}
+
+.profile-edit-block{
+    display: flex;
+}
+
+.profile-edit-user-data-block{
+    /*display: flex;*/
+    flex: 1 0 auto;
+    width: 452px;
+    padding: 0 6px;
+}
+
+.profile-edit-user-data-block-item{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 2px;
+}
+
+.profile-edit-user-contact-block{
+    flex: 1 1 auto;
+    padding-right: 10px;
+    width: 100%;
+}
+
+.profile-edit-avatar{
+    width: 200px;
+    text-align: center;
+}
+
+.profile-edit-data{
+    width: 240px;
+    margin-left: 6px;
+}
+
+.upload-avatar-block{
+    display: inline-block;
+    width: 180px;
+    height: 220px;
+    border: 1px solid #649ec2;
+    border-radius: 8px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    cursor: pointer;
+}
+
+.upload-avatar-block input{
+    display: none;
+}
+
+.profile-textarea-block{
+    box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.profile-textarea-block>label{
+    padding: 6px 10px;
+    display: block;
+    background: #f7fbff;
+    font-size: 12px;
+}
+
+.profile-textarea-block>textarea{
+    box-shadow: none;
+    border: 0;
+    outline: none;
+    margin-bottom: -3px;
+}
+
+@media (max-width: 1300px){
+    .profile-edit-block{
+        flex-wrap: wrap;
+        width: 500px;
+        margin: 0 auto;
+    }
+
+    .profile-edit-user-contact-block{
+        margin-top: 20px;
+    }
+}

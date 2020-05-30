@@ -4,8 +4,8 @@ import './LostPassword.css';
 import Axios from 'axios';
 import BtnLoad from "../../components/btn_load/BtnLoad";
 
-import { loadPage } from './../../actions';
-import store from "./../../store";
+import { loadPage } from '../../store/actions';
+//import index from "../../store/store";
 
 class LostPassword extends Component{
     constructor(){
@@ -22,18 +22,20 @@ class LostPassword extends Component{
         this.confirmPasswordSubmit = (e) => {
             e.preventDefault();
 
+            /*
             const url = event.target.attributes.getNamedItem('action').value;
 
-            store.dispatch(loadPage({ load: true }));
+            index.dispatch(loadPage({ load: true }));
             Axios.post(url, {
                 confirm_email: this.state.confirm_email
             })
                 .then((response) => {
-                    store.dispatch(loadPage({ load: false }));
+                    index.dispatch(loadPage({ load: false }));
                 })
                 .catch((error) => {
-                    store.dispatch(loadPage({ load: false }));
+                    index.dispatch(loadPage({ load: false }));
                 });
+                */
 
         }
 
@@ -42,7 +44,9 @@ class LostPassword extends Component{
     render(){
 
         const { confirm_email } = this.state;
-        const { api_path, load } = store.getState();
+        //const { api_path, load } = index.getState();
+        const api_path = {};
+        const load = {};
 
         return(
             <div className="ConfirmPassword">

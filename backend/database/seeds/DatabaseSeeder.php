@@ -14,5 +14,12 @@ class DatabaseSeeder extends Seeder
         $this->call(SexSeeder::class);
         $this->call(RangSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(ProverbSeeder::class);
+        $this->call(WordSeeder::class);
+        $this->call(UserConfigSeeder::class);
+        $this->call(UserInfoSeeder::class);
+        $this->call(PlayerSongArtistSeeder::class);
+        $this->call(PlayerSongSeeder::class);
+        $this->call(PlayerSongSearchSeeder::class);
     }
 }

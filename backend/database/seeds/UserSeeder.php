@@ -14,8 +14,9 @@ class UserSeeder extends Seeder
         //
         $users = DB::connection('mysql2')->table('users')
                     ->select('id', 'login', 'email', 'password', 'avatar', 'pol', 'o_sebe',
-                    'podpis', 'rang', 'data_reg')->get();
+                    'chislo_r', 'mois', 'ans', 'podpis', 'rang', 'data_reg')->get();
 
+        //$users = $users->unique('email');
         DB::connection('mysql');
         foreach ($users as $user){
             if($user->pol == 'Женский'){
