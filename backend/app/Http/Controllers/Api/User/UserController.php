@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\User\ProfileUpdateRequest;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use App\Models\User\Sex;
+use App\Models\User\UserConfigsView;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -23,6 +25,9 @@ class UserController extends Controller
     public function __construct()
     {
         //$this->middleware('auth:api');
+        $this->middleware('auth:api', [
+            'except' => [] // методы с доступ неавторизованным пользователям
+        ]);
 
         $this->userRepository = app(UserRepository::class);
     }
@@ -34,6 +39,25 @@ class UserController extends Controller
     public function index()
     {
         //
+        $sex_list = [['id' => 0, 'title' => 'Нет' ]];
+        $sex_list = array_merge($sex_list, Sex::select('id', 'title')->orderBy('id', 'asc')->get()->toArray());
+        $config_user_data_view_list = UserConfigsView::all();
+
+        return response()->json([
+            'title' => '',
+            'description' => '',
+            'keywords' => '',
+            'footer' => [
+                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
+                'E-mail: admin@apprendrefr.ru'
+            ],
+            'data' => [
+                'config_user_data_view_list' => $config_user_data_view_list,
+                'sex_list' => $sex_list,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+        ]);
     }
 
     /**
@@ -128,7 +152,7 @@ class UserController extends Controller
             }
             // Удаляем старый аватар
             if($oldAvatar){
-                unlink(public_path(trim($oldAvatar, '/')));
+                @unlink(public_path(trim($oldAvatar, '/')));
             }
         }
 

@@ -3,10 +3,29 @@ import { connect } from 'react-redux';
 
 import App from "../../layouts/app/App";
 
-import './Index.css';
 import { getPage } from '../../store/actions/pageActions';
+import Header from "../../header/Header";
+import Footer from "../../footer/Footer";
+import LoaderPage from "../../components/loader_page/LoaderPage";
+
+import './Index.css';
 
 class Index extends Component {
+
+    constructor(props){
+        super(props);
+
+        this.pageContent = () => {
+            return (
+                <React.Fragment>
+                    <Header/>
+                        <App/>
+                    <Footer/>
+                </React.Fragment>
+            );
+        };
+    }
+
 
     componentDidMount(){
         this.props.getPage('api/index');
@@ -14,18 +33,20 @@ class Index extends Component {
 
     render(){
 
-        const page = this.props.page;
+        const { loader_page } = this.props;
 
         return(
-            <App/>
+            <React.Fragment>
+                { loader_page ? <LoaderPage/> : this.pageContent() }
+            </React.Fragment>
         );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToPage = (state) => {
     return {
-        page: state.pageReducer.page,
-    };
+        loader_page: state.loaderPageReducer
+    }
 };
 
-export default connect(mapStateToProps, { getPage })(Index);
+export default connect(mapStateToPage, { getPage })(Index);

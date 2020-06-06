@@ -15,11 +15,12 @@ class Preloader extends Component{
         super(props);
 
         this.state = {
-            loader: this.props.getLoader(),
+            load: this.props.load,
         };
 
+
         store.subscribe(() => {
-            this.setState({ loader: store.getState().loaderReducer });
+            this.setState({ load: store.getState().loaderReducer });
         });
 
     }
@@ -31,10 +32,10 @@ class Preloader extends Component{
 
     render(){
 
-        const { loader } = this.state;
+        const { load } = this.state;
 
         let classShow = '';
-        if(loader){
+        if(load){
             classShow = ' show';
         }
 
@@ -48,7 +49,7 @@ class Preloader extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        loader: state.loaderReducer
+        load: state.loaderReducer
     }
 };
 

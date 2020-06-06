@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { config } from '../../config';
-import { getUser, setUser } from '../../store/actions/userActions';
+import { setUser } from '../../store/actions/userActions';
 import { setLoader } from "../../store/actions/loaderActions";
-import { setAuth } from "../../store/actions/authActions";
+import { setLogin } from "../../store/actions/loginActions";
+import { setLoaderPage } from "../../store/actions/loaderPageActions";
 
 import store from "../../store";
 
@@ -17,6 +18,14 @@ class UserPanel extends Component{
     constructor(){
         super();
 
+    }
+
+    componentDidMount(){
+        this.changePage = (e) => {
+            console.log('change page....');
+            this.props.setLoaderPage(true);
+        };
+
         this.logout = (e) => {
             e.preventDefault();
 
@@ -27,18 +36,13 @@ class UserPanel extends Component{
             axios.post(config.path + 'api/auth/logout', {})
                 .then((response) => {
                     store.dispatch(setLoader(false));
-                    store.dispatch(setAuth(response.data.auth));
-                    store.dispatch(setUser(response.data.user));
+                    store.dispatch(setLogin(response.data.auth));
+                    store.dispatch(setUser(null));
                 })
                 .catch((error) => {
                     store.dispatch(setLoader(false));
                 });
         }
-    }
-
-    componentDidUpdate(){
-        //this.props.user = this.props.getUser();
-        this.props.user = store.getState().userReducer;
     }
     
     render(){
@@ -63,11 +67,11 @@ class UserPanel extends Component{
                         </div>
                         <ul className="panel-list">
                             <li>
-                                <Link to='/profile' className="link">Профиль</Link>
+                                <Link to='/profile' onClick={ (e) => this.changePage(e) } className="link">Профиль</Link>
                             </li>
                             <li><a href="#">Личные сообщения</a></li>
                             <li><a href="#">Пользователи</a></li>
-                            <li><a href="#" onClick={ this.logout }>Вход</a></li>
+                            <li><a href="#" onClick={ (e) => this.logout(e) }>Вход</a></li>
                         </ul>
                     </div>
                 </div>
@@ -82,4 +86,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, { getUser })(UserPanel);
+export default connect(mapStateToProps, { setLoaderPage })(UserPanel);

@@ -54,6 +54,7 @@ class IndexController extends BaseController
                 '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
                 'E-mail: admin@apprendrefr.ru'
             ],
+            'data' => [],
             'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
             'auth' => \Auth::check(),
         ]);

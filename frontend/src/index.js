@@ -12,10 +12,10 @@ import LostPassword from "./pages/lost_password/LostPassword";
 import Profile from "./pages/profile/Profile";
 
 // Components
-import Header from "./header/Header";
-import Footer from "./footer/Footer";
 import ModalWindow from "./components/modals_windows/ModalWindow";
 import Preloader from "./components/preloader/Preloader";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 
 import './index.css';
 import store from './store';
@@ -24,9 +24,9 @@ const customHistory = createBrowserHistory();
 
 ReactDOM.render(
     <Provider store={ store }>
+        <ReactNotification />
         <ErrorBoundry>
             <Router history={ customHistory }>
-                <Header/>
                 <Switch>
                     <Route exact path='/' component={ Index }/>
                     <Route exact path='/profile' component={ Profile }/>
@@ -34,7 +34,6 @@ ReactDOM.render(
                     <Route exact path='/lost-password' component={ LostPassword }/>
                 </Switch>
             </Router>
-            <Footer/>
             <Preloader/>
             <ModalWindow/>
         </ErrorBoundry>

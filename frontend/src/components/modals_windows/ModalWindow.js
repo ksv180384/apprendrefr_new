@@ -4,23 +4,13 @@ import './ModalWindow.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 //import index from "../../store/store";
-import { showModal } from "../../store/actions";
+//import { showModal } from "../../store/actions";
 
 //import Preloader from './../../components/preloader/Preloader';
 //import Preloader from "../preloader/Preloader";
 
 class ModalWindow extends Component{
 
-    constructor(props){
-        super(props);
-
-        /*
-        this.modalToggle = (e) =>{
-            e.stopPropagation();
-            index.dispatch(showModal({ show_modal: !index.getState().show_modal }));
-        };
-        */
-    }
 
     render(){
 

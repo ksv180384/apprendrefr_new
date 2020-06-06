@@ -1,7 +1,23 @@
 .Registration{
     color: #fff;
-    display: flex;
     align-items: center;
-    justify-content: center;
     min-height: 100vh;
+}
+
+.label-personal-data-protection-policy{
+    color: #6A6A6A;
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.label-personal-data-protection-policy a{
+    text-decoration: underline;
+}
+
+.label-personal-data-protection-policy.error{
+    color: #ca3333;
+}
+
+.label-personal-data-protection-policy.error a{
+    color: red;
 }

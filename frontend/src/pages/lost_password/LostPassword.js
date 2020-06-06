@@ -1,71 +1,90 @@
 import React, { Component } from 'react';
-import './LostPassword.css';
+import { connect } from 'react-redux';
 
-import Axios from 'axios';
+import axios from 'axios';
 import BtnLoad from "../../components/btn_load/BtnLoad";
+import { Link } from 'react-router-dom';
+import LoaderPage from "../../components/loader_page/LoaderPage";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import InputForm from "../../components/input_form/InputForm";
 
-import { loadPage } from '../../store/actions';
-//import index from "../../store/store";
+import { setLoaderPage } from '../../store/actions/loaderPageActions';
+import { setLoader } from '../../store/actions/loaderActions';
+import store from "../../store";
+import { config } from '../../config';
+
+import './LostPassword.css';
+import {faChevronCircleLeft} from "@fortawesome/free-solid-svg-icons/index";
 
 class LostPassword extends Component{
     constructor(){
         super();
 
         this.state = {
-            confirm_email: ''
+            confirm_email: '',
         };
 
         this.handleChangeFormInputText = (e) => {
             this.setState({ [e.target.name]: e.target.value });
         };
 
+    }
+
+    componentDidMount(){
+        //this.props.setLoaderPage(false);
+
         this.confirmPasswordSubmit = (e) => {
             e.preventDefault();
 
-            /*
+            //*
             const url = event.target.attributes.getNamedItem('action').value;
 
-            index.dispatch(loadPage({ load: true }));
-            Axios.post(url, {
+            store.dispatch(setLoader(true));
+            axios.post(url, {
                 confirm_email: this.state.confirm_email
             })
                 .then((response) => {
-                    index.dispatch(loadPage({ load: false }));
+                    store.dispatch(setLoader(false));
                 })
                 .catch((error) => {
-                    index.dispatch(loadPage({ load: false }));
+                    store.dispatch(setLoader(false));
                 });
-                */
+            //*/
 
-        }
-
+        };
     }
 
     render(){
 
         const { confirm_email } = this.state;
-        //const { api_path, load } = index.getState();
-        const api_path = {};
-        const load = {};
+        const { load, load_page } = this.props;
 
         return(
+            load_page
+                ?
+            <LoaderPage/>
+                :
             <div className="ConfirmPassword">
                 <div className="panel-registration">
                     <div className="panel-registration-header">
+                        <Link to="/" className="btn-go-home-page" title="На главную">
+                            <FontAwesomeIcon icon={faChevronCircleLeft}/>
+                        </Link>
                         Восстановление пароля
                     </div>
                     <div className="panel-registration-content">
-                        <form action={ api_path + '/api/auth/lost_password' }
+                        <form action={ config.path + '/api/auth/lost_password' }
                               method="post"
-                              onSubmit={ this.confirmPasswordSubmit }
+                              onSubmit={ (e) => this.confirmPasswordSubmit(e) }
                         >
                             <div className="form-item">
-                                <label htmlFor="confirmEmail">email</label>
-                                <input type="email" name="confirm_email" id="confirmEmail"
-                                       placeholder="email" onChange={ this.handleChangeFormInputText }
-                                       value={ confirm_email } required/>
+                                <InputForm name="confirm_email"
+                                           type="email"
+                                           placeholder="Email"
+                                           onChange={ this.handleChangeFormInputText }
+                                           defaultValue={ confirm_email }/>
                             </div>
-                            <div className="form-item mt-30">
+                            <div className="form-item text-center mt-40">
                                 <BtnLoad load={ load } type="submit" title="Отправить"/>
                             </div>
                         </form>
@@ -76,4 +95,11 @@ class LostPassword extends Component{
     }
 }
 
-export default LostPassword;
+const mapStateToProps = (state) => {
+    return {
+        load: state.loaderReducer,
+        load_page: state.loaderPageReducer,
+    }
+};
+
+export default connect(mapStateToProps, { /*setLoaderPage*/ })(LostPassword);

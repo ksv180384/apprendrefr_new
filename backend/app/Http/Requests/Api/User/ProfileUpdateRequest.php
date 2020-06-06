@@ -30,7 +30,8 @@ class ProfileUpdateRequest extends FormRequest
         return [
             //
             'avatarImg' => 'nullable|file|mimes:jpeg,gif,png|max:7168',
-            'email' => 'nullable|email|unique:users',
+            // only_user - уникальное поле и приандлежит текущему пользователю
+            'email' => 'nullable|email|only_user',
             'sex' => 'nullable|exists:sex,id',
             'birthday' => 'nullable|date',
             'info' => 'max:600',
@@ -77,7 +78,7 @@ class ProfileUpdateRequest extends FormRequest
             'avatarImg.max' => 'Аватар превышает максимально допустимый размер файла.',
             'avatarImg.mimes' => 'Аватар должен быть файлом формата jpeg,gif,png.',
             'avatarImg.unique' => 'Пользователь с таким email уже существует.',
-            'email.unique' => 'Пользователь с таким email уже существует.',
+            'email.only_user' => 'Пользователь с таким email уже существует.',
             'email.email' => 'Вы ввели некорректный email.',
             'sex.exists' => 'Неверно задан пол.',
             'birthday.date' => 'Неверная дата рождения',

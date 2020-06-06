@@ -34,7 +34,7 @@ class UserConfigSeeder extends Seeder
                 'facebook' => 1,
                 'skype' => 1,
                 'twitter' => 1,
-                'vc'=> 1,
+                'vk'=> 1,
                 'odnoklassniki' => 1,
                 'telegram' => 1,
                 'whatsapp' => 1,

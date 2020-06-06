@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-import './Proverb.css';
+import { connect } from 'react-redux';
+import { loadProverb }  from '../../store/actions/proverbActions';
 
-//import index from "../../store/store";
+import './Proverb.css';
 
 class Proverb extends Component{
 
+    componentDidMount(){
+        this.props.loadProverb();
+    }
 
     render(){
 
-        //const { proverb } = index.getState().page_data;
-        const proverb = {};
+        const { proverb } = this.props;
 
         return(
             <div className="Proverb-block">
@@ -33,4 +36,10 @@ class Proverb extends Component{
     }
 }
 
-export default Proverb;
+const mapStateToProps = (state) => {
+    return {
+        proverb: state.proverbReducer
+    }
+};
+
+export default connect(mapStateToProps, { loadProverb })(Proverb);

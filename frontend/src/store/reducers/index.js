@@ -1,17 +1,29 @@
 import { combineReducers } from 'redux';
 
 import pageReducer from './pageReducer';
-import authReducer from './authReducer';
 import userReducer from './userReducer';
 import footerReducer from './footertReducer';
 import loaderReducer from './loaderReducer';
+import loaderPageReducer from './loaderPageReducer';
 import wordReducer from './wordReducer';
+import provrbReducer from './proverbReducer';
+import metaReducer from './metaReducer';
+import pageDataReducer from './pageDataReducer';
+import loginReducer from './loginReducer';
+import registrationReducer from './registrationReducer';
+import profileReducer from './profileReducer';
 
 export default combineReducers({
     pageReducer: pageReducer,
-    authReducer: authReducer,
     userReducer: userReducer,
     footerReducer: footerReducer,
     loaderReducer: loaderReducer,
+    loaderPageReducer: loaderPageReducer,
     wordReducer: wordReducer,
+    proverbReducer: provrbReducer,
+    metaReducer: metaReducer,
+    pageDataReducer: pageDataReducer,
+    loginReducer: loginReducer,
+    registrationReducer: registrationReducer,
+    profileReducer: profileReducer,
 });

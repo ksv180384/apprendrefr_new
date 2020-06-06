@@ -1,35 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import store from '../../../store';
-import { checkAuth } from '../../../store/actions/authActions';
 
-//import index from "../../../store/store";
 import AuthPanel from "../../../components/auth_panel/AuthPanel";
 import UserPanel from "../../../components/user_panel/UserPanel";
 import Statistics from "../../../components/statistics/Statistics";
 import OnlineList from "../../../components/online_list/OnlineList";
 
 import './Right.css';
+//import store from "../../../store";
 
 class Right extends Component{
 
     constructor(props){
         super(props);
 
-        this.state = {
-            auth: this.props.checkAuth(),
-        };
-
-
-        store.subscribe(() => {
-            this.setState({
-                auth: store.getState().authReducer
-            });
-        });
-
-        this.renderUserPanel = (auth) => {
+        this.renderUserPanel = (login) => {
             let user_panel = <AuthPanel/>;
-            if(auth){
+            if(login){
                 user_panel = <UserPanel/>;
             }
             return user_panel;
@@ -38,11 +25,11 @@ class Right extends Component{
 
     render(){
 
-        const { auth } = this.state;
+        const { login } = this.props.login_state;
 
         return(
             <div className="Right-block">
-                { this.renderUserPanel(auth) }
+                { this.renderUserPanel(login) }
                 <Statistics/>
                 <OnlineList/>
             </div>
@@ -52,8 +39,8 @@ class Right extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        auth: state.authReducer
+        login_state: state.loginReducer,
     }
 };
 
-export default connect(mapStateToProps, { checkAuth })(Right);
+export default connect(mapStateToProps, {  })(Right);

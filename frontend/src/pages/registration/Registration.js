@@ -1,117 +1,185 @@
 import React , { Component } from 'react';
-import './Registration.css';
 import BtnLoad from "../../components/btn_load/BtnLoad";
+import InputForm from '../../components/input_form/InputForm';
+import { Link } from 'react-router-dom';
+import LoaderPage from "../../components/loader_page/LoaderPage";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons';
 
-import Axios from 'axios';
-Axios.defaults.headers.common = {
-    'Authorization':localStorage.getItem('user-token'),
-};
+import { config } from '../../config';
 
-import { loadPage } from '../../store/actions';
+import { store as storeNotification } from 'react-notifications-component';
+import { connect } from 'react-redux';
+import { registrationUser, registrationResetData } from "../../store/actions/registrationActions";
+import { getPage } from "../../store/actions/pageActions";
+
+import './Registration.css';
 
 class Registration extends Component{
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
 
         this.state = {
             email: '',
             login: '',
             password: '',
-            password_confirmation: ''
+            password_confirmation: '',
+            checkbox_personal_data_protection_policy: false,
         };
 
         this.handleChangeFormInpitText = (e) => {
-            //console.log(e.target.name);
-            //console.log(e.target.value);
             this.setState({ [e.target.name]: e.target.value });
+            e.target.parentNode.classList.remove('error');
         };
+
+        this.handleChangeCheckbox = (e) =>{
+            this.setState({ checkbox_personal_data_protection_policy: e.target.checked });
+            e.target.parentNode.nextSibling.classList.remove('error');
+        };
+
+        this.showError = (arr_error_message) => {
+            // формируем текст ошибки
+            let error_message = '';
+            if(typeof arr_error_message === 'object'){
+                for (let key in arr_error_message){
+                    for (let k in arr_error_message[key]){
+                        // Помечам поля с ошибками
+                        document.querySelector('input[name="' + key + '"]').parentNode.classList.add('error');
+                        error_message += '* ' + arr_error_message[key][k] + "\n";
+                    }
+                }
+            }else{
+                error_message = arr_error_message;
+            }
+
+            this.setState({ ...this.state, password: '', password_confirmation: '' });
+            storeNotification.addNotification({
+                title: "Ошибка",
+                message: error_message,
+                type: "danger",
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    showIcon: true,
+                    onScreen: true
+                }
+            });
+        };
+
+    }
+
+    componentDidMount(){
+        this.props.getPage('api/auth/register-page');
 
         this.registrationSubmit = (e) => {
             e.preventDefault();
 
-            /*
-            const url = event.target.attributes.getNamedItem('action').value;
+            if(!document.getElementById('labelPersonalDataProtectionPolicy').checked){
+                document.querySelector('.label-personal-data-protection-policy').classList.add('error');
+                return true;
+            }
 
-            index.dispatch(loadPage({ load: true }));
-            Axios.post(url, {
-                email: this.state.email,
-                login: this.state.login,
-                password: this.state.password,
-                password_confirmation: this.state.password_confirmation
-            })
-                .then((response) => {
-                    console.log(response.data.user_data);
-                    this.setState({
-                        password: '',
-                        password_confirmation: '',
-                    });
-                    index.dispatch(loadPage({ load: false }));
-                })
-                .catch((error) => {
-                    index.dispatch(loadPage({ load: false }));
-                    this.setState({
-                        password: '',
-                        password_confirmation: '',
-                    });
-                });
-            */
+            // Загружаем данные формы
+            let formData = new FormData(document.querySelector('#formRegistration'));
+
+            this.props.registrationUser(formData);
+        };
+    }
+
+    componentWillReceiveProps(nextProps){
+        // Если при отправке формы регистрации произошла ошибка, то ловим ее тут
+        // Формируем текст ошибки и показываем оповещение
+        if(nextProps.registration_state.error){
+            this.showError(nextProps.registration_state.error_message);
         }
-
     }
 
     render(){
 
-        //const { api_path, load } = index.getState();
-        const api_path = {};
-        const load = {};
-        const { email, login, password, password_confirmation } = this.state;
+        const {
+            email,
+            login,
+            password,
+            password_confirmation,
+            checkbox_personal_data_protection_policy
+        } = this.state;
+        const { load_page } = this.props;
+        const { loading } = this.props.registration_state;
 
-        return(
+        return  (
+            load_page
+                ?
+             <LoaderPage/>
+                :
             <div className="Registration">
                 <div className="panel-registration">
                     <div className="panel-registration-header">
+                        <Link to="/" className="btn-go-home-page" title="На главную">
+                            <FontAwesomeIcon icon={faChevronCircleLeft}/>
+                        </Link>
                         Регистрация
                     </div>
                     <div className="panel-registration-content">
-                        <form action={ api_path + '/api/auth/registration' }
+                        <form id="formRegistration"
+                              action={ config.path + 'api/auth/registration' }
                               method="post"
-                              onSubmit={ this.registrationSubmit }
+                              onSubmit={ (e) => this.registrationSubmit(e) }
                         >
+
                             <div className="form-item">
-                                <label htmlFor="emailRegistration">email</label>
-                                <input type="email" name="email" id="emailRegistration"
-                                       placeholder="email" onChange={ this.handleChangeFormInpitText }
-                                       value={ email } required/>
+                                <InputForm name="email" placeholder="Email" type="text" value={ email }
+                                           onChange={ this.handleChangeFormInpitText } />
                             </div>
                             <div className="form-item">
-                                <label htmlFor="emailRegistration">Имя/логин</label>
-                                <input type="text" name="login" id="loginlRegistration"
-                                       placeholder="Имя/логин" onChange={ this.handleChangeFormInpitText }
-                                       value={ login } required/>
+                                <InputForm name="login" placeholder="Имя/логин" type="text" value={ login }
+                                           onChange={ this.handleChangeFormInpitText } />
                             </div>
                             <div className="form-item">
-                                <label htmlFor="passwordRegistration">Пароль</label>
-                                <input type="password" name="password" id="passwordRegistration"
-                                       placeholder="пароль" onChange={ this.handleChangeFormInpitText }
-                                       value={ password } required/>
+                                <InputForm name="password" placeholder="Пароль" type="password" value={ password }
+                                           onChange={ this.handleChangeFormInpitText } />
                             </div>
                             <div className="form-item">
-                                <label htmlFor="passwordConfirmRegistration">Подтвердите пароль</label>
-                                <input type="password" name="password_confirmation"
-                                       id="passwordConfirmRegistration" onChange={ this.handleChangeFormInpitText } placeholder="подтвердите пароль"
-                                       value={ password_confirmation } required
-                                />
+                                <InputForm name="password_confirmation" placeholder="Подтвердите пароль" type="password"
+                                           value={ password_confirmation } onChange={ this.handleChangeFormInpitText } />
                             </div>
-                            <div className="form-item mt-30">
-                                <BtnLoad load={ load } type="submit" title="Зарегистрироваться"/>
+                            <div>
+                                <div className="checkbox-apr">
+                                    <input id="labelPersonalDataProtectionPolicy"
+                                           type="checkbox"
+                                           name="remember"
+                                           checked={ checkbox_personal_data_protection_policy }
+                                           onChange={ this.handleChangeCheckbox }
+                                    />
+                                    <span></span>
+                                </div>
+                                <label className="label-personal-data-protection-policy" htmlFor="labelPersonalDataProtectionPolicy">
+                                    Подтверждаю, что ознакомился и принимаю <a href="#" className="link">правила
+                                    пользовательского соглашения</a> и <a href="#" className="link"> Политику по защите
+                                    персональных данных</a>.
+                                </label>
+                            </div>
+                            <div className="form-item mt-40 text-center">
+                                <BtnLoad load={ loading } type="submit" title="Зарегистрироваться"/>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-        );
+        )
     }
 }
 
-export default Registration;
+const mapStateToProps = (state) => {
+    return {
+        load_page: state.loaderPageReducer,
+        load: state.loaderReducer,
+        page: state.pageReducer,
+        registration_state: state.registrationReducer,
+    }
+};
+
+export default connect(mapStateToProps, { getPage, registrationUser, registrationResetData })(Registration);

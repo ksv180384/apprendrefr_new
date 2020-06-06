@@ -27,13 +27,12 @@ class BtnDropdown extends Component{
                 show_list: !this.state.show_list,
                 select_item: { id: el.dataset.id, title: el.innerHTML }
             });
-            this.props.onChange({name: this.props.name, value: el.dataset.id});
+            //this.props.onChange({name: this.props.name, value: el.dataset.id});
         };
-
     }
 
-    selectItem(itemId, list) {
-        let res = {}
+    selectItem = (itemId, list) => {
+        let res = {};
         for(let key in list){
             if(list[key].id === itemId){
                 res = list[key];
@@ -57,7 +56,7 @@ class BtnDropdown extends Component{
                     <span data-id={ select_item.id } onClick={ this.toggleList }>
                         { select_item.title }
                         <FontAwesomeIcon icon={ faSortDown }/>
-                        <input type="hidden" name={ name } value={ select_item.id } />
+                        <input type="hidden" name={ name } defaultValue={ select_item.id } />
                     </span>
                     <ul>
                         {

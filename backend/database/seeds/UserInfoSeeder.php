@@ -23,7 +23,7 @@ class UserInfoSeeder extends Seeder
                 'facebook' => $item->facebook?:null,
                 'skype' => $item->skype?:null,
                 'twitter' => $item->twitter?:null,
-                'vc' => $item->vc?:null,
+                'vk' => $item->vc?:null,
                 'odnoklassniki' => null,
                 'telegram' => null,
                 'whatsapp' => null,

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\JsonData;
 
 use App\Http\Controllers\BaseController;
-use App\Repositories\ProverbRepository;
+//use App\Repositories\ProverbRepository;
 use App\Repositories\UserRepository;
-use App\Repositories\WordRepository;
+//use App\Repositories\WordRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -33,8 +33,8 @@ class IndexController extends BaseController
     {
         parent::__construct();
         //$this->middleware('auth:api');
-        $this->wordRepository = app(WordRepository::class);
-        $this->proverbRepository = app(ProverbRepository::class);
+        //$this->wordRepository = app(WordRepository::class);
+        //$this->proverbRepository = app(ProverbRepository::class);
         $this->userRepository = app(UserRepository::class);
     }
 
@@ -42,11 +42,11 @@ class IndexController extends BaseController
     public function index(Request $request){
 
 
-        $words = $this->wordRepository->getRandomWords(10);
-        $proverb = $this->proverbRepository->getRandomProverb(1);
+        //$words = $this->wordRepository->getRandomWords(10);
+        //$proverb = $this->proverbRepository->getRandomProverb(1);
         return response()->json([
-            'words' => $words,
-            'proverb' => $proverb[0],
+            //'words' => $words,
+            //'proverb' => $proverb[0],
             'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
             'auth' => \Auth::user() ? true : false,
         ]);

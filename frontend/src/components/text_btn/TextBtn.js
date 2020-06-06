@@ -59,7 +59,7 @@ class TextBtn extends Component{
                     <span data-id={ select_item.id } onClick={ this.toggleList }>
                         { select_item.title }
                         <FontAwesomeIcon icon={ faSortDown }/>
-                        <input type="hidden" name={ name + '_view' } value={ select_item.id }/>
+                        <input type="hidden" name={ name + '_view' } defaultValue={ select_item.id }/>
                     </span>
                     <ul>
                         {
