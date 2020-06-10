@@ -50,7 +50,10 @@ class AuthController extends Controller
         $credentialsLogin = ['login' => $credentialsEmail['email'], 'password' => $credentialsEmail['password']];
         
         if (!($token = $this->guard()->attempt($credentialsLogin)) && !($token = $this->guard()->attempt($credentialsEmail))) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                    'error' => true,
+                    'message' => 'Неверный логин или пароль.',
+                ], 401);
         }
 
         return $this->respondWithToken($token);

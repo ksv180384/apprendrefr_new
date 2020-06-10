@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
-import BtnDropdown from "../btn_dropdown/BtnDropdown";
+import { connect } from 'react-redux';
 
-//import index from "../../store/store";
-//import { loadPage } from "../../store/actions";
+import { store as storeNotification } from 'react-notifications-component';
+import { updateProfile } from '../../store/actions/propfileActions';
+import { setLoader } from '../../store/actions/loaderActions';
+//import { getPage } from '../../store/actions/pageActions';
+import { config } from '../../config';
+import store from "../../store";
 
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import  ru  from 'date-fns/locale/ru';
 registerLocale("ru", ru);
 
+import BtnDropdown from "../btn_dropdown/BtnDropdown";
 import BtnLoad from "../btn_load/BtnLoad";
+import TextBtn from "../text_btn/TextBtn";
 import { faFacebook, faSkype, faTwitter, faVk, faOdnoklassniki,
     faTelegram, faWhatsapp, faViber, faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';
-import TextBtn from "../text_btn/TextBtn";
-
-import Axios from "axios/index";
-Axios.defaults.headers.common = {
-    'Authorization':localStorage.getItem('user-token'),
-};
 
 import './TabProfile.css';
 
@@ -25,21 +25,11 @@ class TabProfile extends Component{
 
     constructor(props){
         super(props);
-/*
+
         this.state = {
-            avatarImg: null,
-            avatar: index.getState().page_data.user.avatar,
-            email: index.getState().page_data.user.email,
-            sex: index.getState().page_data.user.sex_id,
-            birthday: index.getState().page_data.user.birthday, // дата рождения
-            info: index.getState().page_data.user.info, // информация о себе
-            signature: index.getState().page_data.user.signature, // Подпись отображается под сообщениями форума
-            residence: index.getState().page_data.user.residence, // Место жительства
-            day_birthday: index.getState().page_data.user.day_birthday, // Показывать число и месяц рождения
-            yar_birthday: index.getState().page_data.user.yar_birthday, // Показывать год рождения (возрост)
-            loadFormLoginUser: false,
+            birthday: this.props.user.birthday,
         };
-        */
+
 
         this.handleChange = date => {
             this.setState({
@@ -47,18 +37,6 @@ class TabProfile extends Component{
             });
         };
 
-        this.handleChangeCheckbox = (e) => {
-            this.setState({[e.target.name]: !this.state[e.target.name]});
-        };
-
-        this.handleChangeInputText = (e) => {
-            this.setState({[e.target.name]: e.target.value});
-        };
-
-        this.handleChangeBtnDropdown = (e) => {
-            this.setState({[e.name]: e.value === 0 ? null : e.value});
-            console.log(e);
-        };
 
         this.changeAvatar = (e) => {
             let imgAvatar = e.target.files[0],     // Берём первый файл
@@ -68,59 +46,102 @@ class TabProfile extends Component{
                 alert('Аватар не должен привышать 7 Мб');
                 return true;
             }
-            /*
-            index.dispatch(loadPage({ load: true }));
+
+            store.dispatch(setLoader(true));
             fileRender.onload = (e) => {
-                index.dispatch(loadPage({ load: false }));
+                store.dispatch(setLoader(false));
                 this.setState({avatarImg: e.target.result});
                 document.querySelector('.upload-avatar-block').style.backgroundImage='url(' + e.target.result + ')';
             };
             fileRender.readAsDataURL(imgAvatar); // Читаем blob выбранного файла
-            */
+
         };
 
+        this.showErrorMessage = (arr_error_message) => {
+            // формируем текст ошибки
+            let error_message = '';
+            if(typeof arr_error_message === 'object'){
+                for (let key in arr_error_message){
+                    for (let k in arr_error_message[key]){
+                        // Помечам поля с ошибками
+                        document.querySelector('input[name="' + key + '"]').parentNode.classList.add('error');
+                        error_message += '* ' + arr_error_message[key][k] + "\n";
+                    }
+                }
+            }else{
+                error_message = arr_error_message;
+            }
+
+            storeNotification.addNotification({
+                title: "Ошибка",
+                message: error_message,
+                type: "danger",
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    showIcon: true,
+                    onScreen: true
+                }
+            });
+        };
+
+        this.showSuccessMessage= (success_message) => {
+
+            storeNotification.addNotification({
+                title: "Оповещение",
+                message: success_message,
+                type: 'success',
+                insert: 'top',
+                container: 'top-right',
+                animationIn: ['animated', 'fadeIn'],
+                animationOut: ['animated', 'fadeOut'],
+                dismiss: {
+                    duration: 10000,
+                    showIcon: true,
+                    onScreen: true
+                }
+            });
+        };
+    }
+
+    componentDidMount(){
         this.handleSubmit = (e) => {
             e.preventDefault();
-/*
-            this.setState({ loadFormLoginUser: true });
-
-            // Получаем url для отправки формы
-            const url = event.target.attributes.getNamedItem('action').value;
 
             // Загружаем данные формы
             let formData = new FormData(document.querySelector('#formProfile'));
 
-            index.dispatch(loadPage({ load: true }));
-            Axios.post(url, formData)
-                .then((response) => {
+            this.props.updateProfile(formData, this.props.user.id);
 
-                    index.dispatch(loadPage({ load: false }));
-                    this.setState({ loadFormLoginUser: false });
-                })
-                .catch((error) => {
-                    index.dispatch(loadPage({ load: false }));
-                    this.setState({ loadFormLoginUser: false });
-                });
-                */
         };
     }
 
-    render(){
+    componentWillReceiveProps(nextProps){
+        // Если при отправке формы регистрации произошла ошибка, то ловим ее тут
+        // Формируем текст ошибки и показываем оповещение
+        if(nextProps.profile_state.error){
+            this.showErrorMessage(nextProps.profile_state.error_message);
+        }
+        if(nextProps.profile_state.success){
+            this.showSuccessMessage(nextProps.profile_state.message);
+        }
+    }
 
-        const { avatar, sex, birthday, info, signature, residence, day_birthday, yar_birthday, email, loadFormLoginUser } = this.state;
-        //const { api_path } = index.getState();
-        //const { sex_list, user, config_user_data_view_list } = index.getState().page_data;
-        const api_path = '';
-        const sex_list = {};
-        const user = {};
-        const config_user_data_view_list = {};
+    render(){
+        const { user } = this.props;
+        const { loading } = this.props.profile_state;
+        const { sex_list, config_user_data_view_list } = this.props.page;
+        const { birthday } = this.state;
 
         return(
             <div className="TabProfile">
-                <form action={ api_path + '/api/user/update/' + user.id }
+                <form action={ config.path + 'api/user/update/' + user.id }
                       id="formProfile"
                       method="post"
-                      onSubmit={ this.handleSubmit }
+                      onSubmit={ (e) => this.handleSubmit(e) }
                       encType="multipart/form-data"
                 >
 
@@ -132,7 +153,7 @@ class TabProfile extends Component{
                             <div className="profile-edit-user-data-block-item">
                                 <div className="profile-edit-avatar">
                                     <div className="upload-avatar-block"
-                                         style={ {backgroundImage: 'url('+ avatar +')'} }
+                                         style={ {backgroundImage: 'url('+ user.avatar +')'} }
                                          title="Загрузить аватар"
                                          onClick={ (e) => { e.currentTarget.querySelector('input[name="avatarImg"]').click() } }
                                     >
@@ -151,8 +172,7 @@ class TabProfile extends Component{
                                             <input type="text"
                                                    placeholder="email"
                                                    name="email"
-                                                   onChange={ this.handleChangeInputText }
-                                                   defaultValue={ email }
+                                                   defaultValue={ user.email }
                                             />
                                         </div>
                                     </div>
@@ -160,9 +180,9 @@ class TabProfile extends Component{
                                     <div className="mb-10 inline-block">
                                         <BtnDropdown title="Пол"
                                                      name="sex"
-                                                     selectItem={ sex }
+                                                     selectItem={ user.sex_id }
                                                      selectList={ sex_list }
-                                                     onChange={ this.handleChangeBtnDropdown }/>
+                                        />
                                     </div>
 
                                     <div className="mb-10">
@@ -171,8 +191,7 @@ class TabProfile extends Component{
                                             <input type="text"
                                                    placeholder="Место жительства"
                                                    name="residence"
-                                                   onChange={ this.handleChangeInputText }
-                                                   defaultValue={ residence }
+                                                   defaultValue={ user.residence }
                                             />
                                         </div>
                                     </div>
@@ -198,8 +217,7 @@ class TabProfile extends Component{
                                         <div className="checkbox-apr">
                                             <input type="checkbox"
                                                    name="day_birthday"
-                                                   defaultChecked={ day_birthday }
-                                                   onChange={ this.handleChangeCheckbox }
+                                                   defaultChecked={ user.day_birthday }
                                             />
                                             <span></span>
                                             <label htmlFor="remember">Показывать день и месяц рождения </label>
@@ -209,8 +227,7 @@ class TabProfile extends Component{
                                         <div className="checkbox-apr">
                                             <input type="checkbox"
                                                    name="yar_birthday"
-                                                   defaultChecked={ yar_birthday }
-                                                   onChange={ this.handleChangeCheckbox }
+                                                   defaultChecked={ user.yar_birthday }
                                             />
                                             <span></span>
                                             <label htmlFor="remember">Показывать год рождения (возраст)</label>
@@ -225,8 +242,7 @@ class TabProfile extends Component{
                                     <textarea className="text-full"
                                               name="info"
                                               placeholder="О себе"
-                                              defaultValue={ info }
-                                              onChange={ this.handleChangeInputText }
+                                              defaultValue={ user.info }
                                     ></textarea>
                                 </div>
                                 <div className="profile-textarea-block">
@@ -235,8 +251,7 @@ class TabProfile extends Component{
                                               placeholder="Подпись. Этот текст будет отображаться под каждым вашим сообщением оставленном на форуме.
     Запрещается размещать подпись рекламного характера: куплю-продам, посетите наш сайт и т.п. без согласования с администрацией;"
                                               name="signature"
-                                              defaultValue={ signature }
-                                              onChange={ this.handleChangeInputText }
+                                              defaultValue={ user.signature }
                                     ></textarea>
                                 </div>
                             </div>
@@ -390,10 +405,8 @@ class TabProfile extends Component{
                         </div>
                     </div>
 
-
-
                     <div className="mt-20 text-center">
-                        <BtnLoad load={ loadFormLoginUser } type="submit" title="Сохранить"/>
+                        <BtnLoad load={ loading } type="submit" title="Сохранить"/>
                     </div>
                 </form>
             </div>
@@ -401,4 +414,13 @@ class TabProfile extends Component{
     }
 }
 
-export default TabProfile;
+const mapStateToProps = (state) => {
+    return {
+        user: state.userReducer,
+        page: state.pageDataReducer,
+        load: state.loaderReducer,
+        profile_state: state.profileReducer,
+    }
+};
+
+export default connect(mapStateToProps, { updateProfile, setLoader })(TabProfile);

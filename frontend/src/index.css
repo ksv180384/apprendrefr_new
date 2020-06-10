@@ -51,6 +51,14 @@ body {
   text-align: center;
 }
 
+.text-left{
+  text-align: left;
+}
+
+.text-right{
+  text-align: right;
+}
+
 .translation{
   color: #4caf50;
 }
@@ -564,16 +572,24 @@ body {
 }
 
 .panel-registration{
-  text-align: center;
-  background: #8db3ce;
-  box-shadow:0px 0px 18px 28px #8db3ce ;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  background-color: rgba(230, 240, 246, .7);
   width: 400px;
+  padding: 30px 0 20px;
+  border-radius: 8px;
+  box-shadow: 0 0px 0px 6px rgba(53, 105, 156, 0.35);
 }
 
 .panel-registration-header{
   text-transform: uppercase;
-  color: #fff;
-  border-bottom:1px dashed #fff;
+  font-weight: bold;
+  color: #176093;
+  text-align: center;
+  border-bottom: 1px dashed #fff;
   padding-bottom: 20px;
 }
 
@@ -587,27 +603,6 @@ body {
   width: 100%;
 }
 
-.form-item label{
-  display: block;
-  text-align: left;
-  padding: 4px 4px;
-}
-
-.form-item input{
-  background-color: rgba(255, 255, 255, .7);
-  border: none;
-  padding: 10px 10px;
-  font-size: 16px;
-  outline: none;
-  width: calc(100% - 20px);
-  border-bottom: 1px solid rgba(255, 255, 255, .7);
-}
-
-.form-item input:focus{
-  background-color: #fff;
-  border-bottom: 1px solid #4285f4;
-}
-
 .panel-registration-content .form-item button{
   padding: 10px 20px;
   background-color: #75a7ca;
@@ -615,14 +610,14 @@ body {
   color: #fff;
   box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
   text-transform: uppercase;
-  border-radius: 2;
+  border-radius: 2px;
   font-weight: bold;
   transition: all 0.5s ease 0s;
 }
 
 .panel-registration-content .form-item button:hover{
-  background-color: #3b5998;
-  border-color: #3b5998;
+  background-color: #176093;
+  border-color: #176093;
 }
 
 .header-dashed{
@@ -700,4 +695,18 @@ body {
 
 .inline-block{
   display: inline-block !important;
+}
+
+.btn-go-home-page{
+  position: absolute;
+  left: 30px;
+  font-size: 22px;
+  color: #75a7ca;
+  box-shadow: 0 0px 1px 2px rgba(34,36,38,.15);
+  border-radius: 50%;
+  background: #fff;
+  width: 22px;
+  display: inline-block;
+  height: 22px;
+  line-height: 0;
 }

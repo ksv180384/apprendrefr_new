@@ -25,6 +25,7 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
 
     Route::group(['prefix' => 'user', 'namespace' => 'User'], function ($router) {
 
+        Route::post('profile-page', 'UserController@index')->name('api.user.profile-page');
         Route::post('update/{id}', 'UserController@update')->name('api.user.update');
     });
 
@@ -46,4 +47,9 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::get('random-list', 'WordController@randomList')->name('api.word.random_list');
     });
 
+    // Proverb
+    Route::group(['prefix' => 'proverb', 'namespace' => 'Proverb'], function ($router) {
+
+        Route::get('random', 'ProverbController@randomProverb')->name('api.proverb.random');
+    });
 });

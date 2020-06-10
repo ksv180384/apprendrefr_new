@@ -9,16 +9,11 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 //import index from "../../store/store";
 
 import './WordsList.css';
-import store from "../../store";
 
 class WordsList extends Component{
 
     constructor(props){
         super(props);
-
-        this.state = {
-            words: [],
-        };
 
         this.speak = (word) =>{
             const speech = new SpeechSynthesisUtterance();
@@ -61,23 +56,15 @@ class WordsList extends Component{
         // Запускаем пустую функцию проговаривания текста для подгрузки массива
         // со списком поддерживаемых языков
         this.speak('');
-
-
-        store.subscribe(() => {
-            this.setState({ words: store.getState().wordReducer });
-        });
     }
 
     componentDidMount(){
         this.props.loadWords();
-
     }
 
     render(){
 
-        //const { words } = index.getState().page_data;
-        const { words } = this.state;
-
+        const { words } = this.props;
 
         return(
             <div className="WordsList-block">
