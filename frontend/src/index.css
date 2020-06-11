@@ -1,6 +1,7 @@
 *{
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -529,7 +530,7 @@ body {
 
 .modal-block{
   position: absolute;
-  max-width: 500px;
+  /*max-width: 500px;*/
   margin: 0 auto;
   background-color: #aacadd;
   overflow: hidden;

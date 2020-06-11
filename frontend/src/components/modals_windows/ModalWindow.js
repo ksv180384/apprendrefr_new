@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import './ModalWindow.css';
+import { connect } from 'react-redux';
+import { modalHide } from '../../store/actions/modalActions';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -9,18 +10,24 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 //import Preloader from './../../components/preloader/Preloader';
 //import Preloader from "../preloader/Preloader";
 
+import './ModalWindow.css';
+
 class ModalWindow extends Component{
 
+    constructor(props){
+        super(props);
+
+        this.modalHide = () => {
+            this.props.modalHide();
+        };
+    }
 
     render(){
 
-        //const { show_modal, modal_data } = index.getState();
-
-        const show_modal = false;
-        const modal_data = {};
+        const { show, header, content } = this.props.modal_state;
 
         let classModalState = '';
-        if(show_modal){
+        if(show){
             classModalState = ' show';
         }
 
@@ -28,18 +35,18 @@ class ModalWindow extends Component{
             <div className={'ModalWindow-block' + classModalState}>
                 <div
                     className="bg-modal"
-                    onClick={ this.modalToggle }
+                    onClick={ this.modalHide }
                 >
                 </div>
                 <div className="modal-block">
                     <div className="modal-header">
-                        { modal_data.header }
-                        <div className="modal-close" onClick={ this.modalToggle }>
+                        { header }
+                        <div className="modal-close" onClick={ this.modalHide }>
                             <FontAwesomeIcon icon={ faTimes }/>
                         </div>
                     </div>
                     <div className="modal-content">
-                        { modal_data.content }
+                        { content }
                     </div>
                 </div>
             </div>
@@ -47,4 +54,10 @@ class ModalWindow extends Component{
     }
 }
 
-export default ModalWindow;
+const mapToStateFromProps = (state) => {
+    return {
+        modal_state: state.modalReducer,
+    }
+};
+
+export default connect(mapToStateFromProps, { modalHide })(ModalWindow);

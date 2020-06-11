@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { modalShow } from '../../../store/actions/modalActions';
+
 import './TestYourself.css';
 
-
-//import { showModal } from '../../../store/actions';
-//import index from "../../../store/store";
 
 class TestYourself extends Component{
 
@@ -11,8 +11,8 @@ class TestYourself extends Component{
         super();
 
         this.showModal = () => {
-            //index.dispatch(showModal({ show_modal: true }));
-        }
+            this.props.modalShow();
+        };
     }
 
     render(){
@@ -25,4 +25,10 @@ class TestYourself extends Component{
     }
 }
 
-export default TestYourself;
+const mapStateToProps = (state) => {
+    return {
+        modal_state: state.modalReducer,
+    }
+};
+
+export default connect(mapStateToProps, { modalShow })(TestYourself);

@@ -22,7 +22,6 @@ class UserPanel extends Component{
 
     componentDidMount(){
         this.changePage = (e) => {
-            console.log('change page....');
             this.props.setLoaderPage(true);
         };
 
