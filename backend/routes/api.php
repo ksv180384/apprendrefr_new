@@ -45,6 +45,7 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
     Route::group(['prefix' => 'word', 'namespace' => 'Word'], function ($router) {
 
         Route::get('random-list', 'WordController@randomList')->name('api.word.random_list');
+        Route::get('random-test-yourself', 'WordController@testYourSelf')->name('api.word.test_yourself');
     });
 
     // Proverb

@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { modalShow } from '../../../store/actions/modalActions';
+import { modalShow, modalSetHeader, modalSetContent } from '../../../store/actions/modalActions';
+import { loadTestYourselfData } from '../../../store/actions/testYourselfActions';
+
+import TestYourSelfContent from './TestYourselfContent';
 
 import './TestYourself.css';
 
 
 class TestYourself extends Component{
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
 
         this.showModal = () => {
+            this.props.loadTestYourselfData();
             this.props.modalShow();
+            this.props.modalSetHeader('Проверь себя');
+            this.props.modalSetContent(<TestYourSelfContent/>);
         };
     }
 
@@ -31,4 +37,9 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, { modalShow })(TestYourself);
+export default connect(mapStateToProps, {
+    modalShow,
+    modalSetHeader,
+    modalSetContent,
+    loadTestYourselfData
+})(TestYourself);

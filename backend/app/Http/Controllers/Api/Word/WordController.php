@@ -99,4 +99,23 @@ class WordController extends Controller
 
         return response()->json($words->toArray());
     }
+
+    public function testYourSelf(){
+        $result = [];
+        $wordsList = $this->wordRepository->getRandomWords(100)->toArray();
+
+        //var_export($wordsList);
+        $key = 0;
+        for ($i = 0; count($wordsList) > $i; $i++){
+            $result[$key]['answer_options'][] = $wordsList[$i];
+            //var_export($i%9);
+            if($i%9 === 0 && $i != 0){
+                $result[$key]['answer'] = $wordsList[$i];
+                $key++;
+            }
+        }
+
+        //var_export($result);
+        return response()->json($result);
+    }
 }

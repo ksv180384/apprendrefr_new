@@ -14,6 +14,7 @@ import registrationReducer from './registrationReducer';
 import profileReducer from './profileReducer';
 import modalReducer from './modalReducer';
 import learningWriteReducer from './learningWriteReducer';
+import testYourselfReducer from './testYourselfReducer';
 
 export default combineReducers({
     pageReducer: pageReducer,
@@ -30,4 +31,5 @@ export default combineReducers({
     profileReducer: profileReducer,
     modalReducer: modalReducer,
     learningWriteReducer: learningWriteReducer,
+    testYourselfReducer: testYourselfReducer,
 });
