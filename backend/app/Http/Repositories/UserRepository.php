@@ -124,6 +124,15 @@ class UserRepository extends CoreRepository
         return $user;
     }
 
+    public function countUsersRegister(){
+        $count_users = $this->startConditions()
+            ->select(\DB::raw('COUNT(*) as count'))
+            ->whereNotNull('email_verified_at')
+            ->first();
+
+        return $count_users->count;
+    }
+
     /**
      * Получить модель для редактирования
      * @param $id

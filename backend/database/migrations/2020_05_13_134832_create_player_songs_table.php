@@ -27,6 +27,8 @@ class CreatePlayerSongsTable extends Migration
             $table->boolean('hidden')->default(false)->comment('скрыть/показать');
             $table->timestamps();
 
+            $table->index(['artist_name','title']);
+
             $table->foreign('artist_id')->references('id')->on('player_artists_songs');
             $table->foreign('user_id')->references('id')->on('users');
         });

@@ -15,6 +15,8 @@ import profileReducer from './profileReducer';
 import modalReducer from './modalReducer';
 import learningWriteReducer from './learningWriteReducer';
 import testYourselfReducer from './testYourselfReducer';
+import statisticReducer from './statisticReducer';
+import playerReducer from './playerReducer';
 
 export default combineReducers({
     pageReducer: pageReducer,
@@ -32,4 +34,6 @@ export default combineReducers({
     modalReducer: modalReducer,
     learningWriteReducer: learningWriteReducer,
     testYourselfReducer: testYourselfReducer,
+    statisticReducer: statisticReducer,
+    playerReducer: playerReducer,
 });

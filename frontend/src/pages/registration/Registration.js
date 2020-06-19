@@ -38,6 +38,21 @@ class Registration extends Component{
             e.target.parentNode.nextSibling.classList.remove('error');
         };
 
+        this.registrationSubmit = (e) => {
+            e.preventDefault();
+
+            if(!document.getElementById('labelPersonalDataProtectionPolicy').checked){
+                document.querySelector('.label-personal-data-protection-policy').classList.add('error');
+                return true;
+            }
+
+            // Загружаем данные формы
+            let formData = new FormData(document.querySelector('#formRegistration'));
+
+            this.props.registrationUser(formData);
+        };
+
+        /*
         this.showError = (arr_error_message) => {
             // формируем текст ошибки
             let error_message = '';
@@ -69,27 +84,14 @@ class Registration extends Component{
                 }
             });
         };
-
+        */
     }
 
     componentDidMount(){
         this.props.getPage('api/auth/register-page');
-
-        this.registrationSubmit = (e) => {
-            e.preventDefault();
-
-            if(!document.getElementById('labelPersonalDataProtectionPolicy').checked){
-                document.querySelector('.label-personal-data-protection-policy').classList.add('error');
-                return true;
-            }
-
-            // Загружаем данные формы
-            let formData = new FormData(document.querySelector('#formRegistration'));
-
-            this.props.registrationUser(formData);
-        };
     }
 
+    /*
     componentWillReceiveProps(nextProps){
         // Если при отправке формы регистрации произошла ошибка, то ловим ее тут
         // Формируем текст ошибки и показываем оповещение
@@ -97,6 +99,7 @@ class Registration extends Component{
             this.showError(nextProps.registration_state.error_message);
         }
     }
+    */
 
     render(){
 

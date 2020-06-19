@@ -1,4 +1,4 @@
-import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_RESET_ERROR, SET_LOGIN } from './index';
+import {LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_RESET_ERROR, SET_LOGIN, REGISTRATION_ERROR} from './index';
 import { config } from '../../config';
 import axios from 'axios';
 import store from "../index";
@@ -21,7 +21,11 @@ export const login = (form) => {
             dispatch(setLoader(false));
         }).catch((error) => {
             dispatch(setLoader(false));
-            dispatch({ type: LOGIN_ERROR, payload: error.response.data.message });
+            if(error.response){
+                dispatch({ type: LOGIN_ERROR, payload: error.response.data.message });
+            }else if(error.request){
+                dispatch({ type: LOGIN_ERROR, payload: 'Неудалось подключиться к серверу. Попробуйте позже.' });
+            }
         });
 
     };

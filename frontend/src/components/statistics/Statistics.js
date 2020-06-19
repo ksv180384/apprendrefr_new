@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import './Statistics.css';
 
 class Statistics extends Component{
@@ -6,16 +8,18 @@ class Statistics extends Component{
 
     render(){
 
+        const { count_all, count_guests, count_users, count_users_register, online_users } = this.props.statistic;
+
         return(
             <div className="Statistics">
                 <div className="panel">
                     <div className="panel_header">Статистика</div>
                     <div className="panel_content">
                         <ul className="panel-list">
-                            <li>Посетители <span id="statisticUsersOnline">1</span></li>
-                            <li>Гостей <span id="statisticUsersGuest">1</span></li>
-                            <li>Всего <span id="statisticUsersAll">1</span></li>
-                            <li>Зарегистрировано <span id="statisticUsersOnline">1</span></li>
+                            <li>Посетители <span id="statisticUsersOnline">{ count_users }</span></li>
+                            <li>Гостей <span id="statisticUsersGuest">{ count_guests }</span></li>
+                            <li>Всего <span id="statisticUsersAll">{ count_all }</span></li>
+                            <li>Зарегистрировано <span id="statisticUsersOnline">{ count_users_register }</span></li>
                             <li>Всего сообщений <span id="statisticUsersOnline">1</span></li>
                         </ul>
                     </div>
@@ -25,4 +29,10 @@ class Statistics extends Component{
     }
 }
 
-export default Statistics;
+const mapStateToProps = (state) => {
+    return {
+        statistic: state.statisticReducer,
+    }
+};
+
+export default connect(mapStateToProps, {})(Statistics);

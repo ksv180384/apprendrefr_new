@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User\Sex;
 use App\Models\User\UserConfigsView;
 use App\Repositories\ProverbRepository;
+use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WordRepository;
 use Illuminate\Http\Request;
@@ -24,6 +25,11 @@ class IndexController extends BaseController
      */
     private $proverbRepository;
 
+    /**
+     * @var StatisticRepository
+     */
+    private $statisticRepository;
+
     public function __construct()
     {
         parent::__construct();
@@ -31,6 +37,7 @@ class IndexController extends BaseController
         $this->wordRepository = app(WordRepository::class);
         $this->proverbRepository = app(ProverbRepository::class);
         $this->userRepository = app(UserRepository::class);
+        $this->statisticRepository = app(StatisticRepository::class);
     }
 
 
@@ -41,6 +48,12 @@ class IndexController extends BaseController
         //$sex_list = [['id' => 0, 'title' => 'Нет' ]];
         //$sex_list = array_merge($sex_list, Sex::select('id', 'title')->orderBy('id', 'asc')->get()->toArray());
         $config_user_data_view_list = UserConfigsView::all();
+
+        $online_users = $this->statisticRepository->getOnlineUsers();
+        $count_users = count($online_users);
+        $count_guests = $this->statisticRepository->countGuests();
+        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_all = $count_users + $count_guests;
 
         return response()->json([
             //'words' => $words,
@@ -57,6 +70,13 @@ class IndexController extends BaseController
             'data' => [],
             'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
             'auth' => \Auth::check(),
+            'statistic' => [
+                'online_users' => $online_users,
+                'count_guests' => $count_guests,
+                'count_users' => $count_users,
+                'count_all' => $count_all,
+                'count_users_register' => $count_users_register,
+            ],
         ]);
     }
 }

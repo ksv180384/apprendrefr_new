@@ -2,9 +2,9 @@
     min-height: calc(100vh - 146px);
     display: flex;
     flex-direction: row;
-    /*margin-top: 56px;*/
     max-width: 1300px;
     margin: 58px auto 0 auto;
+    position: relative;
 }
 
 .App-left-block{

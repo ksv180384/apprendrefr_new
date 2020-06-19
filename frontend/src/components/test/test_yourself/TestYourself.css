@@ -22,6 +22,44 @@
     color: red !important;
 }
 
-.TestYourSelfContent{
+.TestYourselfContent{
     width: 476px;
+}
+
+.answer_list{
+
+}
+
+.answer_list>li{
+    text-align: center;
+    cursor: pointer;
+    padding: 5px 0;
+    border-bottom: 1px dashed #aacadd;
+    transition: all 0.3s ease 0s;
+}
+
+.answer_list>li:hover{
+    text-align: center;
+    cursor: pointer;
+    color: #4caf50;
+    border-bottom: 1px dashed #4caf50;
+}
+
+.question_voice{
+    background-color: #fff;
+    cursor: pointer;
+    color: #8db3ce;
+    width: 28px;
+    height: 28px;
+    display: inline-block;
+    text-align: center;
+    line-height: 26px;
+    border: 1px solid #fff;
+    border-radius: 2px;
+    transition: all 0.5s ease 0s;
+}
+
+.question_voice:hover{
+    color: #176093;
+    border: 1px solid #176093;
 }

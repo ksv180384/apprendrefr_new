@@ -53,4 +53,13 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
 
         Route::get('random', 'ProverbController@randomProverb')->name('api.proverb.random');
     });
+
+    // song
+    Route::group(['prefix' => 'song', 'namespace' => 'Song'], function ($router) {
+
+        Route::get('list', 'SongController@list')->name('api.song.list');
+        Route::get('item/{id}', 'SongController@song')->name('api.song.item');
+
+        Route::post('search-by-artist-and-title', 'SongController@searchByArtistAndTitle')->name('api.song.search_by_artist_and_title');
+    });
 });

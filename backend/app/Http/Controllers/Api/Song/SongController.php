@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Api\Word;
+namespace App\Http\Controllers\Api\Song;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\WordRepository;
+use App\Repositories\SongRepository;
 use Illuminate\Http\Request;
 
-class WordController extends Controller
+class SongController extends Controller
 {
-    /**
-     * @var WordRepository
-     */
-    private $wordRepository;
 
-    public function __construct()
-    {
-        $this->wordRepository = app(WordRepository::class);
+    /**
+     * @var SongRepository
+     */
+    private $songRepository;
+
+    public function __construct(){
+        $this->songRepository = app(SongRepository::class);
     }
 
     /**
@@ -94,29 +94,32 @@ class WordController extends Controller
         //
     }
 
-    public function randomList(){
-        $words = $this->wordRepository->getRandomWords(10);
+    /**
+     * Получаем список всех треков
+     */
+    public function list(){
+        $songsList = $this->songRepository->getSongsList();
 
-        return response()->json($words->toArray());
+        return response()->json($songsList);
     }
 
-    public function testYourSelf(){
-        $result = [];
-        $wordsList = $this->wordRepository->getRandomWords(60)->toArray();
+    /**
+     * Получаем данные трека по идентификатору
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function song(Request $request){
+        $id = (int)$request->id;
+        $song = $this->songRepository->getById($id);
 
-        //var_export($wordsList);
-        $key = 0;
-        for ($i = 0; count($wordsList) > $i; $i++){
-            $result[$key]['answer_options'][] = $wordsList[$i];
-            //var_export($i%9);
-            if($i%5 === 0 && $i != 0){
-                $result[$key]['answer'] = $wordsList[$i];
-                shuffle($result[$key]['answer_options']);
-                $key++;
-            }
-        }
+        return response()->json($song);
+    }
 
-        //var_export($result);
-        return response()->json($result);
+    public function searchByArtistAndTitle(Request $request){
+        $artist = $request->artist;
+        $title = $request->title;
+        $song = $this->songRepository->searchByArtistAndTitle($artist, $title);
+
+        return response()->json($song);
     }
 }

@@ -3,7 +3,7 @@ import { store as storeNotification } from 'react-notifications-component';
 import { config } from '../../config';
 
 
-import { LOAD_PAGE, SET_LOGIN, SET_USER, SET_META, SET_PAGE_DATA, SET_LOADER_PAGE } from './index';
+import {LOAD_PAGE, SET_LOGIN, SET_USER, SET_META, SET_PAGE_DATA, SET_LOADER_PAGE, STATISTIC_SET_DATA} from './index';
 
 
 export const getPage = (path_page) => {
@@ -32,6 +32,9 @@ export const getPage = (path_page) => {
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            if(result.data.statistic){
+                dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
+            }
         }).catch((error) => {
             //dispatch({ type: LOAD_PAGE, payload: [], error: 'Ошибка при получении данных.' });
             storeNotification.addNotification({

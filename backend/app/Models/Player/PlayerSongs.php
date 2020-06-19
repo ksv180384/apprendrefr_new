@@ -16,7 +16,7 @@ class PlayerSongs extends Model
         'text_transcription',
         'user_id',
         'hidden',
-        'create_at',
-        'update_at',
+        'created_at',
+        'updated_at',
     ];
 }

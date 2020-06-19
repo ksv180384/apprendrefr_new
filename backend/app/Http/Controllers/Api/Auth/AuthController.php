@@ -56,6 +56,22 @@ class AuthController extends Controller
                 ], 401);
         }
 
+        if(empty(\Auth::user()->email_verified_at)){
+            $this->guard()->logout();
+            return response()->json([
+                'error' => true,
+                'message' => 'Вы не подтвердили ваш аккаунт.',
+            ], 401);
+        }
+
+        // Присваеваем токену идентификатор пользователя
+        $token_guest = $request->headers->get('app-user-token');
+        if(!empty($token_guest)){
+            User\Online::where('token', '=', $token_guest)->update([
+                'user_id' => \Auth::id(),
+            ]);
+        }
+
         return $this->respondWithToken($token);
     }
 
@@ -72,10 +88,11 @@ class AuthController extends Controller
 
     public function registration(RegistrationFormApiRequest $request)
     {
-        $user = User::create(array_merge(
+        $arr_user_data = array_merge(
             $request->only('email', 'login'),
             ['password' => bcrypt(md5($request->password))]
-        ));
+        );
+        $user = User::create($arr_user_data);
 
 
         return response()->json([
@@ -88,9 +105,17 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(Request $request)
     {
         $this->guard()->logout();
+
+        // Убираем идентификатор пользователя у токена
+        $token_guest = $request->headers->get('app-user-token');
+        if(!empty($token_guest)){
+            User\Online::where('token', '=', $token_guest)->update([
+                'user_id' => null,
+            ]);
+        }
 
         return response()->json([
             'auth' => false,
@@ -123,7 +148,7 @@ class AuthController extends Controller
             'expires_in' => $this->guard()->factory()->getTTL() * 60,
             'user_data' => [
                 'auth' => \Auth::check(),
-                'user' => $this->userRepository->getById(\Auth::id())->toArray(),
+                'user' => $this->userRepository->getById(\Auth::id()) ? $this->userRepository->getById(\Auth::id())->toArray() : [],
             ],
         ]);
     }
@@ -143,12 +168,14 @@ class AuthController extends Controller
     }
 
     public function register_page(){
+
         return response()->json([
             'auth' => \Auth::check(),
             'user' => \Auth::check() ? \Auth::user() : [],
             'title' => 'Регистрация',
             'description' => 'Регистрация',
             'keywords' => 'Регистрация',
+            'data' => [],
             'footer' => [
                 '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
                 'E-mail: admin@apprendrefr.ru'

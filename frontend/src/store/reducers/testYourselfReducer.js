@@ -7,23 +7,23 @@ const initState = {
 };
 
 const reducer = (state = initState, action) => {
-    switch (action){
+    switch (action.type){
         case TESTYOURSELF_REQUEST:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 error: false,
             };
         case TESTYOURSELF_SUCCESS:
             return {
                 ...state,
-                loading: false,
+                loading: true,
                 questions_list: action.payload,
             };
         case TESTYOURSELF_ERROR:
             return {
                 ...state,
-                loading: false,
+                loading: true,
                 error: true,
             };
         default:

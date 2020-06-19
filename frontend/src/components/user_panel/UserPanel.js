@@ -31,12 +31,14 @@ class UserPanel extends Component{
             store.dispatch(setLoader(true));
             axios.defaults.headers.common = {
                 'Authorization':localStorage.getItem('user-token'),
+                'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
             };
             axios.post(config.path + 'api/auth/logout', {})
                 .then((response) => {
                     store.dispatch(setLoader(false));
                     store.dispatch(setLogin(response.data.auth));
-                    store.dispatch(setUser(null));
+                    store.dispatch(setUser({}));
+                    localStorage.setItem('user-token', null);
                 })
                 .catch((error) => {
                     store.dispatch(setLoader(false));

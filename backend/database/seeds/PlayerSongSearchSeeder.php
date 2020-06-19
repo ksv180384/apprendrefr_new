@@ -26,7 +26,7 @@ class PlayerSongSearchSeeder extends Seeder
             \App\Models\Player\PlayerSearchSong::create([
                 'artist' => $song->name_artist,
                 'title' => $song->name_song,
-                'title_file' => $song->text_song_fr,
+                'title_file' => $song->name_file,
                 'created_at' => $song->date,
                 'updated_at' => null,
             ]);

@@ -1,26 +1,47 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import './OnlineList.css';
 
 class OnlineList extends Component{
 
-    render(){
+    render() {
 
-        return(
-            <div className="Online-list">
-                <div className="panel">
-                    <div className="panel_content">
-                        <ul>
-                            <li><a href="" className="link">Admin</a></li>
-                            <li><a href="" className="link">ДиммКа</a></li>
-                            <li><a href="" className="link">Тайка</a></li>
-                            <li><a href="" className="link">Anastasia</a></li>
-                            <li><a href="" className="link">Мария</a></li>
-                        </ul>
+        const {online_users} = this.props.statistic;
+
+        if (online_users.length === 0) {
+
+            return ('')
+        } else {
+            return (
+                <div className="Online-list">
+                    <div className="panel">
+                        <div className="panel_content">
+                            <ul>
+                                {
+                                    Object.keys(online_users).map(key => {
+                                        return (
+                                            <li key={online_users[key].id}>
+                                                <a href={'#' + online_users[key].id} className="link">
+                                                    {online_users[key].login}
+                                                </a>
+                                            </li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        }
     }
 }
 
-export default OnlineList;
+const mapStateToProps = (state) => {
+    return {
+        statistic: state.statisticReducer,
+    }
+};
+
+export default connect(mapStateToProps, {})(OnlineList);
