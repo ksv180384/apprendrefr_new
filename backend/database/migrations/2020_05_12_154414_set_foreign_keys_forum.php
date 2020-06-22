@@ -25,11 +25,13 @@ class SetForeignKeysForum extends Migration
             $table->foreign('status')->references('id')->on('forum_statuses');
         });
         Schema::table('forum_topics', function (Blueprint $table) {
+            $table->foreign('forum_id')->references('id')->on('forum_forums')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('last_message_id')->references('id')->on('forum_messages');
             $table->foreign('status')->references('id')->on('forum_statuses');
         });
         Schema::table('forum_messages', function (Blueprint $table) {
+            $table->foreign('topic_id')->references('id')->on('forum_topics')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');
         });
         Schema::table('users', function (Blueprint $table) {

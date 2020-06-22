@@ -66,7 +66,7 @@ class Player extends Component{
                     console.log(tag.tags.artist);
                     console.log(tag.tags.title);
                     console.log(tag.tags);
-                    this.props.searchSong(tag.tags.artist, tag.tags.title);
+                    this.props.searchSong(tag.tags.artist, tag.tags.title, file.name);
                 },
                 onError: function(error) {
                     console.log(':(', error.type, error.info);

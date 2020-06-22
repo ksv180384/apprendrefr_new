@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Song;
 
 use App\Http\Controllers\Controller;
+use App\Models\Player\PlayerSearchSong;
 use App\Repositories\SongRepository;
 use Illuminate\Http\Request;
 
@@ -118,7 +119,15 @@ class SongController extends Controller
     public function searchByArtistAndTitle(Request $request){
         $artist = $request->artist;
         $title = $request->title;
+        $file_name = $request->file_name;
         $song = $this->songRepository->searchByArtistAndTitle($artist, $title);
+        if(empty($song)){
+            PlayerSearchSong::create([
+                'artist' => $artist,
+                'title' => $title,
+                'title_file' => $file_name,
+            ]);
+        }
 
         return response()->json($song);
     }

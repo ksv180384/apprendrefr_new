@@ -18,9 +18,11 @@ class CreateTopicsTable extends Migration
 
             $table->id();
             $table->string('title', 500)->comment('название темы');
-            $table->unsignedBigInteger('user_id')->index()->comment('идентификатор пользователя');
+            $table->unsignedBigInteger('forum_id')->index()->comment('идентификатор форума в котором находится тема');
+            $table->unsignedBigInteger('user_id')->index()->comment('идентификатор пользователя создавшего тему');
             $table->integer('count_views')->default(0)->comment('количество посмотров темы');
-            $table->unsignedBigInteger('last_message_id')->index()->comment('идентификатор последнего сообщения темы');
+            $table->unsignedBigInteger('last_message_id')->index()->nullable()->default(null)
+                  ->comment('идентификатор последнего сообщения темы');
             $table->unsignedBigInteger('status')->index()->comment('статус темы');
             $table->timestamps();
         });

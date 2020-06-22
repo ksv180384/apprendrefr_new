@@ -13,11 +13,19 @@ class CreateMessagesTable extends Migration
      */
     public function up()
     {
+        Schema::create('forum_message_status', function (Blueprint $table) {
+            $table->engine = "InnoDB";
+
+            $table->id();
+            $table->string('title', 200);
+        });
+
         Schema::create('forum_messages', function (Blueprint $table) {
             $table->engine = "InnoDB";
 
             $table->id();
             $table->text('message')->comment('текст сообщения');
+            $table->unsignedBigInteger('topic_id')->index()->comment('идентификатор темы форума в которой находится сообщение');
             $table->unsignedBigInteger('user_id')->index()->comment('идентификатор пользователя');
             $table->unsignedBigInteger('status')->index()->comment('статус сообщения');
             $table->timestamps();
@@ -31,6 +39,7 @@ class CreateMessagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('messages');
+        Schema::dropIfExists('forum_messages');
+        Schema::dropIfExists('forum_message_status');
     }
 }

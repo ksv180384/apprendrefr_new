@@ -71,11 +71,11 @@ export const showSong = () => {
     return { type: PLAYER_SHOW_SONG }
 };
 // Поиск трека по названию трека и исполнителю
-export const searchSong = (artist, title) => {
+export const searchSong = (artist, title, file_name) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER, payload: true });
         dispatch({ type: PLAYER_LOADING_OPEN_TRACK_REQUEST });
-        axios.post(config.path + 'api/song/search-by-artist-and-title', { artist:artist, title: title }).then((result) => {
+        axios.post(config.path + 'api/song/search-by-artist-and-title', { artist:artist, title: title, file_name: file_name }).then((result) => {
             dispatch({ type: SET_LOADER, payload: false });
             if(Object.keys(result.data).length !== 0){
                 dispatch({ type: PLAYER_LOADING_OPEN_TRACK_SUCCESS, payload: result.data });
