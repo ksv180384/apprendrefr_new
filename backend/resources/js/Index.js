@@ -1,46 +1,45 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-
+import { Router, Switch, Route } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 import ErrorBoundry from './components/error-boundry/ErrorBoundry';
-import Main from './Main';
+
+// Pages
+import Index from "./pages/index/Index";
+import Registration from "./pages/registration/Registration";
+import LostPassword from "./pages/lost_password/LostPassword";
+import Profile from "./pages/profile/Profile";
+
+// Components
+import ModalWindow from "./components/modals_windows/ModalWindow";
+import Preloader from "./components/preloader/Preloader";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+
 import './index.css';
-
 import store from './store';
-import { loadPage } from './actions';
 
-import menu from './config/menu';
+const customHistory = createBrowserHistory();
 
-import Axios from "axios/index";
+ReactDOM.render(
+    <Provider store={ store }>
+        <ReactNotification />
+        <ErrorBoundry>
+            <Router history={ customHistory }>
+                <Switch>
+                    <Route exact path='/' component={ Index }/>
+                    <Route exact path='/profile' component={ Profile }/>
+                    <Route exact path='/registration' component={ Registration }/>
+                    <Route exact path='/lost-password' component={ LostPassword }/>
+                </Switch>
+            </Router>
+            <Preloader/>
+            <ModalWindow/>
+        </ErrorBoundry>
+    </Provider>,
+    document.getElementById('root')
+);
 
-
-store.dispatch(loadPage( {load: true} ));
-Axios.post(store.getState().api_path + '/api/index', {
-
-})
-    .then((response) => {
-        //console.log(userAuth(response.data));
-        store.dispatch(loadPage(response.data));
-        store.dispatch(loadPage({ load: false }));
-        //console.log(store.getState());
-
-    })
-    .catch((error) => {
-        //console.log(error);
-        store.dispatch(loadPage({ load: false }));
-    });
-
-
-const update = () => {
-    ReactDOM.render(
-        <Provider store={store}>
-            <ErrorBoundry>
-                <Main menu={menu} />
-            </ErrorBoundry>
-        </Provider>,
-        document.getElementById('root')
-    );
-};
-store.subscribe(update);
 
 

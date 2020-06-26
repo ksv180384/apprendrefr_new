@@ -14,15 +14,15 @@ class ForumSeeder extends Seeder
         // Заполняем таблицу статусов форума итем форума
         DB::connection('mysql');
         DB::table('forum_statuses')->insert([
-                ['title' => 'Открыт'], // видят все пользователи сайта
-                ['title' => 'Закрыт'], // видият все, но нельзя оставлять сообщения
-                ['title' => 'Скрыт'], // невиден никому
-                ['title' => 'Открыт только для зарегистрироывнных пользователей'],
+                ['title' => 'Открыт', 'alias' => 'visible_everyone'], // видят все пользователи сайта
+                ['title' => 'Закрыт', 'alias' => 'close'], // видият все, но нельзя оставлять сообщения
+                ['title' => 'Скрыт', 'alias' => 'hidden'], // невиден никому
+                ['title' => 'Открыт только для зарегистрироывнных пользователей', 'alias' => 'visible_only_registered_users'],
             ]);
         // Заполняем таблицу статусов сообщений форума
         DB::table('forum_message_status')->insert([
-            ['title' => 'Видят все'],
-            ['title' => 'Скрыто'],
+            ['title' => 'Видят все', 'alias' => 'visible_everyone'],
+            ['title' => 'Скрыто', 'alias' => 'hidden'],
         ]);
 
         // Заполняем таблицу форумов
@@ -33,7 +33,7 @@ class ForumSeeder extends Seeder
         DB::connection('mysql');
         foreach ($forums as $forum){
 
-            \App\App\Models\Forum\Forum::create([
+            \App\Models\Forum\Forum::create([
                 'id' => $forum->forum_id,
                 'title' => $forum->naz_foruma,
                 'user_id' => 11,
@@ -50,7 +50,7 @@ class ForumSeeder extends Seeder
         DB::connection('mysql');
         foreach ($topics as $topic){
 
-            \App\App\Models\Forum\Topic::create([
+            \App\Models\Forum\Topic::create([
                 'id' => $topic->id_tem,
                 'forum_id' => $topic->cat_tem,
                 'title' => $topic->naz_tem,
@@ -69,7 +69,7 @@ class ForumSeeder extends Seeder
         DB::connection('mysql');
         foreach ($messages as $message){
 
-            \App\App\Models\Forum\Message::create([
+            \App\Models\Forum\Message::create([
                 'id' => $message->id_mess,
                 'message' => $message->message,
                 'topic_id' => $message->cat_mess,
@@ -82,14 +82,15 @@ class ForumSeeder extends Seeder
 
         // Получаем последние сообщение каждого форума
         $last_messages_list = DB::connection('mysql2')->select(DB::raw(
-            'SELECT t1.`id_mess`, t1.`message`, t1.`id_for_m`, t1.`data_mess` 
-                        FROM `mess_tema` AS `t1`
-                        INNER JOIN (
-                          SELECT MIN(`id_mess`) AS `id_mess`, MAX(`data_mess`) 
-                            FROM `mess_tema` 
-                            WHERE `mess_status`=0 GROUP BY `id_for_m`
-                        ) AS `t2`
-                        WHERE t1.`id_mess` = t2.`id_mess`'
+            'SELECT `forum_id`, 
+	                      `naz_foruma`,  
+	                      (SELECT id_mess 
+	                          FROM mess_tema 
+	                          WHERE mess_status = 0 AND id_for_m = forum_id 
+	                          ORDER BY data_mess DESC LIMIT 1
+	                      ) AS id_mess
+                    FROM `forum`
+                    WHERE 1'
         ));
 
         // Получаем список форумов для добавления идентификаторов последнего сообщения форума
@@ -99,7 +100,7 @@ class ForumSeeder extends Seeder
 
             $last_mess = null;
             foreach ($last_messages_list as $last_message){
-                if($last_message->id_for_m == $forum->id){
+                if($last_message->forum_id == $forum->id){
                     $last_mess = $last_message->id_mess;
                 }
             }
@@ -111,14 +112,15 @@ class ForumSeeder extends Seeder
 
         // Получаем последние сообщение каждой темы форума
         $last_messages_list = DB::connection('mysql2')->select(DB::raw(
-            'SELECT t1.`id_mess`, t1.`message`, t1.`cat_mess`, t1.`data_mess` 
-                        FROM `mess_tema` AS `t1`
-                        INNER JOIN (
-                          SELECT MIN(`id_mess`) AS `id_mess`, MAX(`data_mess`) 
-                            FROM `mess_tema` 
-                            WHERE `mess_status`=0 GROUP BY `cat_mess`
-                        ) AS `t2`
-                        WHERE t1.`id_mess` = t2.`id_mess`'
+            'SELECT `id_tem`, 
+                          `naz_tem`, 
+	                      (SELECT id_mess 
+	                          FROM mess_tema 
+	                          WHERE mess_status = 0 AND cat_mess = id_tem 
+	                          ORDER BY data_mess DESC LIMIT 1
+	                      ) AS id_mess
+                    FROM `tema`
+                    WHERE 1'
         ));
 
         // Получаем список тем форумов для добавления идентификаторов последнего сообщения форума
@@ -128,7 +130,7 @@ class ForumSeeder extends Seeder
 
             $last_mess = null;
             foreach ($last_messages_list as $last_message){
-                if($last_message->cat_mess == $topic->id){
+                if($last_message->id_tem == $topic->id){
                     $last_mess = $last_message->id_mess;
                 }
             }

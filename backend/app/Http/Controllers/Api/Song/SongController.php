@@ -131,4 +131,17 @@ class SongController extends Controller
 
         return response()->json($song);
     }
+
+    public function search(Request $request){
+        if(empty($request->search)){
+            return response()->json([]);
+        }
+        $search = $request->search;
+        $search = strip_tags(trim($search));
+        $search = str_replace(['-', '_', ',', '.'], " ", $search);
+        $search = preg_replace('/\s+/', ' ', $search);
+        $search_result = $this->songRepository->search($search);
+
+        return response()->json($search_result);
+    }
 }

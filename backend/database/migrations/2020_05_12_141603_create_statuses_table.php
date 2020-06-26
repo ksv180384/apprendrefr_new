@@ -18,6 +18,7 @@ class CreateStatusesTable extends Migration
 
             $table->id();
             $table->string('title', 255)->comment('название статуса');
+            $table->string('alias', 255)->unique()->comment('алиас статуса');
         });
     }
 

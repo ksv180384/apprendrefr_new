@@ -8,11 +8,6 @@ import './Navigation.css';
 
 class Navigation extends Component{
 
-    constructor(props){
-        super(props);
-
-    }
-
     componentDidMount(){
         this.changePage = () => {
             this.props.setLoaderPage(true);

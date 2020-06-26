@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\User\Online;
+use App\Repositories\ForumTopicRepository;
 use Closure;
 use Illuminate\Http\Response;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;

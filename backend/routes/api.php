@@ -46,6 +46,9 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
 
         Route::get('random-list', 'WordController@randomList')->name('api.word.random_list');
         Route::get('random-test-yourself', 'WordController@testYourSelf')->name('api.word.test_yourself');
+        Route::get('item/{id}', 'WordController@getItem')->name('api.word.item');
+
+        Route::post('search', 'WordController@search')->name('api.word.search');
     });
 
     // Proverb
@@ -61,5 +64,6 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::get('item/{id}', 'SongController@song')->name('api.song.item');
 
         Route::post('search-by-artist-and-title', 'SongController@searchByArtistAndTitle')->name('api.song.search_by_artist_and_title');
+        Route::post('search', 'SongController@search')->name('api.song.search');
     });
 });

@@ -5,9 +5,7 @@ class ErrorIndicator extends Component{
 
     render(){
         return(
-            <div className="Error-page">
-                Error
-            </div>
+            <div>Error</div>
         );
     }
 }

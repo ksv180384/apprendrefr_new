@@ -13,9 +13,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/*
 Route::get('{any}', function () {
     return view('index');
 })->where('any', '.*');
+*/
+Route::get('/', function () {
+    return view('index');
+});
+/*
+Route::get('/registration', function () {
+    return view('registration');
+});
+*/
+
+Route::get('/registration', 'IndexController@index')->name('index');
+Route::get('/registration', 'RegistrationController@index')->name('registration');
+Route::get('/lost-password', 'RegistrationController@lostPassword')->name('lost_assword');
 
 Route::group(['namespace' => 'JsonData', 'prefix' => 'json'], function () {
 

@@ -4,12 +4,12 @@ header{
     position: fixed;
     top: 0;
     left: 0;
-    width: calc(100% - 20px);;
+    width: 100%;
     background-color: #e6f0f6;
     color: #fff;
     padding: 0 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,.3);
-    z-index: 1;
+    z-index: 2;
 }
 
 header>.navigation{

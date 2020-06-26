@@ -8,6 +8,9 @@ class IndexController extends BaseController
 {
     //
     public function index(){
-        return view('index');
+
+        $title = 'Французский язык - изучение, форум';
+
+        return view('index', compact('title'));
     }
 }

@@ -94,6 +94,21 @@ class WordController extends Controller
         //
     }
 
+    /**
+     * Получает слово по идентификатору
+     * @param $id - идентификатор слова
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getItem($id){
+        $word = $this->wordRepository->getItem((int)$id);
+
+        return response()->json($word);
+    }
+
+    /**
+     * Получает 10 случайных слов
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function randomList(){
         $words = $this->wordRepository->getRandomWords(10);
 
@@ -104,11 +119,9 @@ class WordController extends Controller
         $result = [];
         $wordsList = $this->wordRepository->getRandomWords(60)->toArray();
 
-        //var_export($wordsList);
         $key = 0;
         for ($i = 0; count($wordsList) > $i; $i++){
             $result[$key]['answer_options'][] = $wordsList[$i];
-            //var_export($i%9);
             if($i%5 === 0 && $i != 0){
                 $result[$key]['answer'] = $wordsList[$i];
                 shuffle($result[$key]['answer_options']);
@@ -118,5 +131,18 @@ class WordController extends Controller
 
         //var_export($result);
         return response()->json($result);
+    }
+
+    public function search(Request $request){
+        if(empty($request->search)){
+            return response()->json([]);
+        }
+        if($request->lang === 'ru'){
+            $search_result = $this->wordRepository->searchRu($request->search);
+        }else{
+            $search_result = $this->wordRepository->searchFr($request->search);
+        }
+
+        return response()->json($search_result);
     }
 }

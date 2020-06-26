@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Models\User\Sex;
 use App\Models\User\UserConfigsView;
+use App\Repositories\WordRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -21,6 +22,11 @@ class UserController extends Controller
      */
     private $userRepository;
 
+    /**
+     * @var WordRepository
+     */
+    private $wordRepository;
+
 
     public function __construct()
     {
@@ -30,6 +36,7 @@ class UserController extends Controller
         ]);
 
         $this->userRepository = app(UserRepository::class);
+        $this->wordRepository = app(WordRepository::class);
     }
     /**
      * Display a listing of the resource.
@@ -42,6 +49,7 @@ class UserController extends Controller
         $sex_list = [['id' => 0, 'title' => 'Нет' ]];
         $sex_list = array_merge($sex_list, Sex::select('id', 'title')->orderBy('id', 'asc')->get()->toArray());
         $config_user_data_view_list = UserConfigsView::all();
+        $words_list = $this->wordRepository->getRandomWords();
 
         return response()->json([
             'title' => '',
@@ -51,6 +59,7 @@ class UserController extends Controller
                 '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
                 'E-mail: admin@apprendrefr.ru'
             ],
+            'words_list' => $words_list,
             'data' => [
                 'config_user_data_view_list' => $config_user_data_view_list,
                 'sex_list' => $sex_list,

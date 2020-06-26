@@ -18,6 +18,7 @@ class CreateMessagesTable extends Migration
 
             $table->id();
             $table->string('title', 200);
+            $table->string('alias', 200)->unique();
         });
 
         Schema::create('forum_messages', function (Blueprint $table) {
@@ -29,6 +30,8 @@ class CreateMessagesTable extends Migration
             $table->unsignedBigInteger('user_id')->index()->comment('идентификатор пользователя');
             $table->unsignedBigInteger('status')->index()->comment('статус сообщения');
             $table->timestamps();
+
+            $table->foreign('status')->references('id')->on('forum_message_status');
         });
     }
 

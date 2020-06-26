@@ -100,4 +100,22 @@ class SongRepository extends CoreRepository
 
         return $song;
     }
+
+    public function search($search_text){
+        $song_list = $this->startConditions()
+            ->select([
+                'player_songs.id',
+                'player_songs.artist_name',
+                'player_songs.title',
+            ])
+            ->leftJoin('users', 'player_songs.user_id', '=', 'users.id')
+            ->where('player_songs.hidden', '=', 0)
+            ->where(function ($query) use ($search_text) {
+                return $query->where('player_songs.artist_name', 'LIKE', '%' . $search_text . '%')
+                    ->orWhere('player_songs.title', 'LIKE', '%' . $search_text . '%');
+            })
+            ->limit(10)
+            ->get();
+        return $song_list;
+    }
 }
