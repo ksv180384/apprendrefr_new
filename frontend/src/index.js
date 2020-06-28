@@ -10,6 +10,7 @@ import Index from "./pages/index/Index";
 import Registration from "./pages/registration/Registration";
 import LostPassword from "./pages/lost_password/LostPassword";
 import Profile from "./pages/profile/Profile";
+import Forum from "./pages/forum/Forum";
 
 // Components
 import ModalWindow from "./components/modals_windows/ModalWindow";
@@ -32,6 +33,7 @@ ReactDOM.render(
                     <Route exact path='/profile' component={ Profile }/>
                     <Route exact path='/registration' component={ Registration }/>
                     <Route exact path='/lost-password' component={ LostPassword }/>
+                    <Route exact path='/forum' component={ Forum }/>
                 </Switch>
             </Router>
             <Preloader/>

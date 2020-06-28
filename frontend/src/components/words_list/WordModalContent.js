@@ -74,7 +74,7 @@ class WordModalContent extends Component{
                                     { item.word }
                                 </li>
                                 <li>
-                                    { item.translation }
+                                    { item.transcription }
                                 </li>
                                 <li className="translation">
                                     { item.translation }

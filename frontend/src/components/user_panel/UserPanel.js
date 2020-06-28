@@ -5,6 +5,7 @@ import { setUser } from '../../store/actions/userActions';
 import { setLoader } from "../../store/actions/loaderActions";
 import { setLogin } from "../../store/actions/loginActions";
 import { setLoaderPage } from "../../store/actions/loaderPageActions";
+import { setStatistic } from "../../store/actions/statisticActions";
 
 import store from "../../store";
 
@@ -33,6 +34,9 @@ class UserPanel extends Component{
                     store.dispatch(setLoader(false));
                     store.dispatch(setLogin(response.data.auth));
                     store.dispatch(setUser({}));
+                    if(response.data.statistic){
+                        store.dispatch(setStatistic(response.data.statistic));
+                    }
                     localStorage.setItem('user-token', null);
                 })
                 .catch((error) => {
@@ -82,4 +86,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, { setLoaderPage })(UserPanel);
+export default connect(mapStateToProps, { setLoaderPage, setStatistic })(UserPanel);

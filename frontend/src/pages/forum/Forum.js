@@ -1,6 +1,7 @@
-import React,  { Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+// actions
 import { getPage } from '../../store/actions/pageActions';
 
 // components
@@ -14,31 +15,25 @@ import WordsList from "../../components/words_list/WordsList";
 import Joke from "../../components/joke/Joke";
 import CenterBlock from "../../layouts/app/center/CenterBlock";
 import Proverb from "../../components/proverb/Proverb";
-import LastActiveTopics from "../../components/forum/topic/LastActiveTopics";
+import ForumsList from "../../components/forum/ForumsList";
 import Right from "../../layouts/app/right/Right";
 import Statistics from "../../components/statistics/Statistics";
 import OnlineList from "../../components/online_list/OnlineList";
 import Authentification from "../../components/authentification/Authentification";
-
 import LoaderPage from "../../components/loader_page/LoaderPage";
 
-import './Index.css';
-
-class Index extends Component {
+class Forum extends Component {
 
     componentDidMount(){
-        this.props.getPage('api/index');
+        this.props.getPage('api/forum');
     }
 
     render(){
 
-        const { loader_page, meta_data } = this.props;
-
-        //document.title = meta_data.title;
+        const { loader_page } = this.props;
 
         return(
-
-             loader_page
+            loader_page
                 ?
                 <React.Fragment>
                     <LoaderPage/>
@@ -57,7 +52,7 @@ class Index extends Component {
 
                         <CenterBlock>
                             <Proverb/>
-                            <LastActiveTopics/>
+                            <ForumsList/>
                         </CenterBlock>
 
                         <Right>
@@ -69,17 +64,15 @@ class Index extends Component {
 
                     <Footer/>
                 </React.Fragment>
-
-
         );
     }
 }
 
-const mapStateToPage = (state) => {
+const mapStateToProps = (state) => {
     return {
         loader_page: state.loaderPageReducer,
         meta_data: state.metaReducer,
-    }
+    };
 };
 
-export default connect(mapStateToPage, { getPage })(Index);
+export default connect(mapStateToProps, { getPage })(Forum);

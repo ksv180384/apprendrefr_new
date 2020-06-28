@@ -77,8 +77,8 @@ class IndexController extends BaseController
             //'proverb' => $proverb[0],
             //'config_user_data_view_list' => $config_user_data_view_list,
             //'sex_list' => $sex_list,
-            'title' => '',
-            'description' => '',
+            'title' => 'Французский язык - изучение, форум',
+            'description' => 'Французский язык - изучение, форум',
             'keywords' => '',
             'footer' => [
                 '2010 - ' . date('Y') . ' гг ApprendereFr.ru',

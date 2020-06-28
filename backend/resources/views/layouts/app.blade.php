@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ $title ?? 'Французский язык' }}</title>
+    <meta name="description" content="{{ $meta['description'] ?? 'Сайт по обмену знаниями французского языка' }}">
+    <meta name="keywords" content="{{ $meta['keywords'] ?? 'Французский язык' }}">
+    <title>{{ $meta['title'] ?? 'Французский язык' }}</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">

@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\JsonData\Auth\RegisterFormRequest;
 use App\Http\Requests\Api\Auth\RegistrationFormApiRequest;
 use App\Models\User;
+use App\Repositories\ForumMessageRepository;
+use App\Repositories\ForumRepository;
+use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Http\Request;
@@ -19,6 +22,16 @@ class AuthController extends Controller
      * @var UserRepository
      */
     private $userRepository;
+
+    /**
+     * @var StatisticRepository
+     */
+    private $statisticRepository;
+
+    /**
+     * @var ForumMessageRepository
+     */
+    private $forumMessageRepository;
 
     /**
      * Create a new AuthController instance.
@@ -36,6 +49,8 @@ class AuthController extends Controller
             ]
         ]);
         $this->userRepository = app(UserRepository::class);
+        $this->statisticRepository = app(StatisticRepository::class);
+        $this->forumMessageRepository = app(ForumMessageRepository::class);
     }
 
     /**
@@ -117,9 +132,24 @@ class AuthController extends Controller
             ]);
         }
 
+        $online_users = $this->statisticRepository->getOnlineUsers();
+        $count_users = count($online_users);
+        $count_guests = $this->statisticRepository->countGuests();
+        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_all = $count_users + $count_guests;
+        $count_messages = $this->forumMessageRepository->countAll();
+
         return response()->json([
             'auth' => false,
             'user' => [],
+            'statistic' => [
+                'online_users' => $online_users,
+                'count_guests' => $count_guests,
+                'count_users' => $count_users,
+                'count_all' => $count_all,
+                'count_users_register' => $count_users_register,
+                'count_messages' => $count_messages,
+            ],
         ]);
     }
 
@@ -142,6 +172,13 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $online_users = $this->statisticRepository->getOnlineUsers();
+        $count_users = count($online_users);
+        $count_guests = $this->statisticRepository->countGuests();
+        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_all = $count_users + $count_guests;
+        $count_messages = $this->forumMessageRepository->countAll();
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
@@ -149,6 +186,14 @@ class AuthController extends Controller
             'user_data' => [
                 'auth' => \Auth::check(),
                 'user' => $this->userRepository->getById(\Auth::id()) ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            ],
+            'statistic' => [
+                'online_users' => $online_users,
+                'count_guests' => $count_guests,
+                'count_users' => $count_users,
+                'count_all' => $count_all,
+                'count_users_register' => $count_users_register,
+                'count_messages' => $count_messages,
             ],
         ]);
     }

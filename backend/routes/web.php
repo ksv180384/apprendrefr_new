@@ -18,18 +18,17 @@ Route::get('{any}', function () {
     return view('index');
 })->where('any', '.*');
 */
-Route::get('/', function () {
-    return view('index');
-});
-/*
-Route::get('/registration', function () {
-    return view('registration');
-});
-*/
 
-Route::get('/registration', 'IndexController@index')->name('index');
+Route::get('/', 'IndexController@index')->name('index');
 Route::get('/registration', 'RegistrationController@index')->name('registration');
 Route::get('/lost-password', 'RegistrationController@lostPassword')->name('lost_assword');
+Route::get('/grammar', 'GrammarController@index')->name('grammar');
+Route::get('/lyrics', 'LyricsController@index')->name('lyrics');
+Route::get('/lessons', 'LessonsController@index')->name('lessons');
+Route::group(['namespace' => 'Forum', 'prefix' => 'forum'], function () {
+    Route::get('/', 'ForumController@index')->name('forum');
+});
+Route::get('/dictionary', 'DictionaryController@index')->name('dictionary');
 
 Route::group(['namespace' => 'JsonData', 'prefix' => 'json'], function () {
 

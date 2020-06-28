@@ -66,4 +66,10 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::post('search-by-artist-and-title', 'SongController@searchByArtistAndTitle')->name('api.song.search_by_artist_and_title');
         Route::post('search', 'SongController@search')->name('api.song.search');
     });
+
+    // forum
+    Route::group(['prefix' => 'forum', 'namespace' => 'Forum'], function ($router) {
+
+        Route::post('/', 'ForumController@index')->name('api.forum');
+    });
 });
