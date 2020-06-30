@@ -134,7 +134,7 @@
 .MessageItem-user-info{
     flex: 1 0 200px;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
     background-color: #f4f8fa;
     padding-bottom: 20px;
 }
@@ -146,15 +146,29 @@
 
 .MessageItem-message{
     padding: 10px;
+    font-size: 14px;
+}
+
+.MessageItem-message p{
+    padding: 10px 0;
+}
+
+.MessageItem-message .q{
+    margin-left: 10px;
+    padding: 10px;
+    border-left: 4px solid #176093;
+    font-size: 13px;
+    background-color: #f4f8fa;
 }
 
 .MessageItem-user-login{
+    font-size: 14px;
     padding: 10px 2px;
     font-weight: bold;
 }
 
 .MessageItem-user-avatar{
-    margin-bottom: 20px;
+    margin-top: 10px;
 }
 
 .MessageItem-user-avatar-block{
