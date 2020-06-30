@@ -15,8 +15,8 @@ class Forum extends Model
         'last_message_id',
         'status',
         'sort',
-        'create_at',
-        'update_at',
+        'created_at',
+        'updated_at',
     ];
 
     /**

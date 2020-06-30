@@ -1,0 +1,196 @@
+.LastActiveTopic-list{
+    background-color: #e9f1f7;
+    margin-top: 2px;
+}
+
+.LastActiveTopic-item{
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-bottom: 1px solid #d7edfc;
+    transition: all 0.5s ease 0s;
+}
+
+.LastActiveTopic-item:hover{
+    background-color: #f5f8fb;
+}
+
+.LastActiveTopic-item a.link{
+    text-decoration: none;
+}
+
+.LastActiveTopic-item a.link:hover{
+    text-decoration: underline;
+}
+
+.LastActiveTopic-item-topic-title-info{
+    flex: 100%;
+}
+.LastActiveTopic-item-topic-title-info>div{
+    margin-bottom: 10px;
+}
+
+.LastActiveTopic-item-topic-title-info>span{
+    font-size: 12px;
+    display: block;
+}
+
+.LastActiveTopic-item-topic-statistic-info{
+    flex: 1 0 150px;
+    font-size: 12px;
+}
+
+.LastActiveTopic-item-topic-message-info{
+    flex: 1 0 140px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.LastActiveTopic-item-topic-message-info-date{
+    font-size: 11px;
+}
+
+.ForumsList-list-header-table{
+    display: flex;
+    text-align: center;
+    border-bottom: 1px solid #d7edfc;
+    padding: 0 20px;
+    align-items: center;
+}
+
+.ForumsList-list-header-table>div{
+    padding: 10px 6px;
+    font-size: 13px;
+}
+
+.ForumsList-list-header-table-info{
+    flex: 100%;
+}
+
+.ForumsList-list-header-table-count-topics{
+    flex: 1 0 80px;
+}
+
+.ForumsList-list-header-table-count-messages{
+    flex: 1 0 80px;
+}
+
+.ForumsList-list{
+    background-color: #e9f1f7;
+    margin-top: 2px;
+}
+
+.ForumsList-list-item-topic-title-info{
+    flex: 100%;
+    font-size: 11px;
+}
+
+.ForumsList-list-item-topic-title-info>span{
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+}
+
+.ForumsList-list-item-topic-title-info strong{
+    font-size: 11px;
+}
+
+.ForumsList-list-item-topic-title-info>div{
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.ForumsList-list-item-count-topics{
+    text-align: center;
+    flex: 1 0 80px;
+    font-size: 14px;
+}
+
+.ForumsList-list-item-count-messages{
+    text-align: center;
+    flex: 1 0 80px;
+    font-size: 14px;
+}
+
+.TopicsList-list-header-table-info{
+    flex: 100%;
+}
+
+.TopicsList-list-header-table-count-statistic{
+    flex: 1 0 150px;
+}
+
+.TopicsList-list-header-table-count-messages{
+    flex: 1 0 140px;
+}
+
+.MessageItem{
+    display: flex;
+    /*border-bottom: 2px solid #d7edfc;*/
+    margin-bottom: 10px;
+}
+
+.MessageItem-user-info{
+    flex: 1 0 200px;
+    text-align: center;
+    font-size: 14px;
+    background-color: #f4f8fa;
+    padding-bottom: 20px;
+}
+
+.MessageItem-content{
+    flex: 100%;
+    background-color: #fff;
+}
+
+.MessageItem-message{
+    padding: 10px;
+}
+
+.MessageItem-user-login{
+    padding: 10px 2px;
+    font-weight: bold;
+}
+
+.MessageItem-user-avatar{
+    margin-bottom: 20px;
+}
+
+.MessageItem-user-avatar-block{
+    width: 180px;
+    height: 220px;
+    margin: 4px auto;
+    background-color: transparent;
+    border: 1px solid #649ec2;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(http://apprendrefr.ru/img/avatar/none_avatar.png);
+    border-radius: 8px;
+}
+
+.MessageItem-user-group{
+    margin-top: 6px;
+}
+
+.MessageItem-user-user-posts{
+    margin-top: 6px;
+}
+
+.MessageItem-content-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    background-color: #f4f8fa;
+    padding: 10px 6px;
+}
+
+.MessageItem-content-date-post{
+
+}
+
+.MessageItem-content-topic-title{
+
+}

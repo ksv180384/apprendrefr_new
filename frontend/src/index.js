@@ -11,6 +11,8 @@ import Registration from "./pages/registration/Registration";
 import LostPassword from "./pages/lost_password/LostPassword";
 import Profile from "./pages/profile/Profile";
 import Forum from "./pages/forum/Forum";
+import Topic from "./pages/forum/Topic";
+import Message from "./pages/forum/Message";
 
 // Components
 import ModalWindow from "./components/modals_windows/ModalWindow";
@@ -34,6 +36,9 @@ ReactDOM.render(
                     <Route exact path='/registration' component={ Registration }/>
                     <Route exact path='/lost-password' component={ LostPassword }/>
                     <Route exact path='/forum' component={ Forum }/>
+                    <Route exact path='/forum/:forum_id' component={ Topic }/>
+                    <Route exact path='/forum/:forum_id/topic/:topic_id' component={ Message }/>
+                    <Route exact path='/forum/:forum_id/topic/:topic_id/page/:page' component={ Message }/>
                 </Switch>
             </Router>
             <Preloader/>

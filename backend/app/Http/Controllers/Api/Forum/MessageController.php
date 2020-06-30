@@ -11,7 +11,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\WordRepository;
 use Illuminate\Http\Request;
 
-class ForumController extends Controller
+class MessageController extends Controller
 {
     /**
      * @var ForumRepository
@@ -38,6 +38,11 @@ class ForumController extends Controller
      */
     private $forumMessageRepository;
 
+    /**
+     * @var ForumTopicRepository
+     */
+    private $forumTopicRepository;
+
     public function __construct(){
         $this->forumRepository = app(ForumRepository::class);
         $this->wordRepository = app(WordRepository::class);
@@ -47,14 +52,21 @@ class ForumController extends Controller
         $this->forumMessageRepository = app(ForumMessageRepository::class);
         $this->forumTopicRepository = app(ForumTopicRepository::class);
     }
+
     /**
      * Display a listing of the resource.
      *
+     * @param $forum_id - идентификатор форума
+     * @param $topic_id - идентификаотр темы форума
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($forum_id, $topic_id)
     {
-        $forums = $this->forumRepository->getList();
+        //
+        $topic = $this->forumTopicRepository->getById((int)$topic_id);
+        $forum = $this->forumRepository->getById((int)$forum_id);
+        $messages = $this->forumMessageRepository->getByTopicId($topic_id);
+
         $words_list = $this->wordRepository->getRandomWords();
         $online_users = $this->statisticRepository->getOnlineUsers();
         $count_users = count($online_users);
@@ -64,14 +76,18 @@ class ForumController extends Controller
         $count_messages = $this->forumMessageRepository->countAll();
 
         return response()->json([
-            'title' => 'Французский язык - Фоорум',
-            'description' => 'Форум для тех кто изучает французский язык',
-            'keywords' => 'Форум, французский язык, учить французский язык, ApprendreFr.ru форум',
+            'title' => 'Фоорум ',
+            'description' => ' - Фоорум ',
+            'keywords' => ' - Фоорум',
             'footer' => [
                 '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
                 'E-mail: admin@apprendrefr.ru'
             ],
-            'data' => $forums,
+            'data' => [
+                'topic' => $topic,
+                'forum' => $forum,
+                'messages' => $messages,
+            ],
             'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
             'auth' => \Auth::check(),
             'words_list' => $words_list,

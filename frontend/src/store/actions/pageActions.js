@@ -14,7 +14,7 @@ import {
 } from './index';
 
 
-export const getPage = (path_page) => {
+export const getPage = (path_page, params = {}) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
 
@@ -22,7 +22,9 @@ export const getPage = (path_page) => {
             'Authorization':localStorage.getItem('user-token'),
             'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
         };
-        axios.post(config.path + path_page, { page: true }).then((result) => {
+        const path = config.path + path_page;
+        console.log(params);
+        axios.post(path, { page: true, ...params }).then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
             dispatch({
                 type: SET_META,

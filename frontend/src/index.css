@@ -35,6 +35,10 @@ ul{
 
 }
 
+.panel_header h1{
+  font-size: 12px;
+}
+
 .panel_content{
   padding: 6px;
   font-size: 14px;
@@ -718,4 +722,129 @@ ul{
 
 .border-non{
   border: none !important;
+}
+
+.breadcrumbs{
+  font-size: 12px;
+  padding: 0 16px;
+  border-bottom: 1px solid #d7edfc;
+}
+
+.breadcrumbs ul{
+  /*overflow: hidden;*/
+  width: 100%;
+  display: flex;
+}
+
+.breadcrumbs>ul>li{
+  padding: 10px 0;
+  margin-right: 16px;
+}
+
+.breadcrumbs>ul>li>a{
+  padding: 7px 10px 7px 10px;
+  text-decoration: none;
+  position: relative;
+  color: #176093;
+  transition: all 0.5s ease 0s;
+}
+
+.breadcrumbs>ul>li>a:hover{
+  text-decoration: underline;
+  background-color: #f7fbff;
+}
+
+.breadcrumbs>ul>li>a:after,
+.breadcrumbs>ul>li>a:before{
+  content:'';
+  position:absolute;
+  top: 0;
+  bottom: 0;
+  width: 1em;
+  transform: skew(-20deg);
+  transition: all 0.5s ease 0s;
+}
+
+.breadcrumbs>ul>li>a:after{
+  right: -.5em;
+  border-radius: 0 5px 5px 0;
+}
+
+.breadcrumbs>ul>li>a:before{
+  left: -.5em;
+  border-radius: 5px 0 0 5px;
+}
+
+.breadcrumbs>ul>li>a:hover:after,
+.breadcrumbs>ul>li>a:hover:before{
+  background-color: #f7fbff;
+}
+
+.breadcrumbs>ul>li>span {
+  padding: 7px 10px 7px 10px;
+  position: relative;
+  background-color: #f7fbff;
+  font-weight: bold;
+}
+
+.breadcrumbs>ul>li>span:after,
+.breadcrumbs>ul>li>span:before{
+  content:'';
+  position:absolute;
+  top: 0;
+  bottom: 0;
+  width: 1em;
+  transform: skew(-20deg);
+  background-color: #f7fbff;
+}
+
+.breadcrumbs>ul>li>span:after{
+  right: -.5em;
+  border-radius: 0 5px 5px 0;
+}
+
+.breadcrumbs>ul>li>span:before{
+  left: -.5em;
+  border-radius: 5px 0 0 5px;
+}
+
+.paginator{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  font-size: 14px;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.paginator>.p-item{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-bottom: 2px solid #fff;
+  border-top: 2px solid #fff;
+}
+
+.paginator>.p-item:hover{
+  background-color: #f4f8fa;
+  border-bottom: 2px solid #f4f8fa;
+  border-top: 2px solid #fff;
+}
+
+.paginator>.p-item:hover a{
+  background-color: #f4f8fa;
+}
+
+.paginator>.p-item.active{
+  border-bottom: 2px solid #176093;
+}
+
+.paginator>.p-item a{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }

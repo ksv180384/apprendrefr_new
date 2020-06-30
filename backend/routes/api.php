@@ -68,8 +68,14 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
     });
 
     // forum
-    Route::group(['prefix' => 'forum', 'namespace' => 'Forum'], function ($router) {
+    Route::group(['prefix' => 'forum/{forum_id?}', 'namespace' => 'Forum'], function ($router) {
 
-        Route::post('/', 'ForumController@index')->name('api.forum');
+        Route::post('/', 'ForumController@index')->name('api.forums_list');
+        Route::post('topic/list', 'TopicController@index')->name('api.topics_list');
+
+        Route::group(['prefix' => 'topic/{topic_id?}'], function ($router) {
+
+            Route::post('messages', 'MessageController@index')->name('api.messages_list');
+        });
     });
 });
