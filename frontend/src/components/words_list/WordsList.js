@@ -58,11 +58,8 @@ class WordsList extends Component{
                                                 onClick={ this.showModalWord }
                                             >
                                                 <FontAwesomeIcon icon={faInfoCircle}/> <span className="word-text">
-                                        { words[key].word }
-                                        </span> -
-                                                <span className="translation">
-                                        { words[key].translation }
-                                        </span>
+                                                { words[key].word }
+                                                </span> - <span className="translation">{ words[key].translation }</span>
                                             </li>
                                         )
                                     })

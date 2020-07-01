@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 // actions
-import { getPage } from '../../store/actions/pageActions';
+import { loadForumsListPage } from '../../store/actions/forumActions';
 
 // components
 import Header from "../../header/Header";
@@ -25,7 +25,7 @@ import LoaderPage from "../../components/loader_page/LoaderPage";
 class Forum extends Component {
 
     componentDidMount(){
-        this.props.getPage('api/forum');
+        this.props.loadForumsListPage('api/forum');
     }
 
     render(){
@@ -75,4 +75,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { getPage })(Forum);
+export default connect(mapStateToProps, { loadForumsListPage })(Forum);

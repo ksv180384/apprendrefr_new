@@ -727,7 +727,9 @@ ul{
 .breadcrumbs{
   font-size: 12px;
   padding: 0 16px;
-  border-bottom: 1px solid #d7edfc;
+  background-color: #e9f1f7;
+  margin: 1px 0;
+  border-radius: 4px;
 }
 
 .breadcrumbs ul{
@@ -746,6 +748,7 @@ ul{
   text-decoration: none;
   position: relative;
   color: #176093;
+  white-space: nowrap;
   transition: all 0.5s ease 0s;
 }
 
@@ -785,6 +788,7 @@ ul{
   position: relative;
   background-color: #f7fbff;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .breadcrumbs>ul>li>span:after,
@@ -813,7 +817,7 @@ ul{
   justify-content: start;
   align-items: center;
   font-size: 14px;
-  padding: 10px;
+  padding: 0 10px;
   background-color: #fff;
 }
 

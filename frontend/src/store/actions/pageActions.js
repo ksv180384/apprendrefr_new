@@ -23,7 +23,7 @@ export const getPage = (path_page, params = {}) => {
             'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
         };
         const path = config.path + path_page;
-        console.log(params);
+        //console.log(params);
         axios.post(path, { page: true, ...params }).then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
             dispatch({

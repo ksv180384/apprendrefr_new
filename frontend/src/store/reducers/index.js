@@ -18,6 +18,11 @@ import testYourselfReducer from './testYourselfReducer';
 import statisticReducer from './statisticReducer';
 import playerReducer from './playerReducer';
 import searchReducer from './searchReducer';
+import forumReducer from './forumReducer';
+import forumsListReducer from './forumsListReducer';
+import forumTopicReducer from './forumTopicReducer';
+import forumTopicsListReducer from './forumTopicsListReducer';
+import forumMessagesListReduer from './forumMessagesListReduer';
 
 export default combineReducers({
     pageReducer: pageReducer,
@@ -38,4 +43,9 @@ export default combineReducers({
     statisticReducer: statisticReducer,
     playerReducer: playerReducer,
     searchReducer: searchReducer,
+    forumReducer: forumReducer,
+    forumsListReducer: forumsListReducer,
+    forumTopicReducer: forumTopicReducer,
+    forumTopicsListReducer: forumTopicsListReducer,
+    forumMessagesListReduer: forumMessagesListReduer,
 });

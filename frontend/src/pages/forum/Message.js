@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 // actions
-import { getPage } from '../../store/actions/pageActions';
+import { loadMessagesListPage } from '../../store/actions/forumActions';
 
 // components
 import Header from "../../header/Header";
@@ -20,9 +20,33 @@ import LoaderPage from "../../components/loader_page/LoaderPage";
 
 class Message extends Component {
 
+    constructor(){
+        super();
+
+        this.state = {
+            page: 1,
+        };
+    }
+
     componentDidMount(){
-        this.props.getPage('api/forum/' + this.props.match.params.forum_id + '/topic/' + this.props.match.params.topic_id + '/messages', { page: this.props.match.params.page });
-        console.log(this.props);
+        this.props.loadMessagesListPage('api/forum/' + this.props.match.params.forum_id + '/topic/' + this.props.match.params.topic_id + '/messages', { page: this.props.match.params.page });
+    }
+
+    static getDerivedStateFromProps(props, state){
+        if(typeof state.page === 'undefined'){
+            state.page = 1;
+        }
+        if(typeof props !== 'undefined'){
+            let page = props.match.params.page;
+            if(typeof page === 'undefined'){
+                page = 1;
+            }
+            if(page !== state.page){
+                state.page = props.match.params.page;
+                props.loadMessagesListPage('api/forum/' + props.match.params.forum_id + '/topic/' + props.match.params.topic_id + '/messages', { page: page });
+            }
+        }
+        return state;
     }
 
     render(){
@@ -66,4 +90,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { getPage })(Message);
+export default connect(mapStateToProps, { loadMessagesListPage })(Message);

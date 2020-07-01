@@ -125,17 +125,20 @@
     flex: 1 0 140px;
 }
 
+.MessagesList{
+    background-color: #8db3ce;
+}
+
 .MessageItem{
     display: flex;
-    /*border-bottom: 2px solid #d7edfc;*/
-    margin-bottom: 10px;
+    margin: 1px 0;
 }
 
 .MessageItem-user-info{
     flex: 1 0 200px;
     text-align: center;
     font-size: 12px;
-    background-color: #f4f8fa;
+    background-color: #e9f1f7;
     padding-bottom: 20px;
 }
 
@@ -145,6 +148,7 @@
 }
 
 .MessageItem-message{
+    position: relative;
     padding: 10px;
     font-size: 14px;
 }
@@ -207,4 +211,18 @@
 
 .MessageItem-content-topic-title{
 
+}
+
+.MessageItem-message .for_t{
+    width: calc(50% - 4px);
+    display: inline-block;
+    margin-bottom: 10px;
+    vertical-align: top;
+}
+
+.MessageItem-message .for_t2{
+    width: calc(50% - 4px);
+    display: inline-block;
+    margin-bottom: 10px;
+    vertical-align: top;
 }

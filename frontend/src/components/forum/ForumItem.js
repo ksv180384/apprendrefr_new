@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class ForumItem extends Component{
 
@@ -9,12 +10,12 @@ class ForumItem extends Component{
         return(
             <div className="LastActiveTopic-item">
                 <div className="ForumsList-list-item-topic-title-info">
-                    <div><a href={ '/forum/' + forum.id } className="link">{ forum.title }</a></div>
+                    <div><Link to={ '/forum/' + forum.id } className="link">{ forum.title }</Link></div>
                     {
                         forum.count_messages > 0
                         ?
                             <React.Fragment>
-                                <span>Последнее сообщение: <a href={ '#' + forum.topic_id } className="link">{ forum.topic_title }</a></span>
+                                <span>Последнее сообщение: <a href={ '/forum/' + forum.id + '/topic/' + forum.topic_id } className="link">{ forum.topic_title }</a></span>
                                 <span>от: <a href={ '#' + forum.message_create_user_id } className="link">{ forum.message_create_user_login }</a></span>в: <strong>{ forum.message_created_at }</strong>
                             </React.Fragment>
                         :

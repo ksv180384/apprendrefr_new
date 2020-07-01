@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 // actions
-import { getPage } from '../../store/actions/pageActions';
+import { loadTopicsListPage } from '../../store/actions/forumActions';
 
 // components
 import Header from "../../header/Header";
@@ -25,7 +25,7 @@ import LoaderPage from "../../components/loader_page/LoaderPage";
 class Topic extends Component {
 
     componentDidMount(){
-        this.props.getPage('api/forum/' + this.props.match.params.forum_id + '/topic/list');
+        this.props.loadTopicsListPage('api/forum/' + this.props.match.params.forum_id + '/topic/list');
     }
 
     render(){
@@ -33,13 +33,12 @@ class Topic extends Component {
         const { loader_page } = this.props;
 
         return(
-            loader_page
+            loader_page !== false
                 ?
                 <React.Fragment>
                     <LoaderPage/>
                 </React.Fragment>
                 :
-
                 <React.Fragment>
                     <Header/>
                     <LayoutOne>
@@ -75,4 +74,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { getPage })(Topic);
+export default connect(mapStateToProps, { loadTopicsListPage })(Topic);

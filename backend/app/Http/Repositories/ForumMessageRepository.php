@@ -96,7 +96,10 @@ class ForumMessageRepository extends CoreRepository
             }
 
             if(!empty($messages[$k]->created_at)){
-                $messages[$k]->created_at = Carbon::createFromFormat('Y-m-d H:i:s', $item->created_at)->format('H:i d.m.Y');
+                $messages[$k]->created_message = [
+                    'day' => $messages[$k]->created_at->format('d.m.Y'),
+                    'time' => $messages[$k]->created_at->format('H:i'),
+                ];
             }
         }
 

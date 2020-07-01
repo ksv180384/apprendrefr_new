@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { getPage } from '../../store/actions/pageActions';
-import { setLoaderPage } from '../../store/actions/loaderPageActions';
 
 import LayoutTwo from "../../layouts/app/LayoutTwo";
 import Header from "../../header/Header";
@@ -21,9 +20,20 @@ class Profile extends Component{
 
     componentDidMount(){
         this.props.getPage('api/user/profile-page');
+    }
 
-        this.pageContent = () => {
-            return (
+    render(){
+
+        const { loader_page } = this.props;
+
+        return(
+
+            loader_page
+                ?
+                <React.Fragment>
+                <LoaderPage/>
+                </React.Fragment>
+                :
                 <React.Fragment>
                     <Header/>
                     <LayoutTwo>
@@ -37,18 +47,7 @@ class Profile extends Component{
                     </LayoutTwo>
                     <Footer/>
                 </React.Fragment>
-            );
-        };
-    }
 
-    render(){
-
-        const { loader_page } = this.props;
-
-        return(
-            <React.Fragment>
-                { loader_page ? <LoaderPage/> : this.pageContent() }
-            </React.Fragment>
         );
     }
 }
@@ -59,4 +58,4 @@ const mapSateToProps = (state) => {
     }
 };
 
-export default connect(mapSateToProps, { getPage, setLoaderPage })(Profile);
+export default connect(mapSateToProps, { getPage })(Profile);

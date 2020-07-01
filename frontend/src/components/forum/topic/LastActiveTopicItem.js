@@ -11,7 +11,7 @@ class LastActiveTopicItem extends Component{
         return(
             <div className="LastActiveTopic-item">
                 <div className="LastActiveTopic-item-topic-title-info">
-                    <div><a href={ '#' + topic.id } className="link">{ topic.title }</a></div>
+                    <div><a href={ 'forum/' + topic.forum_id + '/topic/' + topic.id } className="link">{ topic.title }</a></div>
                     <span>Раздел: <a href={ '/forum/' + topic.forum_id } className="link">{ topic.forum_title }</a></span>
                     <span>Автор: <a href={ '#' + topic.topic_create_user_id } className="link">{ topic.topic_create_user_login }</a></span>
                 </div>

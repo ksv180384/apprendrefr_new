@@ -27,7 +27,7 @@ class ForumsList extends Component {
                     </div>
                 </div>
                 {
-                    forums
+                    typeof forums !== 'undefined'
                     ?
                         Object.keys(forums).map((key) => {
                             return <ForumItem key={ forums[key].id } forum={ forums[key] }/>
@@ -42,7 +42,7 @@ class ForumsList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        forums: state.pageDataReducer
+        forums: state.forumsListReducer,
     };
 };
 

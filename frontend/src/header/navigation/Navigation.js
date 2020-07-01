@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
-import { setLoaderPage } from '../../store/actions/loaderPageActions';
 import { Link } from 'react-router-dom';
 
 import './Navigation.css';
 
 class Navigation extends Component{
-
-    componentDidMount(){
-        this.changePage = () => {
-            this.props.setLoaderPage(true);
-        }
-    }
 
     render(){
 
@@ -22,7 +14,7 @@ class Navigation extends Component{
             <nav>
                 <ul>
                     {Object.keys(menu).map(key => {
-                        return <Link onClick={ this.changePage } key={key} to={ key }>{ menu[key] }</Link>
+                        return <Link key={key} to={ key }>{ menu[key] }</Link>
                     })}
                 </ul>
             </nav>
@@ -30,4 +22,4 @@ class Navigation extends Component{
     }
 }
 
-export default connect(null, { setLoaderPage })(Navigation);
+export default Navigation;

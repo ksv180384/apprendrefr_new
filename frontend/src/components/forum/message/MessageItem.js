@@ -30,7 +30,7 @@ class MessagesList extends Component{
                 <div className="MessageItem-content">
                     <div className="MessageItem-content-header">
                         <div className="MessageItem-content-date-post">
-                            { message.created_at }
+                            { message.created_message.time } <strong>{ message.created_message.day }</strong>
                         </div>
                         <div className="MessageItem-content-topic-title">
                             #{ message.id } { topic.title }
