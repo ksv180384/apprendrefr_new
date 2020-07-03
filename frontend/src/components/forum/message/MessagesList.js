@@ -8,15 +8,13 @@ import { Link } from 'react-router-dom';
 // components
 import MessageItem from './MessageItem';
 import Paginate from "../../paginate/Paginate";
+import TextEditor from '../text_editor/TextEditor';
 
 class MessagesList extends Component{
 
     constructor(){
         super();
-
-        this.aaa = () => {
-
-        }
+        
     }
 
     render(){
@@ -52,6 +50,7 @@ class MessagesList extends Component{
                                 />
                             })
                         }
+                        <TextEditor/>
                         <Paginate current_page={paginate.current_page}
                                   last_page={paginate.last_page}
                                   per_page={paginate.per_page}
@@ -59,10 +58,6 @@ class MessagesList extends Component{
                                   total={paginate.total}
                                   path={ '/forum/' + forum.id + '/topic/' + topic.id }
                         />
-                        <div>
-                            <span onClick={ this.aaa }>aaa</span>
-                            <textarea rows={6}></textarea>
-                        </div>
                     </div>
                 :
                     <div>пусто</div>
