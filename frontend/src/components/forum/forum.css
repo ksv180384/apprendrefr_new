@@ -151,13 +151,15 @@
     position: relative;
     padding: 10px;
     font-size: 14px;
+    min-height: calc(100% - 36px);
 }
 
 .MessageItem-message p{
     padding: 10px 0;
 }
 
-.MessageItem-message .q{
+.MessageItem-message .q,
+blockquote{
     margin-left: 10px;
     padding: 10px;
     border-left: 4px solid #176093;
@@ -165,10 +167,27 @@
     background-color: #f4f8fa;
 }
 
+.MessageItem-message img{
+    max-width: 200px !important;
+}
+
+.MessageItem-message .signature{
+    font-size: 12px;
+    color: #b1b1b1;
+    border-top: 1px solid;
+    padding-top: 8px;
+    margin-top: 20px;
+}
+
 .MessageItem-user-login{
     font-size: 14px;
     padding: 10px 2px;
     font-weight: bold;
+}
+
+.MessageItem-user-login .user-gender{
+    margin-left: 6px;
+    color: #176093;
 }
 
 .MessageItem-user-avatar{
@@ -188,12 +207,45 @@
     border-radius: 8px;
 }
 
+.MessageItem-social-block{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.MessageItem-messengers-block{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.MessageItem-social-item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #b3b3b3;
+    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background-color: #fff;
+    margin-right: 4px;
+    margin-top: 6px;
+    cursor: pointer;
+    transition: all 0.5s ease 0s;
+}
+
+.MessageItem-social-item:hover{
+    color: #8db3ce;
+}
+
 .MessageItem-user-group{
     margin-top: 6px;
 }
 
 .MessageItem-user-user-posts{
     margin-top: 6px;
+    margin-bottom: 6px;
 }
 
 .MessageItem-content-header{

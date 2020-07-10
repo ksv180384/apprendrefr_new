@@ -109,8 +109,12 @@ class Registration extends Component{
             password_confirmation,
             checkbox_personal_data_protection_policy
         } = this.state;
-        const { load_page } = this.props;
+        const { load_page, meta_data } = this.props;
         const { loading } = this.props.registration_state;
+
+        document.title = meta_data.title;
+        document.querySelector('meta[name="description"]').content = meta_data.description;
+        document.querySelector('meta[name="keywords"]').content = meta_data.keywords;
 
         return  (
             load_page
@@ -181,6 +185,7 @@ const mapStateToProps = (state) => {
         load: state.loaderReducer,
         page: state.pageReducer,
         registration_state: state.registrationReducer,
+        meta_data: state.metaReducer,
     }
 };
 

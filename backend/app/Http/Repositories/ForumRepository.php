@@ -82,7 +82,10 @@ class ForumRepository extends CoreRepository
 
         foreach ($forums as $k=>$item){
             if(!empty($forums[$k]->message_created_at)){
-                $forums[$k]->message_created_at = Carbon::createFromFormat('Y-m-d H:i:s', $item->message_created_at)->format('H:i d.m.Y');
+                $forums[$k]->created_message = [
+                    'day' => $this->formatDay(Carbon::parse($forums[$k]->message_created_at)),
+                    'time' => Carbon::parse($forums[$k]->message_created_at)->format('H:i'),
+                ];
             }
         }
 

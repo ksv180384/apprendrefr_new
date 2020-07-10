@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import './ErrorBoundry.css';
+import { connect } from 'react-redux';
 
 import ErrorIndicator from '../error-indicator/ErrorIndicator'
+
+import './ErrorBoundry.css';
 
 class ErrorBoundry extends Component{
 
@@ -23,7 +25,9 @@ class ErrorBoundry extends Component{
     render(){
 
         const { hasError } = this.state;
-        if(hasError){
+        const { error } = this.props;
+
+        if(hasError || error.is_error_page){
             return(<ErrorIndicator/>);
         }
 
@@ -31,4 +35,10 @@ class ErrorBoundry extends Component{
     }
 }
 
-export default ErrorBoundry;
+const mapStateToProps = (state) => {
+    return {
+        error: state.errorNotificationReducer,
+    };
+};
+
+export default connect(mapStateToProps, {  })(ErrorBoundry);

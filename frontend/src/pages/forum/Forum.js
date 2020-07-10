@@ -30,7 +30,11 @@ class Forum extends Component {
 
     render(){
 
-        const { loader_page } = this.props;
+        const { loader_page, meta_data } = this.props;
+
+        document.title = meta_data.title;
+        document.querySelector('meta[name="description"]').content = meta_data.description;
+        document.querySelector('meta[name="keywords"]').content = meta_data.keywords;
 
         return(
             loader_page

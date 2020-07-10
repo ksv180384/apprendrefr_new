@@ -24,7 +24,11 @@ class Profile extends Component{
 
     render(){
 
-        const { loader_page } = this.props;
+        const { loader_page, meta_data } = this.props;
+
+        document.title = meta_data.title;
+        document.querySelector('meta[name="description"]').content = meta_data.description;
+        document.querySelector('meta[name="keywords"]').content = meta_data.keywords;
 
         return(
 
@@ -55,6 +59,7 @@ class Profile extends Component{
 const mapSateToProps = (state) => {
     return {
         loader_page: state.loaderPageReducer,
+        meta_data: state.metaReducer,
     }
 };
 

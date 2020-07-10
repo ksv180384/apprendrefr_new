@@ -17,7 +17,9 @@ class TopicItem extends Component{
                     <div>Просмотров: <strong>{ topic.count_views }</strong></div>
                 </div>
                 <div className="LastActiveTopic-item-topic-message-info">
-                    <div className="LastActiveTopic-item-topic-message-info-date">{ topic.message_created_at }</div>
+                    <div className="LastActiveTopic-item-topic-message-info-date">
+                        { topic.created_message.time } <strong>{ topic.created_message.day }</strong>
+                     </div>
                     <div>Автор: <a href={ '#' + topic.message_create_user_id } className="link">{ topic.message_create_user_login }</a></div>
                 </div>
             </div>

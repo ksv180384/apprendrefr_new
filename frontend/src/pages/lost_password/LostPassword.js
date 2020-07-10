@@ -57,7 +57,11 @@ class LostPassword extends Component{
     render(){
 
         const { confirm_email } = this.state;
-        const { load, load_page } = this.props;
+        const { load, load_page, meta_data } = this.props;
+
+        document.title = meta_data.title;
+        document.querySelector('meta[name="description"]').content = meta_data.description;
+        document.querySelector('meta[name="keywords"]').content = meta_data.keywords;
 
         return(
             load_page
@@ -99,6 +103,7 @@ const mapStateToProps = (state) => {
     return {
         load: state.loaderReducer,
         load_page: state.loaderPageReducer,
+        meta_data: state.metaReducer,
     }
 };
 

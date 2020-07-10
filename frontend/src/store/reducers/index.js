@@ -23,6 +23,8 @@ import forumsListReducer from './forumsListReducer';
 import forumTopicReducer from './forumTopicReducer';
 import forumTopicsListReducer from './forumTopicsListReducer';
 import forumMessagesListReduer from './forumMessagesListReduer';
+import indexReducer from './indexReducer';
+import errorNotificationReducer from './errorNotificationReducer';
 
 export default combineReducers({
     pageReducer: pageReducer,
@@ -48,4 +50,6 @@ export default combineReducers({
     forumTopicReducer: forumTopicReducer,
     forumTopicsListReducer: forumTopicsListReducer,
     forumMessagesListReduer: forumMessagesListReduer,
+    indexReducer: indexReducer,
+    errorNotificationReducer: errorNotificationReducer,
 });

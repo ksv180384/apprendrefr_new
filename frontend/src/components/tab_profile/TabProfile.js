@@ -330,7 +330,7 @@ class TabProfile extends Component{
                                 />
                             </div>
                             <div className="UserProfileEdit-contacts-item">
-                                <TextBtn title="youtube.com/channel/"
+                                <TextBtn title="youtube.com/"
                                          icon={ faYoutube }
                                          type="text"
                                          placeholder="Youtube"

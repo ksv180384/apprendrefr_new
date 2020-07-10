@@ -1,5 +1,5 @@
 .TextEditor{
-    background-color: #aacadd;
+    background-color: #8db3ce;
 }
 
 .TextEditor>.editor{
@@ -36,6 +36,33 @@
     background-color: #fff;
 }
 
+.TextEditor .send-forum-message-block{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.TextEditor .send-forum-message-block>.send-forum-message{
+    color: #176093;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid #fff;
+    width: 120px;
+    height: 34px;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+    background-color: #e6f0f6;
+    border-radius: 2px;
+    transition: all 0.5s ease 0s;
+}
+
+.TextEditor .send-forum-message-block>.send-forum-message:hover{
+    background-color: #fff;
+}
+
 .TextEditor>.editor>.text{
     font-size: 14px;
     width: 100%;
@@ -44,11 +71,16 @@
     padding: 10px;
 }
 
+.TextEditor>.editor>.text img{
+    max-width: 200px !important;
+}
+
 .TextEditor>textarea{
 
 }
 
-.TextEditor .link-window{
+.TextEditor .link-window,
+.TextEditor .img-window{
     box-shadow: 0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12);
     /*border: 1px solid #aacadd;*/
     position: absolute;
@@ -62,28 +94,38 @@
     display: none;
 }
 
-.TextEditor .link-window.show_link_window{
+.TextEditor .link-window.show_link_window,
+.TextEditor .img-window.show_img_window{
     display: block;
 }
 
-.TextEditor .link-window>ul{
+.TextEditor .link-window>ul,
+.TextEditor .img-window>ul{
     display: flex;
     justify-content: space-between;
 }
 
-.TextEditor .link-window>ul>li{
+.TextEditor .link-window>ul>li,
+.TextEditor .img-window>ul>li{
     /*margin-left: 6px;*/
 
 }
 
-.TextEditor .link-window>ul>li>label{
+.TextEditor .img-window>ul>li,
+.TextEditor .img-window>ul>li>input{
+    width: 100%;
+}
+
+.TextEditor .link-window>ul>li>label,
+.TextEditor .img-window>ul>li>label{
     display: block;
     font-size: 12px;
     margin-bottom: 2px;
     color: #797979;
 }
 
-.TextEditor .link-window>ul>li>input{
+.TextEditor .link-window>ul>li>input,
+.TextEditor .img-window>ul>li>input{
     padding: 6px 12px;
     border: 1px solid #999999;
     border-radius: 2px;
@@ -92,19 +134,22 @@
 }
 
 
-.TextEditor .link-window .link-window-btn-block{
+.TextEditor .link-window .link-window-btn-block,
+.TextEditor .img-window .link-window-btn-block{
     justify-content: flex-end;
     align-items: center;
 }
 
-.TextEditor .link-window .link-window-btn-block>li{
+.TextEditor .link-window .link-window-btn-block>li,
+.TextEditor .img-window .link-window-btn-block>li{
     width: 50px;
     height: 26px;
     margin-top: 6px;
     margin-left: 6px;
 }
 
-.TextEditor .link-window .link-window-btn-block>li>button{
+.TextEditor .link-window .link-window-btn-block>li>button,
+.TextEditor .img-window .link-window-btn-block>li>button{
     display: block;
     width: 100%;
     height: 100%;
@@ -120,7 +165,8 @@
     transition: all 0.5s ease 0s;
 }
 
-.TextEditor .link-window .link-window-btn-block>li>button:hover{
+.TextEditor .link-window .link-window-btn-block>li>button:hover,
+.TextEditor .img-window .link-window-btn-block>li>button:hover{
     background-color: #e6f0f6;
     color: #176093;
     border-color: #8db3ce;

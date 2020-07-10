@@ -29,4 +29,16 @@ abstract class CoreRepository{
     protected function startConditions(){
         return clone $this->model;
     }
+
+    protected function formatDay($date){
+        $result = $date->format('d.m.Y')
+        ;
+        if($date->format('d.m.Y') == date('d.m.Y', time())){
+            $result = 'сегодня';
+        }elseif($date->format('d.m.Y') == date('d.m.Y', (time() - 86400))){
+            $result = 'вчера';
+        }
+
+        return $result;
+    }
 }

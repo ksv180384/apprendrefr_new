@@ -3,18 +3,20 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // actions
-
+import { loadMessagesPaginate } from '../../../store/actions/forumActions';
 
 // components
 import MessageItem from './MessageItem';
 import Paginate from "../../paginate/Paginate";
-import TextEditor from '../text_editor/TextEditor';
 
 class MessagesList extends Component{
 
     constructor(){
         super();
-        
+
+        this.loadMessages = (path, params) => {
+            this.props.loadMessagesPaginate(path, params);
+        };
     }
 
     render(){
@@ -41,6 +43,7 @@ class MessagesList extends Component{
                                   to={paginate.to}
                                   total={paginate.total}
                                   path={ '/forum/' + forum.id + '/topic/' + topic.id }
+                                  loadPaginate={ this.loadMessages }
                         />
                         {
                             Object.keys(massages).map((key) => {
@@ -50,13 +53,13 @@ class MessagesList extends Component{
                                 />
                             })
                         }
-                        <TextEditor/>
                         <Paginate current_page={paginate.current_page}
                                   last_page={paginate.last_page}
                                   per_page={paginate.per_page}
                                   to={paginate.to}
                                   total={paginate.total}
                                   path={ '/forum/' + forum.id + '/topic/' + topic.id }
+                                  loadPaginate={ this.loadMessages }
                         />
                     </div>
                 :
@@ -66,7 +69,6 @@ class MessagesList extends Component{
 }
 
 const mapStateToProps = (state) => {
-    //console.log(state.pageDataReducer);
     return {
         massages: state.forumMessagesListReduer.data,
         topic: state.forumTopicReducer,
@@ -81,4 +83,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, {  })(MessagesList);
+export default connect(mapStateToProps, { loadMessagesPaginate })(MessagesList);

@@ -17,6 +17,7 @@ import CenterTwoBlock from "../../layouts/app/center/CenterTwoBlock";
 import Proverb from "../../components/proverb/Proverb";
 import MessagesList from "../../components/forum/message/MessagesList";
 import LoaderPage from "../../components/loader_page/LoaderPage";
+import TextEditor from '../../components/forum/text_editor/TextEditor';
 
 class Message extends Component {
 
@@ -32,6 +33,7 @@ class Message extends Component {
         this.props.loadMessagesListPage('api/forum/' + this.props.match.params.forum_id + '/topic/' + this.props.match.params.topic_id + '/messages', { page: this.props.match.params.page });
     }
 
+    /*
     static getDerivedStateFromProps(props, state){
         if(typeof state.page === 'undefined'){
             state.page = 1;
@@ -48,10 +50,15 @@ class Message extends Component {
         }
         return state;
     }
+    */
 
     render(){
 
-        const { loader_page } = this.props;
+        const { auth, loader_page, paginate, meta_data } = this.props;
+
+        document.title = meta_data.title;
+        document.querySelector('meta[name="description"]').content = meta_data.description;
+        document.querySelector('meta[name="keywords"]').content = meta_data.keywords;
 
         return(
             loader_page
@@ -73,6 +80,7 @@ class Message extends Component {
                         <CenterTwoBlock>
                             <Proverb/>
                             <MessagesList/>
+                            { auth && paginate.to === paginate.total ? <TextEditor topic={ this.props.match.params.topic_id }/> : '' }
                         </CenterTwoBlock>
 
                     </LayoutTwo>
@@ -87,6 +95,14 @@ const mapStateToProps = (state) => {
     return {
         loader_page: state.loaderPageReducer,
         meta_data: state.metaReducer,
+        auth: state.loginReducer.login,
+        paginate: {
+            current_page: state.forumMessagesListReduer.current_page,
+            last_page: state.forumMessagesListReduer.last_page,
+            per_page: state.forumMessagesListReduer.per_page,
+            to: state.forumMessagesListReduer.to,
+            total: state.forumMessagesListReduer.total,
+        }
     };
 };
 

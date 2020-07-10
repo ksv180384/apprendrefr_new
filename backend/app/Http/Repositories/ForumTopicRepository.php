@@ -51,7 +51,10 @@ class ForumTopicRepository extends CoreRepository
 
 
         if(!empty($topic->message_created_at)){
-            $topic->message_created_at = Carbon::createFromFormat('Y-m-d H:i:s', $topic->message_created_at)->format('H:i d.m.Y');
+            $topic->created_message = [
+                'day' => $this->formatDay(Carbon::parse($topic->message_created_at)),
+                'time' => Carbon::parse($topic->message_created_at)->format('H:i'),
+            ];
         }
 
 
@@ -94,7 +97,10 @@ class ForumTopicRepository extends CoreRepository
 
         foreach ($topics as $k=>$item){
             if(!empty($topics[$k]->message_created_at)){
-                $topics[$k]->message_created_at = Carbon::createFromFormat('Y-m-d H:i:s', $item->message_created_at)->format('H:i d.m.Y');
+                $topics[$k]->created_message = [
+                    'day' => $this->formatDay(Carbon::parse($topics[$k]->message_created_at)),
+                    'time' => Carbon::parse($topics[$k]->message_created_at)->format('H:i'),
+                ];
             }
         }
 
@@ -138,7 +144,10 @@ class ForumTopicRepository extends CoreRepository
 
         foreach ($topics as $k=>$item){
             if(!empty($topics[$k]->message_created_at)){
-                $topics[$k]->message_created_at = Carbon::createFromFormat('Y-m-d H:i:s', $item->message_created_at)->format('H:i d.m.Y');
+                $topics[$k]->created_message = [
+                    'day' => $this->formatDay(Carbon::parse($topics[$k]->message_created_at)),
+                    'time' => Carbon::parse($topics[$k]->message_created_at)->format('H:i'),
+                ];
             }
         }
 

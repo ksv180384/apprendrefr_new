@@ -6,10 +6,11 @@ import {
     SET_LOGIN,
     SET_USER,
     SET_META,
-    SET_PAGE_DATA,
+    INDEX_SET_FORUM,
     SET_LOADER_PAGE,
     STATISTIC_SET_DATA,
-    WORD_SET_LIST, ERROR_SET_DATA
+    WORD_SET_LIST,
+    ERROR_PAGE_SET_DATA
 } from './index';
 
 
@@ -23,7 +24,7 @@ export const getPage = (path_page, params = {}) => {
         };
         const path = config.path + path_page;
         //console.log(params);
-        axios.get(path+'?page_load=true').then((result) => {
+        axios.get(path + '?page_load=true').then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
             dispatch({
                 type: SET_META,
@@ -34,7 +35,7 @@ export const getPage = (path_page, params = {}) => {
                 }
             });
             dispatch({
-                type: SET_PAGE_DATA,
+                type: INDEX_SET_FORUM,
                 payload: result.data.data
             });
             dispatch({ type: SET_USER, payload: result.data.user });
@@ -45,8 +46,7 @@ export const getPage = (path_page, params = {}) => {
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
         }).catch((error) => {
-            dispatch({ type: ERROR_SET_DATA, payload: 'Ошибка при получении данных.' });
-
+            dispatch({ type: ERROR_PAGE_SET_DATA });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
         });
     }

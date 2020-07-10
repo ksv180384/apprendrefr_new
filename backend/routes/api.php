@@ -21,11 +21,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) {
 
-    Route::post('index', 'IndexController@index')->name('api.index');
+    Route::get('index', 'IndexController@index')->name('api.index');
 
     Route::group(['prefix' => 'user', 'namespace' => 'User'], function ($router) {
 
-        Route::post('profile-page', 'UserController@index')->name('api.user.profile-page');
+        Route::get('profile-page', 'UserController@index')->name('api.user.profile-page');
         Route::post('update/{id}', 'UserController@update')->name('api.user.update');
     });
 
@@ -36,7 +36,7 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::post('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
 
-        Route::post('register-page', 'AuthController@register_page')->name('api.registration_page');
+        Route::get('register-page', 'AuthController@register_page')->name('api.registration_page');
         Route::post('login-page', 'AuthController@login_page')->name('api.login_page');
 
     });
@@ -68,14 +68,17 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
     });
 
     // forum
-    Route::group(['prefix' => 'forum/{forum_id?}', 'namespace' => 'Forum'], function ($router) {
+    Route::group(['prefix' => 'forum', 'namespace' => 'Forum'], function ($router) {
 
-        Route::post('/', 'ForumController@index')->name('api.forums_list');
-        Route::post('topic/list', 'TopicController@index')->name('api.topics_list');
+        Route::get('{forum_id?}/', 'ForumController@index')->name('api.forums_list');
+        Route::get('{forum_id?}/topic/list', 'TopicController@index')->name('api.topics_list');
 
-        Route::group(['prefix' => 'topic/{topic_id?}'], function ($router) {
+        Route::post('send-message', 'MessageController@store')->name('api.messages_send_message');
 
-            Route::post('messages', 'MessageController@index')->name('api.messages_list');
+        Route::group(['prefix' => '{forum_id?}/topic/{topic_id?}'], function ($router) {
+
+            Route::get('messages', 'MessageController@index')->name('api.messages_list');
+            Route::get('messages-paginate', 'MessageController@getMessagesPaginate')->name('api.messages_paginate');
         });
     });
 });

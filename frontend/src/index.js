@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Router, Switch, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import ErrorBoundry from './components/error-boundry/ErrorBoundry';
 
@@ -15,9 +15,12 @@ import Topic from "./pages/forum/Topic";
 import Message from "./pages/forum/Message";
 
 // Components
-import ModalWindow from "./components/modals_windows/ModalWindow";
-import Preloader from "./components/preloader/Preloader";
+import ModalWindow from './components/modals_windows/ModalWindow';
+import Preloader from './components/preloader/Preloader';
+import ErrorNotification from './components/error-notification/ErrorNotification';
 import ReactNotification from 'react-notifications-component';
+import ErrorIndicator from './components/error-indicator/ErrorIndicator';
+
 import 'react-notifications-component/dist/theme.css';
 
 import './index.css';
@@ -27,8 +30,8 @@ const customHistory = createBrowserHistory();
 
 ReactDOM.render(
     <Provider store={ store }>
-        <ReactNotification />
         <ErrorBoundry>
+            <ReactNotification/>
             <Router history={ customHistory }>
                 <Switch>
                     <Route exact path='/' component={ Index }/>
@@ -39,10 +42,12 @@ ReactDOM.render(
                     <Route exact path='/forum/:forum_id' component={ Topic }/>
                     <Route exact path='/forum/:forum_id/topic/:topic_id' component={ Message }/>
                     <Route exact path='/forum/:forum_id/topic/:topic_id/page/:page' component={ Message }/>
+                    <Route exact component={ ErrorIndicator }/>
                 </Switch>
             </Router>
             <Preloader/>
             <ModalWindow/>
+            <ErrorNotification/>
         </ErrorBoundry>
     </Provider>,
     document.getElementById('root')

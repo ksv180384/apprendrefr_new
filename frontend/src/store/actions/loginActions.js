@@ -11,7 +11,7 @@ export const login = (form) => {
         axios.defaults.headers.common = {
             'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
         };
-        form.append('page', true);
+        form.append('page_load', true);
         axios.post(config.path + 'api/auth/login', form).then((result) => {
             localStorage.setItem('user-token', result.data.token_type + ' ' + result.data.access_token);
 

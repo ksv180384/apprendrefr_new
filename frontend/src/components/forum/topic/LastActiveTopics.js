@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React  from 'react';
 import { connect } from 'react-redux';
 
 import LastActiveTopicItem from './LastActiveTopicItem';
 
 import '../forum.css';
 
-class LastActiveTopics extends Component{
+const LastActiveTopics = (props) =>{
 
-    render(){
+    const { topics } = props;
 
-        const { topics } = this.props;
-
-        return(
+    return(
+        topics
+            ?
             <div className="LastActiveTopic-list">
                 <div className="panel_header">Последние темы</div>
                 <div className="ForumsList-list-header-table">
@@ -31,13 +31,14 @@ class LastActiveTopics extends Component{
                     })
                 }
             </div>
-        );
-    }
-}
+            :
+            <div>пусто</div>
+    );
+};
 
 const mapStateToPage = (state) => {
     return {
-        topics: state.pageDataReducer
+        topics: state.indexReducer.topics,
     }
 };
 

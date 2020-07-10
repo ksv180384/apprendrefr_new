@@ -3,8 +3,14 @@ import { Link } from 'react-router-dom';
 
 class Paginate extends Component{
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
+
+        this.loadContent = (e) => {
+            const el = e.currentTarget;
+            const page = el.getAttribute('data-page');
+            this.props.loadPaginate( 'api' + this.props.path + '/messages-paginate', { page: page ? page : 1 } );
+        };
 
         this.getLinks = (current_page, last_page, path) => {
             let items = [];
@@ -12,14 +18,14 @@ class Paginate extends Component{
                 if(last_page > 5 && i === 2 && current_page > 4){
                     items.push(<span key={ i } className="p-item">...</span>);
                 }
-                if(current_page - 2 <= i && current_page + 2 >= i || ( i === 1 || last_page === i)){
+                if((current_page - 2 <= i && current_page + 2 >= i) || ( i === 1 || last_page === i)){
                     items.push(
                         <span key={ i }
                               className={ 'p-item' + (current_page === i ? ' active' : '') }
                               data-page={ i }
-                            //onClick={ this.loadPage }
+                            onClick={ this.loadContent }
                         >
-                        <Link className="link" key={ i } to ={ path + '/page/' + i }>{ i }</Link>
+                        <Link className="link" key={ i } to={ path + '/page/' + i }>{ i }</Link>
                     </span>
                     );
                 }

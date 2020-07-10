@@ -12,6 +12,7 @@ class Message extends Model
 
     protected $fillable = [
         'message',
+        'topic_id',
         'user_id',
         'status',
         'create_at',

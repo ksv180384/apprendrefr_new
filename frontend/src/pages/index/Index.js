@@ -1,7 +1,7 @@
 import React,  { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getPage } from '../../store/actions/pageActions';
+import { getPage } from '../../store/actions/indexActions';
 
 // components
 import Header from "../../header/Header";
@@ -34,7 +34,9 @@ class Index extends Component {
 
         const { loader_page, meta_data } = this.props;
 
-        //document.title = meta_data.title;
+        document.title = meta_data.title;
+        document.querySelector('meta[name="description"]').content = meta_data.description;
+        document.querySelector('meta[name="keywords"]').content = meta_data.keywords;
 
         return(
 

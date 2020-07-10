@@ -129,11 +129,22 @@ class ProfileUpdateRequest extends FormRequest
         if (!empty($data['yar_birthday'])){
             $data['yar_birthday'] = $data['yar_birthday'] === 'on' ? 1 : 0;
         }
+        $data['sex'] = !empty((int)$data['sex']) ? (int)$data['sex'] : null;
+
+        // удаляет домен из строки
+        $data['facebook'] = trim(preg_replace("(^https?://)", "", $data['facebook']), '/');
+        $data['odnoklassniki'] = trim(preg_replace("(^https?://)", "", $data['odnoklassniki']), '/');
+        $data['twitter'] = trim(preg_replace("(^https?://)", "", $data['twitter']), '/');
+        $data['vk'] = trim(preg_replace("(^https?://)", "", $data['vk']), '/');
+        $data['youtube'] = trim(preg_replace("(^https?://)", "", $data['youtube']), '/');
+        $data['instagram'] = trim(preg_replace("(^https?://)", "", $data['instagram']), '/');
 
         // Меняем формат даты
         if (!empty($data['birthday'])){
             $data['birthday'] = Carbon::parse($data['birthday'])->format('Y-m-d H:i:s');
         }
+        $data['info'] = htmlspecialchars($data['info'], ENT_NOQUOTES);
+        $data['signature'] = htmlspecialchars($data['signature'], ENT_NOQUOTES);
 
         $this->getInputSource()->replace($data);
 
