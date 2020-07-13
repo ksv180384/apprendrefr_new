@@ -1,4 +1,5 @@
 import React , { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import BtnLoad from "../../components/btn_load/BtnLoad";
 import InputForm from '../../components/input_form/InputForm';
 import { Link } from 'react-router-dom';
@@ -50,55 +51,11 @@ class Registration extends Component{
 
             this.props.registrationUser(formData);
         };
-
-        /*
-        this.showError = (arr_error_message) => {
-            // формируем текст ошибки
-            let error_message = '';
-            if(typeof arr_error_message === 'object'){
-                for (let key in arr_error_message){
-                    for (let k in arr_error_message[key]){
-                        // Помечам поля с ошибками
-                        document.querySelector('input[name="' + key + '"]').parentNode.classList.add('error');
-                        error_message += '* ' + arr_error_message[key][k] + "\n";
-                    }
-                }
-            }else{
-                error_message = arr_error_message;
-            }
-
-            this.setState({ ...this.state, password: '', password_confirmation: '' });
-            storeNotification.addNotification({
-                title: "Ошибка",
-                message: error_message,
-                type: "danger",
-                insert: "top",
-                container: "top-right",
-                animationIn: ["animated", "fadeIn"],
-                animationOut: ["animated", "fadeOut"],
-                dismiss: {
-                    duration: 10000,
-                    showIcon: true,
-                    onScreen: true
-                }
-            });
-        };
-        */
     }
 
     componentDidMount(){
         this.props.getPage('api/auth/register-page');
     }
-
-    /*
-    componentWillReceiveProps(nextProps){
-        // Если при отправке формы регистрации произошла ошибка, то ловим ее тут
-        // Формируем текст ошибки и показываем оповещение
-        if(nextProps.registration_state.error){
-            this.showError(nextProps.registration_state.error_message);
-        }
-    }
-    */
 
     render(){
 
@@ -110,71 +67,79 @@ class Registration extends Component{
             checkbox_personal_data_protection_policy
         } = this.state;
         const { load_page, meta_data } = this.props;
-        const { loading } = this.props.registration_state;
+        const { loading, registration } = this.props.registration_state;
+        if(registration){
+            this.props.registrationResetData();
+        }
+
 
         document.title = meta_data.title;
         document.querySelector('meta[name="description"]').content = meta_data.description;
         document.querySelector('meta[name="keywords"]').content = meta_data.keywords;
 
         return  (
-            load_page
+            registration
                 ?
-             <LoaderPage/>
+                <Redirect to="/" />
                 :
-            <div className="Registration">
-                <div className="panel-registration">
-                    <div className="panel-registration-header">
-                        <Link to="/" className="btn-go-home-page" title="На главную">
-                            <FontAwesomeIcon icon={faChevronCircleLeft}/>
-                        </Link>
-                        Регистрация
-                    </div>
-                    <div className="panel-registration-content">
-                        <form id="formRegistration"
-                              action={ config.path + 'api/auth/registration' }
-                              method="post"
-                              onSubmit={ (e) => this.registrationSubmit(e) }
-                        >
+                load_page
+                    ?
+                 <LoaderPage/>
+                    :
+                <div className="Registration">
+                    <div className="panel-registration">
+                        <div className="panel-registration-header">
+                            <Link to="/" className="btn-go-home-page" title="На главную">
+                                <FontAwesomeIcon icon={faChevronCircleLeft}/>
+                            </Link>
+                            Регистрация
+                        </div>
+                        <div className="panel-registration-content">
+                            <form id="formRegistration"
+                                  action={ config.path + 'api/auth/registration' }
+                                  method="post"
+                                  onSubmit={ (e) => this.registrationSubmit(e) }
+                            >
 
-                            <div className="form-item">
-                                <InputForm name="email" placeholder="Email" type="text" value={ email }
-                                           onChange={ this.handleChangeFormInpitText } />
-                            </div>
-                            <div className="form-item">
-                                <InputForm name="login" placeholder="Имя/логин" type="text" value={ login }
-                                           onChange={ this.handleChangeFormInpitText } />
-                            </div>
-                            <div className="form-item">
-                                <InputForm name="password" placeholder="Пароль" type="password" value={ password }
-                                           onChange={ this.handleChangeFormInpitText } />
-                            </div>
-                            <div className="form-item">
-                                <InputForm name="password_confirmation" placeholder="Подтвердите пароль" type="password"
-                                           value={ password_confirmation } onChange={ this.handleChangeFormInpitText } />
-                            </div>
-                            <div>
-                                <div className="checkbox-apr">
-                                    <input id="labelPersonalDataProtectionPolicy"
-                                           type="checkbox"
-                                           name="remember"
-                                           checked={ checkbox_personal_data_protection_policy }
-                                           onChange={ this.handleChangeCheckbox }
-                                    />
-                                    <span></span>
+                                <div className="form-item">
+                                    <InputForm name="email" placeholder="Email" type="text" value={ email }
+                                               onChange={ this.handleChangeFormInpitText } />
                                 </div>
-                                <label className="label-personal-data-protection-policy" htmlFor="labelPersonalDataProtectionPolicy">
-                                    Подтверждаю, что ознакомился и принимаю <a href="#" className="link">правила
-                                    пользовательского соглашения</a> и <a href="#" className="link"> Политику по защите
-                                    персональных данных</a>.
-                                </label>
-                            </div>
-                            <div className="form-item mt-40 text-center">
-                                <BtnLoad load={ loading } type="submit" title="Зарегистрироваться"/>
-                            </div>
-                        </form>
+                                <div className="form-item">
+                                    <InputForm name="login" placeholder="Имя/логин" type="text" value={ login }
+                                               onChange={ this.handleChangeFormInpitText } />
+                                </div>
+                                <div className="form-item">
+                                    <InputForm name="password" placeholder="Пароль" type="password" value={ password }
+                                               onChange={ this.handleChangeFormInpitText } />
+                                </div>
+                                <div className="form-item">
+                                    <InputForm name="password_confirmation" placeholder="Подтвердите пароль" type="password"
+                                               value={ password_confirmation } onChange={ this.handleChangeFormInpitText } />
+                                </div>
+                                <div>
+                                    <div className="checkbox-apr">
+                                        <input id="labelPersonalDataProtectionPolicy"
+                                               type="checkbox"
+                                               name="remember"
+                                               checked={ checkbox_personal_data_protection_policy }
+                                               onChange={ this.handleChangeCheckbox }
+                                        />
+                                        <span></span>
+                                    </div>
+                                    <label className="label-personal-data-protection-policy" htmlFor="labelPersonalDataProtectionPolicy">
+                                        Подтверждаю, что ознакомился и принимаю <a href="#" className="link">правила
+                                        пользовательского соглашения</a> и <a href="#" className="link"> Политику по защите
+                                        персональных данных</a>.
+                                    </label>
+                                </div>
+                                <div className="form-item mt-40 text-center">
+                                    <BtnLoad load={ loading } type="submit" title="Зарегистрироваться"/>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
         )
     }
 }

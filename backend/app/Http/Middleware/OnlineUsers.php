@@ -20,7 +20,7 @@ class OnlineUsers
     public function handle($request, Closure $next)
     {
         //var_export($request->page_load);
-        return $next($request);
+        //return $next($request);
         //sleep(2);
         if(empty($request->page_load)){
             return $next($request);

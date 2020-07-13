@@ -23,12 +23,16 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
 
     Route::get('index', 'IndexController@index')->name('api.index');
 
+    // User
     Route::group(['prefix' => 'user', 'namespace' => 'User'], function ($router) {
 
         Route::get('profile-page', 'UserController@index')->name('api.user.profile-page');
+        Route::get('info-page/{id}', 'UserController@show')->name('api.user.info');
+
         Route::post('update/{id}', 'UserController@update')->name('api.user.update');
     });
 
+    // Auth
     Route::group(['prefix' => 'auth','namespace' => 'Auth',], function ($router) {
 
         Route::post('login', 'AuthController@login');

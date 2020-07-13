@@ -1,8 +1,6 @@
 import React  from 'react';
 import { connect } from "react-redux";
 
-import { removeError } from "../../store/actions/errorNotificationActions";
-
 import './ErrorIndicator.css';
 
 const ErrorIndicator = () => {
@@ -41,4 +39,4 @@ const ErrorIndicator = () => {
 
 };
 
-export default connect(null, { removeError })(ErrorIndicator);
+export default connect(null, { })(ErrorIndicator);

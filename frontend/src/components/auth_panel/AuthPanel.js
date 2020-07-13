@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { config } from '../../config';
 
-import { store as storeNotification } from 'react-notifications-component';
 
-
-import { login, loginResetError } from '../../store/actions/loginActions';
-import { setLoader } from '../../store/actions/loaderActions';
+import { login } from '../../store/actions/loginActions';
 
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
@@ -34,45 +31,17 @@ class AuthPanel extends Component{
             this.setState({ remember: e.target.checked });
         };
 
-        this.showError = (error_message) => {
-            storeNotification.addNotification({
-                title: 'Ошибка авторизации',
-                message: error_message,
-                type: "danger",
-                insert: "top",
-                container: "top-right",
-                animationIn: ["animated", "fadeIn"],
-                animationOut: ["animated", "fadeOut"],
-                dismiss: {
-                    duration: 10000,
-                    showIcon: true,
-                    onScreen: true
-                }
-            });
-
-            this.setState({...this.state, password: ''});
-        };
-
-    }
-
-    componentDidMount(){
-
         this.handleSubmit = (e) => {
             e.preventDefault();
 
             // Загружаем данные формы
-            let formData = new FormData(document.querySelector('#loginForm'));
+            let formData = new FormData(e.target);
 
             this.props.login(formData);
-        };
-    }
 
-    componentWillReceiveProps(nextProps){
-        // Если при отправке формы регистрации произошла ошибка, то ловим ее тут
-        // Формируем текст ошибки и показываем оповещение
-        if(nextProps.login_state.error){
-            this.showError(nextProps.login_state.error_message);
-        }
+            this.setState({...this.state, password: ''});
+        };
+
     }
 
 
@@ -170,4 +139,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { login, setLoader, loginResetError })(AuthPanel);
+export default connect(mapStateToProps, { login })(AuthPanel);

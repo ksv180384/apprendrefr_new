@@ -12,6 +12,7 @@ class UserInfo extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'user_id',
         'facebook',
         'skype',
         'twitter',

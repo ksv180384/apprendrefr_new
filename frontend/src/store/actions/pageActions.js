@@ -9,7 +9,8 @@ import {
     SET_PAGE_DATA,
     SET_LOADER_PAGE,
     STATISTIC_SET_DATA,
-    WORD_SET_LIST, ERROR_SET_DATA
+    WORD_SET_LIST,
+    ERROR_PAGE
 } from './index';
 
 
@@ -45,7 +46,7 @@ export const getPage = (path_page, params = {}) => {
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
         }).catch((error) => {
-            dispatch({ type: ERROR_SET_DATA, payload: 'Ошибка при получении данных.' });
+            dispatch({ type: ERROR_PAGE, payload: 'Ошибка при получении данных.' });
 
             dispatch({ type: SET_LOADER_PAGE, payload: false });
         });

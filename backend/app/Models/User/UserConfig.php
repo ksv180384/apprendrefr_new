@@ -12,6 +12,7 @@ class UserConfig extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'user_id',
         'day_birthday',
         'yar_birthday',
         'email',

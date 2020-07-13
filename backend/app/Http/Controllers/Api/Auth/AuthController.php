@@ -109,9 +109,36 @@ class AuthController extends Controller
         );
         $user = User::create($arr_user_data);
 
+        $configs_view = User\UserConfigsView::select(['id'])
+                                                ->where('alias', '=', 'ne-pokazyvat-nikomu')
+                                                ->first();
+
+        User\UserConfig::create([
+            'user_id' => $user->id,
+            'day_birthday' => 1,
+            'yar_birthday' => 1,
+            'email' => $configs_view->id,
+            'facebook' => $configs_view->id,
+            'skype' => $configs_view->id,
+            'twitter' => $configs_view->id,
+            'vk' => $configs_view->id,
+            'odnoklassniki' => $configs_view->id,
+            'telegram' => $configs_view->id,
+            'whatsapp' => $configs_view->id,
+            'viber' => $configs_view->id,
+            'instagram' => $configs_view->id,
+            'youtube' => $configs_view->id,
+            'info' => $configs_view->id,
+            'residence' => $configs_view->id,
+            'sex' => $configs_view->id,
+        ]);
+        User\UserInfo::create([
+            'user_id' => $user->id,
+        ]);
+
 
         return response()->json([
-            'message' => 'Вы успешно прошли регистрацию. Для входа в систему используйте свой адрес электронной почты и пароль.'
+            'message' => 'Вы успешно прошли регистрацию. Вам на почту отправлено письмо для подтверждения регистрации.'
         ], 200);
     }
 
@@ -178,6 +205,10 @@ class AuthController extends Controller
         $count_users_register = $this->userRepository->countUsersRegister();
         $count_all = $count_users + $count_guests;
         $count_messages = $this->forumMessageRepository->countAll();
+        $user = $this->userRepository->getById(\Auth::id());
+        if(empty($user)){
+            return response()->json(['message' => 'Ошибка авторизации.'], 401);
+        }
 
         return response()->json([
             'access_token' => $token,
@@ -185,7 +216,7 @@ class AuthController extends Controller
             'expires_in' => $this->guard()->factory()->getTTL() * 60,
             'user_data' => [
                 'auth' => \Auth::check(),
-                'user' => $this->userRepository->getById(\Auth::id()) ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+                'user' => $user->toArray(),
             ],
             'statistic' => [
                 'online_users' => $online_users,

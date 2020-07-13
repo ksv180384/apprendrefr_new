@@ -3,8 +3,6 @@ import { LOGIN_SUCCESS, LOGIN_REQUEST, LOGIN_ERROR, LOGIN_RESET_ERROR, SET_LOGIN
 const initState = {
     login: false,
     loading: false,
-    error_message: '',
-    error: false,
 };
 
 const reducer = (state = initState, action) => {
@@ -13,8 +11,6 @@ const reducer = (state = initState, action) => {
             return {
                 ...state,
                 loading: true,
-                error_message: '',
-                error: false,
             };
         case LOGIN_SUCCESS:
             return {
@@ -26,8 +22,6 @@ const reducer = (state = initState, action) => {
             return {
                 ...state,
                 loading: false,
-                error_message: action.payload,
-                error: true,
             };
         case LOGIN_RESET_ERROR:
             return {

@@ -15,8 +15,8 @@ class ForumItem extends Component{
                         forum.count_messages > 0
                         ?
                             <React.Fragment>
-                                <span>Последнее сообщение: <a href={ '/forum/' + forum.id + '/topic/' + forum.topic_id } className="link">{ forum.topic_title }</a></span>
-                                <span>от: <a href={ '#' + forum.message_create_user_id } className="link">{ forum.message_create_user_login }</a></span>в: { forum.created_message.time } <strong>{ forum.created_message.day }</strong>
+                                <span>Последнее сообщение: <Link to={ '/forum/' + forum.id + '/topic/' + forum.topic_id } className="link">{ forum.topic_title }</Link></span>
+                                <span>от: <Link to={ '/user/info/' + forum.message_create_user_id } className="link">{ forum.message_create_user_login }</Link></span>в: { forum.created_message.time } <strong>{ forum.created_message.day }</strong>
                             </React.Fragment>
                         :
                             ''

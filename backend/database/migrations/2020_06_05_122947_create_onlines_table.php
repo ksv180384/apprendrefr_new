@@ -24,7 +24,7 @@ class CreateOnlinesTable extends Migration
             $table->string('bot_name', 255)->nullable()->default(null)->comment('Название бота');
             $table->timestamp('date')->useCurrent()->comment('Дата последнего посещения.');
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

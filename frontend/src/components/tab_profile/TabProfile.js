@@ -57,6 +57,16 @@ class TabProfile extends Component{
 
         };
 
+        this.handleSubmit = (e) => {
+            e.preventDefault();
+
+            // Загружаем данные формы
+            let formData = new FormData(e.target);
+
+            this.props.updateProfile(formData, this.props.user.id);
+
+        };
+
         this.showErrorMessage = (arr_error_message) => {
             // формируем текст ошибки
             let error_message = '';
@@ -107,18 +117,7 @@ class TabProfile extends Component{
         };
     }
 
-    componentDidMount(){
-        this.handleSubmit = (e) => {
-            e.preventDefault();
-
-            // Загружаем данные формы
-            let formData = new FormData(document.querySelector('#formProfile'));
-
-            this.props.updateProfile(formData, this.props.user.id);
-
-        };
-    }
-
+    /*
     componentWillReceiveProps(nextProps){
         // Если при отправке формы регистрации произошла ошибка, то ловим ее тут
         // Формируем текст ошибки и показываем оповещение
@@ -129,6 +128,7 @@ class TabProfile extends Component{
             this.showSuccessMessage(nextProps.profile_state.message);
         }
     }
+    */
 
     render(){
         const { user } = this.props;
@@ -137,11 +137,13 @@ class TabProfile extends Component{
         const { birthday } = this.state;
 
         return(
+            sex_list
+                ?
             <div className="TabProfile">
                 <form action={ config.path + 'api/user/update/' + user.id }
                       id="formProfile"
                       method="post"
-                      onSubmit={ (e) => this.handleSubmit(e) }
+                      onSubmit={ this.handleSubmit }
                       encType="multipart/form-data"
                 >
 
@@ -410,6 +412,8 @@ class TabProfile extends Component{
                     </div>
                 </form>
             </div>
+                :
+            <div>пусто</div>
         );
     }
 }

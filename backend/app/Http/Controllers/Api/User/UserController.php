@@ -32,7 +32,7 @@ class UserController extends Controller
     {
         //$this->middleware('auth:api');
         $this->middleware('auth:api', [
-            'except' => [] // методы с доступ неавторизованным пользователям
+            'except' => ['show'] // методы с доступ неавторизованным пользователям
         ]);
 
         $this->userRepository = app(UserRepository::class);
@@ -99,6 +99,12 @@ class UserController extends Controller
     public function show($id)
     {
         //
+        $user = $this->userRepository->getById((int)$id);
+        if(empty($user)){
+            return response()->json(['message' => 'Неверный идентификатор пользователя.'], 404);
+        }
+
+        return response()->json($user);
     }
 
     /**

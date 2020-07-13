@@ -109,7 +109,11 @@ export const FORUM_SET_MESSAGES_LIST = 'FORUM_SET_MESSAGES_LIST';
 // index
 export const INDEX_SET_FORUM = 'INDEX_SET_FORUM';
 
+// user info
+export const USER_INFO_REQUEST = 'USER_INFO_REQUEST';
+export const USER_INFO_SUCCESS = 'USER_INFO_SUCCESS';
+export const USER_INFO_ERROR = 'USER_INFO_ERROR';
+
 // error
-export const ERROR_SET_DATA = 'ERROR_SET_DATA';
-export const ERROR_PAGE_SET_DATA = 'ERROR_PAGE_SET_DATA';
-export const ERROR_REMOVE = 'ERROR_REMOVE';
+export const ERROR_PAGE = 'ERROR_PAGE';
+export const ERROR_PAGE_REMOVE = 'ERROR_PAGE_REMOVE';

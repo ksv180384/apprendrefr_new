@@ -10,12 +10,11 @@ import {
     SET_LOGIN,
     WORD_SET_LIST,
     STATISTIC_SET_DATA,
-    ERROR_PAGE_SET_DATA,
-    ERROR_SET_DATA
+    ERROR_PAGE
 } from './index';
 
 import axios from 'axios';
-//import { store as storeNotification } from 'react-notifications-component';
+import { errorNotification, successNotification } from "./notificationActions";
 import { config } from '../../config';
 
 export const setForum = (forum) => {
@@ -68,7 +67,7 @@ export const loadForumsListPage = (path_page, params = {}) => {
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
         }).catch((error) => {
-            dispatch({ type: ERROR_PAGE_SET_DATA });
+            dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
 
         });
@@ -109,7 +108,7 @@ export const loadTopicsListPage = (path_page, params = {}) => {
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
         }).catch((error) => {
-            dispatch({ type: ERROR_PAGE_SET_DATA });
+            dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
         });
     }
@@ -154,7 +153,7 @@ export const loadMessagesListPage = (path_page, params = {}) => {
             }
         }).catch((error) => {
             //dispatch({ type: LOAD_PAGE, payload: [], error: 'Ошибка при получении данных.' });
-            dispatch({ type: ERROR_PAGE_SET_DATA });
+            dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
         });
     }
@@ -185,7 +184,7 @@ export const loadMessagesPaginate = (path_page, params = {}) => {
 
         }).catch((error) => {
             //dispatch({ type: LOAD_PAGE, payload: [], error: 'Ошибка при получении данных.' });
-            dispatch({ type: ERROR_PAGE_SET_DATA });
+            dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
         });
     }
@@ -216,7 +215,7 @@ export const sendMessage = (topic, message) => {
             }
         }).catch((error) => {
             //dispatch({ type: LOAD_PAGE, payload: [], error: 'Ошибка при получении данных.' });
-            dispatch({ type: ERROR_SET_DATA, payload: error.response.data.message[0] });
+            errorNotification(error.response.data.message[0]);
             dispatch({ type: SET_LOADER_PAGE, payload: false });
         });
     }

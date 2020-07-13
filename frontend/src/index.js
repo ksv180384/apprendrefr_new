@@ -13,11 +13,11 @@ import Profile from "./pages/profile/Profile";
 import Forum from "./pages/forum/Forum";
 import Topic from "./pages/forum/Topic";
 import Message from "./pages/forum/Message";
+import UserInfo from "./pages/user_info/UserInfo";
 
 // Components
 import ModalWindow from './components/modals_windows/ModalWindow';
 import Preloader from './components/preloader/Preloader';
-import ErrorNotification from './components/error-notification/ErrorNotification';
 import ReactNotification from 'react-notifications-component';
 import ErrorIndicator from './components/error-indicator/ErrorIndicator';
 
@@ -38,6 +38,7 @@ ReactDOM.render(
                     <Route exact path='/profile' component={ Profile }/>
                     <Route exact path='/registration' component={ Registration }/>
                     <Route exact path='/lost-password' component={ LostPassword }/>
+                    <Route exact path='/user/info/:id' component={ UserInfo }/>
                     <Route exact path='/forum' component={ Forum }/>
                     <Route exact path='/forum/:forum_id' component={ Topic }/>
                     <Route exact path='/forum/:forum_id/topic/:topic_id' component={ Message }/>
@@ -47,7 +48,6 @@ ReactDOM.render(
             </Router>
             <Preloader/>
             <ModalWindow/>
-            <ErrorNotification/>
         </ErrorBoundry>
     </Provider>,
     document.getElementById('root')

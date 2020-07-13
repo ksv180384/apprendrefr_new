@@ -27,8 +27,12 @@ class ErrorBoundry extends Component{
         const { hasError } = this.state;
         const { error } = this.props;
 
-        if(hasError || error.is_error_page){
+        if(error){
             return(<ErrorIndicator/>);
+        }
+        if(hasError){
+            alert('Произошла какая то хрень');
+            return(<React.Fragment></React.Fragment>);
         }
 
         return this.props.children;
@@ -37,7 +41,7 @@ class ErrorBoundry extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        error: state.errorNotificationReducer,
+        error: state.errorReducer.error,
     };
 };
 
