@@ -57,12 +57,6 @@ class IndexController extends BaseController
 
     public function index(Request $request){
 
-        //$words = $this->wordRepository->getRandomWords(10);
-        //$proverb = $this->proverbRepository->getRandomProverb(1);
-        //$sex_list = [['id' => 0, 'title' => 'Нет' ]];
-        //$sex_list = array_merge($sex_list, Sex::select('id', 'title')->orderBy('id', 'asc')->get()->toArray());
-        //$config_user_data_view_list = UserConfigsView::all();
-
         $topics = $this->forumTopicRepository->getLastActiveTopics();
         $words_list = $this->wordRepository->getRandomWords();
         $online_users = $this->statisticRepository->getOnlineUsers();
@@ -73,10 +67,6 @@ class IndexController extends BaseController
         $count_messages = $this->forumMessageRepository->countAll();
 
         return response()->json([
-            //'words' => $words,
-            //'proverb' => $proverb[0],
-            //'config_user_data_view_list' => $config_user_data_view_list,
-            //'sex_list' => $sex_list,
             'title' => 'Французский язык - изучение, форум',
             'description' => 'Французский язык - изучение, форум',
             'keywords' => '',

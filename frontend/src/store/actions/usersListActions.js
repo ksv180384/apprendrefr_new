@@ -1,18 +1,19 @@
 import {
-    USER_INFO_SET_INFO,
-    STATISTIC_SET_DATA,
-    SET_META,
-    SET_USER,
+    USERS_LIST_SET_DATA,
+    SET_LOADER_PAGE,
     ERROR_PAGE,
     SET_LOGIN,
-    SET_LOADER_PAGE,
-    WORD_SET_LIST
+    WORD_SET_LIST,
+    STATISTIC_SET_DATA,
+    SET_META,
+    SET_USER, FORUM_SET_MESSAGES_LIST
 } from './index';
 
 import axios from 'axios';
 import { config } from '../../config';
 
-export const getPage = (path_page) => {
+
+export const getPage = (path_page, params = {}) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
         axios.defaults.headers.common = {
@@ -20,7 +21,7 @@ export const getPage = (path_page) => {
             'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
         };
         const path = config.path + path_page;
-        axios.get(path + '?page_load=true').then((result) => {
+        axios.get(path + '?page_load=true&page=' + params.page).then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
             dispatch({
                 type: SET_META,
@@ -31,8 +32,8 @@ export const getPage = (path_page) => {
                 }
             });
             dispatch({
-                type: USER_INFO_SET_INFO,
-                payload: result.data.data.user
+                type: USERS_LIST_SET_DATA,
+                payload: result.data.data.users
             });
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
@@ -41,6 +42,35 @@ export const getPage = (path_page) => {
             if(result.data.statistic){
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
+        }).catch((error) => {
+            dispatch({ type: ERROR_PAGE });
+            dispatch({ type: SET_LOADER_PAGE, payload: false });
+        });
+    }
+};
+
+export const loadUsersPaginate = (path_page, params = {}) => {
+    return (dispatch) => {
+        axios.defaults.headers.common = {
+            'Authorization':localStorage.getItem('user-token'),
+            'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
+        };
+        const path = config.path + path_page;
+        axios.get(path+'?page_load=true&page='+params.page).then((result) => {
+            localStorage.setItem('user-token-page', result.data.UserToken);
+            dispatch({
+                type: SET_META,
+                payload: {
+                    description: result.data.description,
+                    keywords: result.data.keywords,
+                    title: result.data.title,
+                }
+            });
+            dispatch({
+                type: USERS_LIST_SET_DATA,
+                payload: result.data.users
+            });
+
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

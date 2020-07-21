@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\Models\Player\PlayerArtistsSong;
 use App\Models\Player\PlayerSongs as Model;
 
 /**
@@ -21,7 +22,7 @@ class SongRepository extends CoreRepository
     }
 
     /**
-     * Получает заданное количество случайных слов
+     * Получает песню
      * int $id - идентификатор записи
      * @return mixed
      */
@@ -54,6 +55,7 @@ class SongRepository extends CoreRepository
     public function getSongsList(bool $all = false){
         $select = [
             'id',
+            'artist_id',
             'artist_name',
             'title',
         ];
@@ -82,6 +84,7 @@ class SongRepository extends CoreRepository
     public function searchByArtistAndTitle(string $artist, string $title){
         $song = $this->startConditions()
             ->select([
+                'player_songs.artist_id',
                 'player_songs.artist_name',
                 'player_songs.title',
                 'player_songs.text_fr',
@@ -101,10 +104,15 @@ class SongRepository extends CoreRepository
         return $song;
     }
 
+    /**
+     * @param $search_text - название песни или артиста
+     * @return mixed
+     */
     public function search($search_text){
         $song_list = $this->startConditions()
             ->select([
                 'player_songs.id',
+                'player_songs.artist_id',
                 'player_songs.artist_name',
                 'player_songs.title',
             ])
@@ -117,5 +125,11 @@ class SongRepository extends CoreRepository
             ->limit(10)
             ->get();
         return $song_list;
+    }
+
+    public function getArtists(){
+        $artists = PlayerArtistsSong::select(['id', 'name'])->get();
+
+        return $artists;
     }
 }

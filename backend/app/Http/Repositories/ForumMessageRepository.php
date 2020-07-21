@@ -14,7 +14,7 @@ use Illuminate\Pagination\Paginator;
 class ForumMessageRepository extends CoreRepository
 {
 
-    const SHOW_PAGES = 2;
+    const SHOW_PAGES = 10;
 
     /**
      * Отдает управляемый класс

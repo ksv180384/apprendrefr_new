@@ -18,6 +18,7 @@ import Proverb from "../../components/proverb/Proverb";
 import MessagesList from "../../components/forum/message/MessagesList";
 import LoaderPage from "../../components/loader_page/LoaderPage";
 import TextEditor from '../../components/forum/text_editor/TextEditor';
+import Quotes from '../../components/forum/Quotes';
 
 class Message extends Component {
 
@@ -32,25 +33,6 @@ class Message extends Component {
     componentDidMount(){
         this.props.loadMessagesListPage('api/forum/' + this.props.match.params.forum_id + '/topic/' + this.props.match.params.topic_id + '/messages', { page: this.props.match.params.page });
     }
-
-    /*
-    static getDerivedStateFromProps(props, state){
-        if(typeof state.page === 'undefined'){
-            state.page = 1;
-        }
-        if(typeof props !== 'undefined'){
-            let page = props.match.params.page;
-            if(typeof page === 'undefined'){
-                page = 1;
-            }
-            if(page !== state.page){
-                state.page = props.match.params.page;
-                props.loadMessagesListPage('api/forum/' + props.match.params.forum_id + '/topic/' + props.match.params.topic_id + '/messages', { page: page });
-            }
-        }
-        return state;
-    }
-    */
 
     render(){
 
@@ -80,7 +62,8 @@ class Message extends Component {
                         <CenterTwoBlock>
                             <Proverb/>
                             <MessagesList/>
-                            { auth && paginate.to === paginate.total ? <TextEditor topic={ this.props.match.params.topic_id }/> : '' }
+                            { auth ? <TextEditor topic={ this.props.match.params.topic_id }/> : '' }
+                            <Quotes/>
                         </CenterTwoBlock>
 
                     </LayoutTwo>
@@ -102,7 +85,7 @@ const mapStateToProps = (state) => {
             per_page: state.forumMessagesListReduer.per_page,
             to: state.forumMessagesListReduer.to,
             total: state.forumMessagesListReduer.total,
-        }
+        },
     };
 };
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\User\ProfileUpdateRequest;
 use App\Models\User;
+use App\Repositories\ForumMessageRepository;
+use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
 use App\Models\User\Sex;
 use App\Models\User\UserConfigsView;
@@ -27,6 +29,16 @@ class UserController extends Controller
      */
     private $wordRepository;
 
+    /**
+     * @var StatisticRepository;
+     */
+    private $statisticRepository;
+
+    /**
+     * @var ForumMessageRepository
+     */
+    private $forumMessageRepository;
+
 
     public function __construct()
     {
@@ -37,6 +49,8 @@ class UserController extends Controller
 
         $this->userRepository = app(UserRepository::class);
         $this->wordRepository = app(WordRepository::class);
+        $this->statisticRepository = app(StatisticRepository::class);
+        $this->forumMessageRepository = app(ForumMessageRepository::class);
     }
     /**
      * Display a listing of the resource.
@@ -103,8 +117,98 @@ class UserController extends Controller
         if(empty($user)){
             return response()->json(['message' => 'Неверный идентификатор пользователя.'], 404);
         }
+        $words_list = $this->wordRepository->getRandomWords();
+        $online_users = $this->statisticRepository->getOnlineUsers();
+        $count_users = count($online_users);
+        $count_guests = $this->statisticRepository->countGuests();
+        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_all = $count_users + $count_guests;
+        $count_messages = $this->forumMessageRepository->countAll();
 
-        return response()->json($user);
+        return response()->json([
+            'title' => $user->login . ' - профиль пользователя',
+            'description' => $user->login . ' - профиль пользователя',
+            'keywords' => $user->login . ' - профиль пользователя',
+            'footer' => [
+                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
+                'E-mail: admin@apprendrefr.ru'
+            ],
+            'data' => [
+                'user' => $user,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+            'words_list' => $words_list,
+            'statistic' => [
+                'online_users' => $online_users,
+                'count_guests' => $count_guests,
+                'count_users' => $count_users,
+                'count_all' => $count_all,
+                'count_users_register' => $count_users_register,
+                'count_messages' => $count_messages,
+            ],
+        ]);
+    }
+
+    /**
+     * Показывает список пользователей
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listUsers()
+    {
+        //
+        $users = $this->userRepository->getList();
+        if(empty($users->toArray()['data'])){
+            return response()->json(['message' => 'Неверный идентификатор пользователя.'], 404);
+        }
+
+        $words_list = $this->wordRepository->getRandomWords();
+        $online_users = $this->statisticRepository->getOnlineUsers();
+        $count_users = count($online_users);
+        $count_guests = $this->statisticRepository->countGuests();
+        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_all = $count_users + $count_guests;
+        $count_messages = $this->forumMessageRepository->countAll();
+
+        return response()->json([
+            'title' => 'Список пользователя',
+            'description' => 'Список пользователя',
+            'keywords' => 'Список пользователя',
+            'footer' => [
+                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
+                'E-mail: admin@apprendrefr.ru'
+            ],
+            'data' => [
+                'users' => $users,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+            'words_list' => $words_list,
+            'statistic' => [
+                'online_users' => $online_users,
+                'count_guests' => $count_guests,
+                'count_users' => $count_users,
+                'count_all' => $count_all,
+                'count_users_register' => $count_users_register,
+                'count_messages' => $count_messages,
+            ],
+        ]);
+    }
+
+    public function getUsersListPaginate(){
+        $users = $this->userRepository->getList();
+
+        if(count($users) == 0){
+            return response()->json(['message' => 'Такой страницы не существует.'], 404);
+        }
+
+        return response()->json([
+            'title' => 'Список пользователей (стр ' . $users->toArray()['current_page'] . ')',
+            'description' => 'Список пользователей (стр ' . $users->toArray()['current_page'] . ')',
+            'keywords' => 'Список пользователей (стр ' . $users->toArray()['current_page'] . ')',
+            'users' => $users,
+        ]);
     }
 
     /**

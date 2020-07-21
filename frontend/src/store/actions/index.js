@@ -14,10 +14,6 @@ export const REGISTRATION_SUCCESS = 'REGISTRATION_SUCCESS';
 export const REGISTRATION_ERROR = 'REGISTRATION_ERROR';
 export const REGISTRATION_RESET_DATA = 'REGISTRATION_RESET_DATA';
 
-// user
-export const GET_USER = 'GET_USER';
-export const SET_USER = 'SET_USER';
-
 // meta
 export const GET_META = 'GET_META';
 export const SET_META = 'SET_META';
@@ -74,6 +70,9 @@ export const TESTYOURSELF_ERROR = 'TESTYOURSELF_ERROR';
 // statistic
 export const STATISTIC_SET_DATA = 'STATISTIC_SET_DATA';
 
+// lyrics
+export const LYRIC_SET_DATA = 'LYRIC_SET_DATA';
+
 // player
 export const PLAYER_GET_SONGS_LIST_REQUEST = 'PLAYER_GET_SONGS_LIST_REQUEST';
 export const PLAYER_GET_SONGS_LIST_SUCCESS = 'PLAYER_GET_SONGS_LIST_SUCCESS';
@@ -106,13 +105,26 @@ export const FORUM_SET_TOPIC = 'FORUM_SET_TOPIC';
 export const FORUM_SET_TOPICS_LIST = 'FORUM_SET_TOPICS_LIST';
 export const FORUM_SET_MESSAGES_LIST = 'FORUM_SET_MESSAGES_LIST';
 
+export const FORUM_QUOTE_ADD = 'FORUM_QUOTE_ADD';
+export const FORUM_QUOTS_REMOVE = 'FORUM_QUOTS_REMOVE';
+
+
 // index
 export const INDEX_SET_FORUM = 'INDEX_SET_FORUM';
 
+// user
+export const GET_USER = 'GET_USER';
+export const SET_USER = 'SET_USER';
+
 // user info
-export const USER_INFO_REQUEST = 'USER_INFO_REQUEST';
-export const USER_INFO_SUCCESS = 'USER_INFO_SUCCESS';
-export const USER_INFO_ERROR = 'USER_INFO_ERROR';
+export const USER_INFO_SET_INFO = 'USER_INFO_SET_INFO';
+
+// users list
+export const USERS_LIST_SET_DATA = 'USERS_LIST_SET_DATA';
+
+// grammar
+export const GRAMMAR_SET_LIST = 'GRAMMAR_SET_LIST';
+export const GRAMMAR_SET_ITEM = 'GRAMMAR_SET_ITEM';
 
 // error
 export const ERROR_PAGE = 'ERROR_PAGE';

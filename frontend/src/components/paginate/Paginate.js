@@ -9,7 +9,7 @@ class Paginate extends Component{
         this.loadContent = (e) => {
             const el = e.currentTarget;
             const page = el.getAttribute('data-page');
-            this.props.loadPaginate( 'api' + this.props.path + '/messages-paginate', { page: page ? page : 1 } );
+            this.props.loadPaginate( 'api' + (this.props.paginate_path ? this.props.paginate_path : this.props.path), { page: page ? page : 1 } );
         };
 
         this.getLinks = (current_page, last_page, path) => {

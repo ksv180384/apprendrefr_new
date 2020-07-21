@@ -1,14 +1,29 @@
 import React  from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVenus, faMars} from '@fortawesome/free-solid-svg-icons';
+import { faVenus, faMars, faCommentDots, faEdit, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faSkype, faTwitter, faVk, faOdnoklassniki,
     faTelegram, faWhatsapp, faViber, faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
+//actions
+import { addQuote } from '../../../store/actions/quotesActions';
+
 const MessagesList = (props) => {
+
+    const setQuote = (e) => {
+        const el =  e.target;
+        const el_message = el.closest('.MessageItem');
+        const quote_content = el_message.querySelector('.MessageItem-message').innerHTML;
+        const quote_id = el_message.getAttribute('id');
+        props.addQuote({ id: quote_id, content: quote_content });
+    };
     
-    const { message, topic } = props;
+    const { message, topic, auth, user_auth } = props;
+
+    console.log(auth);
+    console.log(user_auth);
 
     return(
 
@@ -153,8 +168,34 @@ const MessagesList = (props) => {
                 </div>
                 <div className="MessageItem-message"
                      dangerouslySetInnerHTML={
-                         {__html: message.message + (message.user_signature ? '<div class="signature">'+message.user_signature+'</div>' : '')}
+                         {__html: message.message }
                      }/>
+                { message.user_signature ? <div className="signature">{ message.user_signature }</div> : '' }
+                <div className="message-control">
+                    <ul>
+                        {
+                            auth && user_auth.admin > 0
+                                ?
+                                <li title="Скрыть">
+                                    <FontAwesomeIcon icon={ faTimesCircle }/>
+                                </li>
+                                :
+                                ''
+                        }
+                        <li title="Цитировать" onClick={ setQuote }>
+                            <FontAwesomeIcon icon={ faCommentDots }/>
+                        </li>
+                        {
+                            auth && user_auth.id === message.user_id
+                                ?
+                                <li title="Редактировать">
+                                    <FontAwesomeIcon icon={ faEdit }/>
+                                </li>
+                                :
+                                ''
+                        }
+                    </ul>
+                </div>
             </div>
 
         </div>
@@ -163,4 +204,11 @@ const MessagesList = (props) => {
 
 };
 
-export default MessagesList;
+const mapStateToProps = (state) => {
+    return {
+        auth: state.loginReducer.login,
+        user_auth: state.userReducer,
+    }
+};
+
+export default connect(mapStateToProps, { addQuote })(MessagesList);

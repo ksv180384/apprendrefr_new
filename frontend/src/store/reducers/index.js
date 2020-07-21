@@ -24,6 +24,11 @@ import forumTopicReducer from './forumTopicReducer';
 import forumTopicsListReducer from './forumTopicsListReducer';
 import forumMessagesListReduer from './forumMessagesListReduer';
 import indexReducer from './indexReducer';
+import userInfoReducer from './userInfoReducer';
+import usersListReducer from './usersListReducer';
+import quotesReducer from './quotesReducer';
+import grammarReducer from './grammarReducer';
+import lyricReducer from './lyricReducer';
 import errorReducer from './errorReducer';
 
 export default combineReducers({
@@ -51,5 +56,10 @@ export default combineReducers({
     forumTopicsListReducer: forumTopicsListReducer,
     forumMessagesListReduer: forumMessagesListReduer,
     indexReducer: indexReducer,
+    userInfoReducer: userInfoReducer,
+    usersListReducer: usersListReducer,
+    quotesReducer: quotesReducer,
+    grammarReducer: grammarReducer,
+    lyricReducer: lyricReducer,
     errorReducer: errorReducer,
 });

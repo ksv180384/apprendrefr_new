@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PlayerSongSeeder::class);
         $this->call(PlayerSongSearchSeeder::class);
         $this->call(ForumSeeder::class);
+        $this->call(GrammarSeeder::class);
     }
 }

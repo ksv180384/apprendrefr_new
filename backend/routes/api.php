@@ -28,6 +28,8 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
 
         Route::get('profile-page', 'UserController@index')->name('api.user.profile-page');
         Route::get('info-page/{id}', 'UserController@show')->name('api.user.info');
+        Route::get('list-page', 'UserController@listUsers')->name('api.user.list_users');
+        Route::get('list/paginate', 'UserController@getUsersListPaginate')->name('api.user.list_users_paginate');
 
         Route::post('update/{id}', 'UserController@update')->name('api.user.update');
     });
@@ -61,7 +63,7 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::get('random', 'ProverbController@randomProverb')->name('api.proverb.random');
     });
 
-    // song
+    // song player
     Route::group(['prefix' => 'song', 'namespace' => 'Song'], function ($router) {
 
         Route::get('list', 'SongController@list')->name('api.song.list');
@@ -69,6 +71,13 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
 
         Route::post('search-by-artist-and-title', 'SongController@searchByArtistAndTitle')->name('api.song.search_by_artist_and_title');
         Route::post('search', 'SongController@search')->name('api.song.search');
+    });
+
+    // song page
+    Route::group(['prefix' => 'lyrics', 'namespace' => 'Song'], function ($router) {
+
+        Route::get('list', 'SongController@index')->name('api.lyrics.list');
+        Route::get('item/{id}', 'SongController@songPage')->name('api.lyrics.item');
     });
 
     // forum
@@ -84,5 +93,13 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
             Route::get('messages', 'MessageController@index')->name('api.messages_list');
             Route::get('messages-paginate', 'MessageController@getMessagesPaginate')->name('api.messages_paginate');
         });
+    });
+
+    // grammar
+    Route::group(['prefix' => 'grammar'], function ($router) {
+
+        Route::get('/', 'GrammarController@index')->name('api.grammar_list');
+        Route::get('/item-page/{id}', 'GrammarController@show')->name('api.grammar_item');
+        Route::get('/item/{id}', 'GrammarController@showPage')->name('api.grammar_page');
     });
 });

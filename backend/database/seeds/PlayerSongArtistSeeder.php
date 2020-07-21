@@ -12,7 +12,7 @@ class PlayerSongArtistSeeder extends Seeder
     public function run()
     {
         $proverbs = DB::connection('mysql2')->table('pleer_name_artist')
-            ->select('id_mame_artist', 'name_artist')->get();
+            ->select('id_mame_artist', 'name_artist')->where('vue_flag', '=', 1)->get();
 
 
         DB::connection('mysql');

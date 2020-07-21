@@ -1,16 +1,15 @@
 import {
-    USER_INFO_SET_INFO,
-    STATISTIC_SET_DATA,
-    SET_META,
-    SET_USER,
     ERROR_PAGE,
+    LYRIC_SET_DATA,
     SET_LOGIN,
+    SET_USER,
     SET_LOADER_PAGE,
-    WORD_SET_LIST
+    SET_META,
+    WORD_SET_LIST,
+    STATISTIC_SET_DATA
 } from './index';
-
-import axios from 'axios';
-import { config } from '../../config';
+import axios from "axios/index";
+import {config} from "../../config";
 
 export const getPage = (path_page) => {
     return (dispatch) => {
@@ -31,16 +30,14 @@ export const getPage = (path_page) => {
                 }
             });
             dispatch({
-                type: USER_INFO_SET_INFO,
-                payload: result.data.data.user
+                type: LYRIC_SET_DATA,
+                payload: result.data.data
             });
+            dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });
+            dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
-            dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
-            if(result.data.statistic){
-                dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
-            }
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

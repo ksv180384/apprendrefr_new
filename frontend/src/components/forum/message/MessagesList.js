@@ -43,6 +43,7 @@ class MessagesList extends Component{
                                   to={paginate.to}
                                   total={paginate.total}
                                   path={ '/forum/' + forum.id + '/topic/' + topic.id }
+                                  paginate_path={ '/forum/' + forum.id + '/topic/' + topic.id + '/messages-paginate' }
                                   loadPaginate={ this.loadMessages }
                         />
                         {
@@ -59,6 +60,7 @@ class MessagesList extends Component{
                                   to={paginate.to}
                                   total={paginate.total}
                                   path={ '/forum/' + forum.id + '/topic/' + topic.id }
+                                  paginate_path={ '/forum/' + forum.id + '/topic/' + topic.id + '/messages-paginate' }
                                   loadPaginate={ this.loadMessages }
                         />
                     </div>

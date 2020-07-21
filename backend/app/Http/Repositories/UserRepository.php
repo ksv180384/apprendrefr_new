@@ -10,6 +10,7 @@ use App\Models\User as Model;
  */
 class UserRepository extends CoreRepository
 {
+    const PAGINATE = 60;
 
     /**
      * Отдает управляемый класс
@@ -99,6 +100,7 @@ class UserRepository extends CoreRepository
                 'rangs.id AS rang_id',
                 'rangs.title AS rang_title',
                 'rangs.alias AS rang_alias',
+                \DB::raw('(SELECT COUNT(*) FROM forum_messages AS m WHERE m.user_id = users.id) AS user_posts'),
             ])
             ->join('user_configs', 'user_configs.user_id', '=', 'users.id')
             ->join('user_configs_view AS email_view', 'email_view.id', '=', 'user_configs.email')
@@ -121,7 +123,40 @@ class UserRepository extends CoreRepository
             ->where('users.id', '=', $id)
             ->first();
 
+        $config_view = self::userConfigsView();
+        $user = self::initAliasInfoView($user, $config_view);
+        $user = $this->filterInfo($this->formatSocialLinks($user));
+
         return $user;
+    }
+
+    /**
+     * Получаем список пользователей
+     */
+    public function getList(){
+        $users = $this->startConditions()
+            ->select([
+                'users.id',
+                'users.login',
+                'users.avatar',
+                'users.admin',
+                'rangs.id AS rang_id',
+                'rangs.title AS rang_title',
+                'rangs.alias AS rang_alias',
+                \DB::raw('(SELECT COUNT(*) FROM forum_messages AS m WHERE m.user_id = users.id) AS user_posts'),
+            ])
+            ->join('user_configs', 'user_configs.user_id', '=', 'users.id')
+            ->join('user_configs_view AS sex_view', 'sex_view.id', '=', 'user_configs.sex')
+            ->join('user_infos AS i', 'i.user_id', '=', 'users.id')
+            ->leftJoin('sex', 'sex.id', '=', 'users.sex')
+            ->join('rangs', 'rangs.id', '=', 'users.rang')
+            ->paginate(self::PAGINATE);
+
+        //$config_view = self::userConfigsView();
+        //$user = self::initAliasInfoView($user, $config_view);
+        //$user = $this->filterInfo($this->formatSocialLinks($user));
+
+        return $users;
     }
 
     public function countUsersRegister(){
@@ -140,5 +175,151 @@ class UserRepository extends CoreRepository
      */
     public function getUser($id){
         return $this->startConditions()->find($id);
+    }
+
+    // добавляеи алиасы прав просмотра личной информации
+    static function initAliasInfoView($message, $config_view){
+
+        $message->config_email_alias = $config_view[$message->email_view_id]['alias'];
+        $message->config_facebook_alias = $config_view[$message->facebook_view_id]['alias'];
+        $message->config_skype_alias = $config_view[$message->skype_view_id]['alias'];
+        $message->config_twitter_alias = $config_view[$message->twitter_view_id]['alias'];
+        $message->config_vk_alias = $config_view[$message->vk_view_id]['alias'];
+        $message->config_odnoklassniki_alias = $config_view[$message->odnoklassniki_view_id]['alias'];
+        $message->config_telegram_alias = $config_view[$message->telegram_view_id]['alias'];
+        $message->config_whatsapp_alias = $config_view[$message->whatsapp_view_id]['alias'];
+        $message->config_instagram_alias = $config_view[$message->instagram_view_id]['alias'];
+        $message->config_youtube_alias = $config_view[$message->youtube_view_id]['alias'];
+        $message->config_viber_alias = $config_view[$message->viber_view_id]['alias'];
+        $message->config_info_alias = $config_view[$message->info_view_id]['alias'];
+        $message->config_residence_alias = $config_view[$message->residence_view_id]['alias'];
+        $message->config_sex_alias = $config_view[$message->sex_view_id]['alias'];
+
+        return $message;
+    }
+
+    static function userConfigsView(){
+        $res = [];
+        $config_view = Model\UserConfigsView::select(['id', 'title', 'alias'])->get();
+
+        $config_view = $config_view->toArray();
+        foreach ($config_view as $item){
+            $res[$item['id']] = $item;
+        }
+        return $res;
+    }
+
+    // Убирает информацию о пользователе взависимости от выставленных на нее прав
+    private function filterInfo($user){
+
+        if(\Auth::check()){ // для зарегистрированных пользователей
+                if($user->config_email_alias != 'zaregistrirovannym' && $user->config_email_alias != 'vsem'){
+                    $user->email = null;
+                }
+                if($user->config_facebook_alias != 'zaregistrirovannym' && $user->config_facebook_alias != 'vsem'){
+                    $user->facebook = null;
+                }
+                if($user->config_info_alias != 'zaregistrirovannym' && $user->config_info_alias != 'vsem'){
+                    $user->info = null;
+                }
+                if($user->config_instagram_alias != 'zaregistrirovannym' && $user->config_instagram_alias != 'vsem'){
+                    $user->instagram = null;
+                }
+                if($user->config_odnoklassniki_alias != 'zaregistrirovannym' && $user->config_odnoklassniki_alias != 'vsem'){
+                    $user->odnoklassniki = null;
+                }
+                if($user->config_residence_alias != 'zaregistrirovannym' && $user->config_residence_alias != 'vsem'){
+                    $user->residence = null;
+                }
+                if($user->config_sex_alias != 'zaregistrirovannym' && $user->config_sex_alias != 'vsem'){
+                    $user->sex_title = null;
+                    $user->sex_id = null;
+                }
+                if($user->config_skype_alias != 'zaregistrirovannym' && $user->config_skype_alias != 'vsem'){
+                    $user->skype = null;
+                }
+                if($user->config_telegram_alias != 'zaregistrirovannym' && $user->config_telegram_alias != 'vsem'){
+                    $user->telegram = null;
+                }
+                if($user->config_twitter_alias != 'zaregistrirovannym' && $user->config_twitter_alias != 'vsem'){
+                    $user->twitter = null;
+                }
+                if($user->config_vk_alias != 'zaregistrirovannym' && $user->config_vk_alias != 'vsem'){
+                    $user->vk = null;
+                }
+                if($user->config_whatsapp_alias != 'zaregistrirovannym' && $user->config_whatsapp_alias != 'vsem'){
+                    $user->whatsapp = null;
+                }
+                if($user->config_youtube_alias != 'zaregistrirovannym' && $user->config_youtube_alias != 'vsem'){
+                    $user->youtube = null;
+                }
+                if($user->config_viber_alias != 'zaregistrirovannym' && $user->config_viber_alias != 'vsem'){
+                    $user->viber = null;
+                }
+
+        }elseif(false){ // для друзей
+
+        }else{ // для всех
+
+                if($user->config_email_alias != 'vsem'){
+                    $user->email = null;
+                }
+                if($user->config_facebook_alias != 'vsem'){
+                    $user->facebook = null;
+                }
+                if($user->config_info_alias != 'vsem'){
+                    $user->info = null;
+                }
+                if($user->config_instagram_alias != 'vsem'){
+                    $user->instagram = null;
+                }
+                if($user->config_odnoklassniki_alias != 'vsem'){
+                    $user->odnoklassniki = null;
+                }
+                if($user->config_residence_alias != 'vsem'){
+                    $user->residence = null;
+                }
+                if($user->config_sex_alias != 'vsem'){
+                    $user->sex_title = null;
+                    $user->sex_id = null;
+                }
+                if($user->config_skype_alias != 'vsem'){
+                    $user->skype = null;
+                }
+                if($user->config_telegram_alias != 'vsem'){
+                    $user->telegram = null;
+                }
+                if($user->config_twitter_alias != 'vsem'){
+                    $user->twitter = null;
+                }
+                if($user->config_vk_alias != 'vsem'){
+                    $user->vk = null;
+                }
+                if($user->config_whatsapp_alias != 'vsem'){
+                    $user->whatsapp = null;
+                }
+                if($user->config_youtube_alias != 'vsem'){
+                    $user->youtube = null;
+                }
+                if($user->config_viber_alias != 'vsem'){
+                    $user->viber = null;
+                }
+            }
+
+
+        return $user;
+    }
+    // Формирует url на соц сети
+    private function formatSocialLinks($user){
+
+        $user->info_facebook_link = 'https://fb.com/' . $user['facebook'];
+        $user->info_odnoklassniki_link = 'https://ok.ru/' . $user['odnoklassniki'];
+        $user->info_twitter_link = 'https://twitter.com/' . $user['twitter'];
+        $user->info_vk_link = 'https://vk.com/' . $user['vk'];
+        $user->info_youtube_link = 'https://youtube.com/' . $user['youtube'];
+        $user->info_instagram_link = 'https://instagram.com/' . $user['instagram'];
+
+
+        return $user;
     }
 }

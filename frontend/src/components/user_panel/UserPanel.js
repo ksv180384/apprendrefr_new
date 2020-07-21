@@ -62,7 +62,7 @@ class UserPanel extends Component{
                         <div className="avatar-right-mini-panel" style={ { backgroundImage: 'url(' + avatar + ')' }  }>
 
                         </div>
-                        <div className="user-name mt-5 mb-10">
+                        <div className="user-rang text-center mt-5 mb-10">
                             { rang_title }
                         </div>
                         <ul className="panel-list">
@@ -70,7 +70,7 @@ class UserPanel extends Component{
                                 <Link to='/profile' onClick={ (e) => this.changePage(e) } className="link">Профиль</Link>
                             </li>
                             <li><a href="#">Личные сообщения</a></li>
-                            <li><a href="#">Пользователи</a></li>
+                            <li><Link to={'/users-list'}>Пользователи</Link></li>
                             <li><a href="#" onClick={ (e) => this.logout(e) }>Вход</a></li>
                         </ul>
                     </div>

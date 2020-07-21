@@ -14,6 +14,9 @@ import Forum from "./pages/forum/Forum";
 import Topic from "./pages/forum/Topic";
 import Message from "./pages/forum/Message";
 import UserInfo from "./pages/user_info/UserInfo";
+import UsersList from "./pages/users_list/UsersList";
+import Grammar from "./pages/grammar/Grammar";
+import Lyrics from "./pages/lyrics/Lyrics";
 
 // Components
 import ModalWindow from './components/modals_windows/ModalWindow';
@@ -38,6 +41,11 @@ ReactDOM.render(
                     <Route exact path='/profile' component={ Profile }/>
                     <Route exact path='/registration' component={ Registration }/>
                     <Route exact path='/lost-password' component={ LostPassword }/>
+                    <Route exact path='/grammar' component={ Grammar }/>
+                    <Route exact path='/grammar/item/:id' component={ Grammar }/>
+                    <Route exact path='/lyrics' component={ Lyrics }/>
+                    <Route exact path='/users-list' component={ UsersList }/>
+                    <Route exact path='/users-list/page/:page' component={ UsersList }/>
                     <Route exact path='/user/info/:id' component={ UserInfo }/>
                     <Route exact path='/forum' component={ Forum }/>
                     <Route exact path='/forum/:forum_id' component={ Topic }/>

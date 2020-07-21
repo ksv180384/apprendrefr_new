@@ -144,14 +144,21 @@
 
 .MessageItem-content{
     flex: 100%;
+    position: relative;
     background-color: #fff;
+    overflow: auto;
 }
 
 .MessageItem-message{
     position: relative;
     padding: 10px;
     font-size: 14px;
-    min-height: calc(100% - 36px);
+    /*min-height: calc(100% - 36px);*/
+}
+
+.MessageItem-message img{
+    margin-right: 6px;
+    vertical-align: top;
 }
 
 .MessageItem-message p{
@@ -161,6 +168,8 @@
 .MessageItem-message .q,
 blockquote{
     margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 10px;
     border-left: 4px solid #176093;
     font-size: 13px;
@@ -171,12 +180,14 @@ blockquote{
     max-width: 200px !important;
 }
 
-.MessageItem-message .signature{
+.MessageItem-content .signature{
     font-size: 12px;
     color: #b1b1b1;
     border-top: 1px solid;
-    padding-top: 8px;
-    margin-top: 20px;
+    padding: 10px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .MessageItem-user-login{
@@ -277,4 +288,58 @@ blockquote{
     display: inline-block;
     margin-bottom: 10px;
     vertical-align: top;
+}
+
+.MessageItem-content .message-control{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.MessageItem-content .message-control>ul{
+    display: flex;
+}
+
+.MessageItem-content .message-control>ul>li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
+    cursor: pointer;
+}
+
+.quote-block{
+    display: none;
+    position: fixed;
+    padding: 10px 10px;
+    background-color: #fff;
+    bottom: 10px;
+    right: 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    box-shadow: 0 0 2px 1px rgba(34,36,38,.15);
+}
+
+.quote-block.quote-show{
+    display: flex;
+    align-items: center;
+}
+
+.quote-block>.strong{
+    font-size: 16px;
+    margin-left: 4px;
+}
+
+.quote-remove{
+    margin-left: 20px;
+    color: #ccc;
+    cursor: pointer;
+    transition: all 0.5s ease 0s;
+}
+
+.quote-remove:hover{
+    color: #000;
 }
