@@ -16,7 +16,11 @@ import Message from "./pages/forum/Message";
 import UserInfo from "./pages/user_info/UserInfo";
 import UsersList from "./pages/users_list/UsersList";
 import Grammar from "./pages/grammar/Grammar";
+import Lessons from "./pages/lessons/Lessons";
 import Lyrics from "./pages/lyrics/Lyrics";
+import Lyric from "./pages/lyrics/Lyric";
+import Words from "./pages/word/Words";
+import Word from "./pages/word/Word";
 
 // Components
 import ModalWindow from './components/modals_windows/ModalWindow';
@@ -43,7 +47,10 @@ ReactDOM.render(
                     <Route exact path='/lost-password' component={ LostPassword }/>
                     <Route exact path='/grammar' component={ Grammar }/>
                     <Route exact path='/grammar/item/:id' component={ Grammar }/>
+                    <Route exact path='/lessons' component={ Lessons }/>
+                    <Route exact path='/lessons/item/:id' component={ Lessons }/>
                     <Route exact path='/lyrics' component={ Lyrics }/>
+                    <Route exact path='/lyrics/item/:id' component={ Lyric }/>
                     <Route exact path='/users-list' component={ UsersList }/>
                     <Route exact path='/users-list/page/:page' component={ UsersList }/>
                     <Route exact path='/user/info/:id' component={ UserInfo }/>
@@ -51,6 +58,9 @@ ReactDOM.render(
                     <Route exact path='/forum/:forum_id' component={ Topic }/>
                     <Route exact path='/forum/:forum_id/topic/:topic_id' component={ Message }/>
                     <Route exact path='/forum/:forum_id/topic/:topic_id/page/:page' component={ Message }/>
+                    <Route exact path='/dictionary' component={ Words }/>
+                    <Route exact path='/dictionary/:pos?/:lang?/page/:page' component={ Words }/>
+                    <Route exact path='/dictionary/word/:id' component={ Word }/>
                     <Route exact component={ ErrorIndicator }/>
                 </Switch>
             </Router>

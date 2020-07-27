@@ -40,13 +40,13 @@ class ModalWindow extends Component{
                 </div>
                 <div className="modal-block">
                     <div className="modal-header">
-                        { header }
+                        { show ? header : '' }
                         <div className="modal-close" onClick={ this.modalHide }>
                             <FontAwesomeIcon icon={ faTimes }/>
                         </div>
                     </div>
                     <div className="modal-content">
-                        { content }
+                        { show ? content : '' }
                     </div>
                 </div>
             </div>

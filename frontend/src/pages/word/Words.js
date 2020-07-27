@@ -1,7 +1,7 @@
 import React,  { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getPageList } from '../../store/actions/lyricActions';
+import { getPage } from '../../store/actions/wordsPageActions';
 
 // components
 import Header from "../../header/Header";
@@ -14,7 +14,7 @@ import WordsList from "../../components/words_list/WordsList";
 import Joke from "../../components/joke/Joke";
 import CenterBlock from "../../layouts/app/center/CenterBlock";
 import Proverb from "../../components/proverb/Proverb";
-import LyricsList from "../../components/lyrics/LyricsList";
+import WordsListPage from '../../components/words_page/WordsList';
 import Right from "../../layouts/app/right/Right";
 import Statistics from "../../components/statistics/Statistics";
 import OnlineList from "../../components/online_list/OnlineList";
@@ -22,10 +22,11 @@ import Authentification from "../../components/authentification/Authentification
 
 import LoaderPage from "../../components/loader_page/LoaderPage";
 
-class Lyrics extends Component {
+
+class Words extends Component {
 
     componentDidMount(){
-        this.props.getPageList();
+        this.props.getPage({ page: this.props.match.params.page, pos: this.props.match.params.pos, lang: this.props.match.params.lang });
     }
 
     render(){
@@ -57,7 +58,7 @@ class Lyrics extends Component {
 
                         <CenterBlock>
                             <Proverb/>
-                            <LyricsList/>
+                            <WordsListPage/>
                         </CenterBlock>
 
                         <Right>
@@ -66,8 +67,8 @@ class Lyrics extends Component {
                             <OnlineList/>
                         </Right>
                     </LayoutOne>
-
                     <Footer/>
+
                 </React.Fragment>
 
 
@@ -77,9 +78,10 @@ class Lyrics extends Component {
 
 const mapStateToPage = (state) => {
     return {
+        data: state.wordsPageReducer,
         loader_page: state.loaderPageReducer,
         meta_data: state.metaReducer,
     }
 };
 
-export default connect(mapStateToPage, { getPageList })(Lyrics);
+export default connect(mapStateToPage, { getPage })(Words);

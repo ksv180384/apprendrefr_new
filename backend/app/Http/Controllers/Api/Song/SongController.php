@@ -136,6 +136,28 @@ class SongController extends Controller
     public function show($id)
     {
         //
+        $song = $this->songRepository->getById((int)$id)->toArray();
+        if(empty($song)){
+            return response()->json(['message' => 'Такой страницы не существует.'], 404);
+        }
+        $song['text_fr'] = explode("\n", $this->songRepository->formatText($song['text_fr']));
+        $song['text_ru'] = explode("\n", $this->songRepository->formatText($song['text_ru']));
+        $song['text_transcription'] = explode("\n", $this->songRepository->formatText($song['text_transcription']));
+
+        return response()->json([
+            'title' => $song['artist_name'] . ' - ' . $song['title'] . ' (текст, транскрипция, перевод)',
+            'description' => $song['artist_name'] . ' - ' . $song['title'] . ' (текст, транскрипция, перевод)',
+            'keywords' => $song['artist_name'] . ' - ' . $song['title'] . ' (текст, транскрипция, перевод)',
+            'footer' => [
+                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
+                'E-mail: admin@apprendrefr.ru'
+            ],
+            'data' => [
+                'song' => $song,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+        ]);
     }
 
     /**

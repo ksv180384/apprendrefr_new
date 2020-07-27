@@ -12,7 +12,7 @@ const Content = (props) => {
                     ?
                         <React.Fragment>
                             <div className="panel_header"><h1>{ content_page.title }</h1></div>
-                            <div className="p-10" dangerouslySetInnerHTML={ {__html: content_page.content } }/>
+                            <div className="g-content-block p-10" dangerouslySetInnerHTML={ {__html: content_page.content } }/>
                         </React.Fragment>
                     :
                         <div></div>

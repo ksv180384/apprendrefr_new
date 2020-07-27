@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-size: 14px;
 }
 
 body {
@@ -16,6 +17,10 @@ body {
 
 ul{
   list-style: none;
+}
+
+.Pervod{
+  color: #4caf50;
 }
 
 .panel{
@@ -186,6 +191,10 @@ ul{
 
 .ml-50{
   margin-left: 50px !important;
+}
+
+.mr-5{
+  margin-right: 5px !important;
 }
 
 .mr-10{
@@ -974,6 +983,7 @@ ul{
 
 .users-list-item-right>small{
   display: block;
+  font-size: 11px;
 }
 
 .Grammar-menu-block{
@@ -982,6 +992,7 @@ ul{
   padding: 10px;
   background-color: #e6f0f6;
   height: 100%;
+  font-size: 14px;
 }
 
 .Grammar-menu-block>ul{
@@ -1048,7 +1059,7 @@ ul{
 }
 
 .Grammar-content-block{
-  line-height: 24px;
+
 }
 
 .Grammar-content-block p{
@@ -1064,4 +1075,311 @@ ul{
 .Grammar-content-block .prim_gramm2 {
   padding-left: 250px !important;
   width: 550px;
+}
+
+.Lyrics-list-block{
+  color: #6A6A6A;
+  background-color: #e9f1f7;
+  margin-top: 2px;
+  font-size: 14px;
+}
+
+.Lyrics-list-block .artists-list{
+  padding: 10px;
+}
+
+.Lyrics-list-block .artists-list>li{
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.Lyrics-list-block .songs-list{
+  margin-left: 10px;
+}
+
+.Lyrics-list-block .songs-list>li{
+  font-weight: normal;
+}
+
+.Lyric-item{
+  font-size: 14px;
+  background-color: #e6f0f6;
+}
+
+.Lyric-item table{
+  border-collapse: collapse;
+  border-spacing: 0;
+  boder: 0;
+  margin: 10px auto 0 auto;
+}
+
+.Lyric-item table>tbody>tr{
+
+}
+
+.Lyric-item table>tbody>tr:hover{
+  background-color: #fff;
+}
+
+.Lyric-item table>tbody>tr>td{
+  padding: 6px 0;
+}
+
+.g-content-block{
+  line-height: 24px;
+}
+
+.lesson-play-btn{
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #8db3ce;
+  color: #8db3ce;
+  width: 24px;
+  height: 24px;
+  border-radius: 2px;
+  transition: all 0.5s ease 0s;
+}
+
+.lesson-play-btn:hover{
+  color: #4caf50;
+  border: 1px solid #4caf50;
+}
+
+.spis_sl>li{
+  margin: 6px 0;
+}
+
+.lesson-test-block{
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30px;
+  padding-top: 20px;
+  border-top:1px dashed #fff;
+}
+
+.lesson-btn-test{
+  cursor: pointer;
+  border: 1px solid #fff;
+  display: flex;
+  height: 30px;
+  padding: 0 10px;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+  color: #fff;
+  background-color: #8db3ce;
+  font-weight: bold;
+  border-radius: 2px;
+  transition: all 0.5s ease 0s;
+}
+
+.lesson-btn-test:hover{
+  background-color: #fff;
+  color: #176093;
+}
+
+.LessonsTestBlock{
+  min-width: 500px;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.LessonsTestBlock-word-count{
+  position: absolute;
+  font-size: 12px;
+  color: green;
+  left: 0;
+  top: 0;
+  display: none;
+}
+
+.LessonsTestBlock-word-count.show-count{
+  display: inherit;
+}
+
+.LessonsTestBlock-word-error{
+  position: absolute;
+  font-size: 12px;
+  color: red;
+  right: 0;
+  top: 0;
+  display: none;
+}
+
+.LessonsTestBlock-word-error.show-error{
+  display: inherit;
+}
+
+.LessonsTestBlock-word{
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding-top: 30px;
+}
+
+.LessonsTestBlock-hint{
+  text-align: center;
+  font-size: 14px;
+  color: red;
+  margin-bottom: 10px;
+  display: none;
+}
+
+.LessonsTestBlock-hint.show-hint{
+  display: inherit;
+}
+
+.end-test-block{
+  position: absolute;
+  background-color: #fff;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  height: calc(100% - 20px);
+  top: 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  display: none;
+}
+
+.end-test-block.show-end-test{
+  display: flex;
+}
+
+.WordsListPage-block{
+  margin-top: 2px;
+  background-color: #e9f1f7;
+}
+
+ul.WordsListPage-list{
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+  position: relative;
+}
+
+ul.WordsListPage-list>li{
+  width: 33%;
+  padding: 10px 6px;
+  transition: all 0.5s ease 0s;
+}
+
+ul.WordsListPage-list>li:hover{
+  background-color: #fff;
+}
+
+.WordsListPage-list .question_voice{
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  line-height: 18px;
+  vertical-align: top;
+}
+
+.WordsListPage-word-item{
+  white-space: nowrap;
+}
+
+.WordsListPage-word-item-text{
+  display: inline-block;
+  margin-left: 6px;
+  color: #176093;
+  cursor: pointer;
+  white-space: normal;
+}
+
+.WordsListPage-word-item-text:hover{
+  text-decoration: underline;
+}
+
+.WordsListPage-list small{
+  font-size: 11px;
+  display: block;
+  white-space: nowrap;
+}
+
+.WordsListPage-list small>a{
+  font-size: 10px;
+}
+
+.lang-select-block{
+  position: absolute;
+  display: flex;
+  top: -34px;
+  left: 0;
+}
+
+.lang-select-block>li{
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+
+.lang-select-block>li>a{
+  text-decoration: none;
+  padding: 2px 6px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  color: #ccc;
+}
+
+.lang-select-block>li.lang-select-active>a{
+  background-color: #8db3ce;
+  border: 1px solid #8db3ce;
+  color: #fff;
+}
+
+.pos-select-list{
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #fff;
+}
+
+.pos-select-list>li{
+
+}
+
+.pos-select-list>li>a{
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  color: #373737;
+  cursor: pointer;
+}
+
+.pos-select-active{
+  border-bottom: 2px solid #176093;
+}
+
+.WordPreview{
+  position: fixed;
+  font-size: 13px;
+  font-weight: bold;
+  background-color: #649ec2f2;
+  color: #f3f3f3;
+  bottom: 0;
+  right: 0;
+  padding: 8px 16px;
+  z-index: 501;
+  border-top: 2px solid #f3f3f3;
+  border-left: 2px solid #f3f3f3;
+  border-radius: 10px 0 0 0;
+  box-shadow: 0 0px 12px rgba(0,0,0,.5);
+  display: none;
+}
+
+.WordPreview.show-preview{
+  display: block;
+}
+
+.WordItemPage{
+  margin-top: 2px;
 }

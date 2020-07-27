@@ -6,6 +6,7 @@ export const setWords = (data) => {
     return { type: WORD_SET_LIST, payload: data }
 };
 
+// Подгрузка полной информации о слове
 export const loadWord = (id) => {
     return (dispatch) => {
         dispatch({ type: WORD_ITEM_REQUEST });

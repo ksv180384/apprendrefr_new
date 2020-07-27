@@ -39,6 +39,12 @@ export const WORD_ITEM_REQUEST = 'WORD_ITEM_REQUEST';
 export const WORD_ITEM_SUCCESS = 'WORD_ITEM_SUCCESS';
 export const WORD_ITEM_ERROR = 'WORD_ITEM_ERROR';
 
+export const WORDS_PAGE = 'WORDS_PAGE';
+export const WORDS_PAGE_NUM = 'WORDS_PAGE_NUM';
+export const WORDS_PAGE_SET_LANG = 'WORDS_PAGE_SET_LANG';
+export const WORDS_PAGE_SET_POS = 'WORDS_PAGE_SET_POS';
+
+export const WORD_PAGE_SET_DATA = 'WORD_PAGE_SET_DATA';
 
 // proverbs
 export const LOAD_PROVERB = 'LOAD_PROVERB';
@@ -71,7 +77,12 @@ export const TESTYOURSELF_ERROR = 'TESTYOURSELF_ERROR';
 export const STATISTIC_SET_DATA = 'STATISTIC_SET_DATA';
 
 // lyrics
-export const LYRIC_SET_DATA = 'LYRIC_SET_DATA';
+export const LYRIC_SET_LIST = 'LYRIC_SET_LIST';
+export const LYRIC_SET_ITEM = 'LYRIC_SET_ITEM';
+
+// lessons
+export const LESSON_SET_LIST = 'LESSON_SET_LIST';
+export const LESSON_SET_ITEM = 'LESSON_SET_ITEM'
 
 // player
 export const PLAYER_GET_SONGS_LIST_REQUEST = 'PLAYER_GET_SONGS_LIST_REQUEST';
@@ -107,7 +118,6 @@ export const FORUM_SET_MESSAGES_LIST = 'FORUM_SET_MESSAGES_LIST';
 
 export const FORUM_QUOTE_ADD = 'FORUM_QUOTE_ADD';
 export const FORUM_QUOTS_REMOVE = 'FORUM_QUOTS_REMOVE';
-
 
 // index
 export const INDEX_SET_FORUM = 'INDEX_SET_FORUM';

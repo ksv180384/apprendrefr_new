@@ -29,6 +29,7 @@ class SongRepository extends CoreRepository
     public function getById(int $id){
         $song = $this->startConditions()
             ->select([
+                'player_songs.id',
                 'player_songs.artist_name',
                 'player_songs.title',
                 'player_songs.text_fr',
@@ -69,6 +70,7 @@ class SongRepository extends CoreRepository
                 ->select($select)
                 ->where('hidden', '=', 0)
                 ->orderBy('artist_name', 'ASC')
+                ->orderBy('title', 'ASC')
                 ->get();
         }
 
@@ -128,8 +130,43 @@ class SongRepository extends CoreRepository
     }
 
     public function getArtists(){
-        $artists = PlayerArtistsSong::select(['id', 'name'])->get();
+        $artists = PlayerArtistsSong::select(['id', 'name'])->orderBy('name', 'ASC')->get();
 
         return $artists;
+    }
+
+    // Форматируем текст песни
+    public function formatText($text){
+        $arr_res = array();
+        $res = '';
+        $text = explode("\n", $text);
+        for($i = 0; count($text) > $i; $i++){
+            preg_match_all('#\[.*?\]#i', $text[$i], $out);
+            for($j = 0; count($out[0]) > $j; $j++){
+                $time = $this->timeSec($out[0][$j]);
+                $arr_res[$time] = preg_replace('#\[.*?\]#iu', "", $text[$i]);
+            }
+        }
+        ksort($arr_res);
+
+        foreach($arr_res as $val){
+            $res .= $val."\n";
+        }
+        return $res;
+    }
+
+    // Переводим время в секунды
+    private function timeSec($time){
+        $res = null;
+
+        $time = preg_replace("#\[|\]#iu", "", $time);
+        $time = explode(":", $time);
+        if($time[0] > 0){
+            $res = ((int)$time[0]*60)+$time[1];
+        }else{
+            $res = $time[1];
+        }
+
+        return (string)$res;
     }
 }

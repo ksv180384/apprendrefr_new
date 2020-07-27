@@ -5,5 +5,4 @@ export default {
     '/lessons': 'Уроки',
     '/forum': 'Форум',
     '/dictionary': 'Словарь',
-    '/keyboard': 'Клавиатура',
 };

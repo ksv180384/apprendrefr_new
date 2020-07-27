@@ -62,8 +62,8 @@ class GrammarController extends BaseController
             'description' => 'Грамматика французского языка',
             'keywords' => 'Грамматика французского языка',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
             'data' => [
                 'grammars_list' => $grammars_list,
@@ -75,6 +75,24 @@ class GrammarController extends BaseController
     }
 
     public function show($id){
+        $grammar_content = Grammar::select(['id', 'title', 'description', 'content'])->where('id', '=', (int)$id)->first();
+        if(empty($grammar_content)){
+            return response()->json(['message' => 'Такой страницы не существует.'], 404);
+        }
+
+        return response()->json([
+            'title' => $grammar_content->title . ' - грамматика французского языка',
+            'description' => $grammar_content->title . ' - грамматика французского языка',
+            'keywords' => $grammar_content->title . ' - грамматика французского языка',
+            'data' => [
+                'grammar_content' => $grammar_content,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+        ]);
+    }
+
+    public function showPage($id){
         $grammars_list = Grammar::select(['id', 'title'])->get();
         $grammar_content = Grammar::select(['id', 'title', 'description', 'content'])->where('id', '=', (int)$id)->first();
         if(empty($grammar_content)){
@@ -87,30 +105,11 @@ class GrammarController extends BaseController
             'description' => $grammar_content->title . ' - грамматика французского языка',
             'keywords' => $grammar_content->title . ' - грамматика французского языка',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
             'data' => [
                 'grammars_list' => $grammars_list,
-                'grammar_content' => $grammar_content,
-            ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
-            'auth' => \Auth::check(),
-        ]);
-    }
-
-    public function showPage($id){
-        $grammar_content = Grammar::select(['id', 'title', 'description', 'content'])->where('id', '=', (int)$id)->first();
-        if(empty($grammar_content)){
-            return response()->json(['message' => 'Такой страницы не существует.'], 404);
-        }
-
-
-        return response()->json([
-            'title' => $grammar_content->title . ' - грамматика французского языка',
-            'description' => $grammar_content->title . ' - грамматика французского языка',
-            'keywords' => $grammar_content->title . ' - грамматика французского языка',
-            'data' => [
                 'grammar_content' => $grammar_content,
             ],
             'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],

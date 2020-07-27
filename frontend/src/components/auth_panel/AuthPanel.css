@@ -48,6 +48,7 @@
 .login-remember-block>label{
     margin-left: 6px;
     cursor: pointer;
+    font-size: 12px;
 }
 
 .login-registration-link-block{

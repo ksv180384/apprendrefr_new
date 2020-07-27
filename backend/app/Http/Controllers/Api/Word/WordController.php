@@ -2,20 +2,49 @@
 
 namespace App\Http\Controllers\Api\Word;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseController;
+use App\Repositories\ForumMessageRepository;
+use App\Repositories\ProverbRepository;
+use App\Repositories\StatisticRepository;
+use App\Repositories\UserRepository;
 use App\Repositories\WordRepository;
 use Illuminate\Http\Request;
 
-class WordController extends Controller
+class WordController extends BaseController
 {
     /**
      * @var WordRepository
      */
     private $wordRepository;
 
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+    /**
+     * @var ProverbRepository
+     */
+    private $proverbRepository;
+
+    /**
+     * @var ForumMessageRepository
+     */
+    private $forumMessageRepository;
+
+    /**
+     * @var StatisticRepository
+     */
+    private $statisticRepository;
+
+
     public function __construct()
     {
+        parent::__construct();
         $this->wordRepository = app(WordRepository::class);
+        $this->proverbRepository = app(ProverbRepository::class);
+        $this->userRepository = app(UserRepository::class);
+        $this->statisticRepository = app(StatisticRepository::class);
+        $this->forumMessageRepository = app(ForumMessageRepository::class);
     }
 
     /**
@@ -23,9 +52,114 @@ class WordController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
+        $pos = $request->pos ?: false;
+
+        if(!empty($request->lang) && $request->lang == 'ru') {
+            $words_page = $this->wordRepository->getWordsPaginateRu($pos);
+        }else{
+            $words_page = $this->wordRepository->getWordsPaginateFr($pos);
+        }
+        if(empty($words_page->toArray()['data'])){
+            return response()->json(['message' => 'Такой страницы не существует.'], 404);
+        }
+        if(!empty($request->pos)){
+            $pos = $this->wordRepository->getPosById((int)$request->pos);
+        }
+        $pos_list = $this->wordRepository->getPosAll();
+
+        $words_list = $this->wordRepository->getRandomWords();
+        $online_users = $this->statisticRepository->getOnlineUsers();
+        $count_users = count($online_users);
+        $count_guests = $this->statisticRepository->countGuests();
+        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_all = $count_users + $count_guests;
+        $count_messages = $this->forumMessageRepository->countAll();
+
+        $title = 'Французско-русский словарь' . ((!empty($pos)) ? ' ' . $pos->title : '');
+        if(!empty($request->lang) && $request->lang == 'ru'){
+            $title = 'Русско-французский словарь' . ((!empty($pos)) ? ' ' . $pos->title : '');
+        }
+
+        return response()->json([
+            'title' => $title,
+            'description' => $title,
+            'keywords' => $title,
+            'footer' => [
+                $this->yar_life,
+                self::EMAIL,
+            ],
+            'data' => [
+                'words' => $words_page,
+                'pos_list' => $pos_list,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+            'words_list' => $words_list,
+            'statistic' => [
+                'online_users' => $online_users,
+                'count_guests' => $count_guests,
+                'count_users' => $count_users,
+                'count_all' => $count_all,
+                'count_users_register' => $count_users_register,
+                'count_messages' => $count_messages,
+            ],
+        ]);
+    }
+
+    public function listPaginate(Request $request){
+        $pos = $request->pos ?: false;
+
+        if(!empty($request->lang) && $request->lang == 'ru') {
+            $words_page = $this->wordRepository->getWordsPaginateRu($pos);
+        }else{
+            $words_page = $this->wordRepository->getWordsPaginateFr($pos);
+        }
+        /*
+        if(empty($words_page)){
+            return response()->json(['message' => 'Такой страницы не существует.'], 404);
+        }
+        */
+        if(!empty($request->pos)){
+            $pos = $this->wordRepository->getPosById((int)$request->pos);
+        }
+
+        $online_users = $this->statisticRepository->getOnlineUsers();
+        $count_users = count($online_users);
+        $count_guests = $this->statisticRepository->countGuests();
+        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_all = $count_users + $count_guests;
+        $count_messages = $this->forumMessageRepository->countAll();
+
+        $title = 'Французско-русский словарь' . ((!empty($pos)) ? ' ' . $pos->title : '');
+        if(!empty($request->lang) && $request->lang == 'ru'){
+            $title = 'Русско-французский словарь' . ((!empty($pos)) ? ' ' . $pos->title : '');
+        }
+
+        return response()->json([
+            'title' => $title,
+            'description' => $title,
+            'keywords' => $title,
+            'footer' => [
+                $this->yar_life,
+                self::EMAIL,
+            ],
+            'data' => [
+                'words' => $words_page,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+            'statistic' => [
+                'online_users' => $online_users,
+                'count_guests' => $count_guests,
+                'count_users' => $count_users,
+                'count_all' => $count_all,
+                'count_users_register' => $count_users_register,
+                'count_messages' => $count_messages,
+            ],
+        ]);
     }
 
     /**
@@ -58,6 +192,45 @@ class WordController extends Controller
     public function show($id)
     {
         //
+        $word = $this->wordRepository->getItem((int)$id);
+
+        if(empty($word)){
+            return response()->json(['message' => 'Такой страницы не существует.'], 404);
+        }
+
+        $words_list = $this->wordRepository->getRandomWords();
+        $online_users = $this->statisticRepository->getOnlineUsers();
+        $count_users = count($online_users);
+        $count_guests = $this->statisticRepository->countGuests();
+        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_all = $count_users + $count_guests;
+        $count_messages = $this->forumMessageRepository->countAll();
+
+        $title = 'Перевод слова ' . $word->word;
+
+        return response()->json([
+            'title' => $title,
+            'description' => $title,
+            'keywords' => $title,
+            'footer' => [
+                $this->yar_life,
+                self::EMAIL,
+            ],
+            'data' => [
+                'word' => $word,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+            'words_list' => $words_list,
+            'statistic' => [
+                'online_users' => $online_users,
+                'count_guests' => $count_guests,
+                'count_users' => $count_users,
+                'count_all' => $count_all,
+                'count_users_register' => $count_users_register,
+                'count_messages' => $count_messages,
+            ],
+        ]);
     }
 
     /**

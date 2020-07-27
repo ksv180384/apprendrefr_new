@@ -51,8 +51,13 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
     Route::group(['prefix' => 'word', 'namespace' => 'Word'], function ($router) {
 
         Route::get('random-list', 'WordController@randomList')->name('api.word.random_list');
+        // Получаем слова для теста
         Route::get('random-test-yourself', 'WordController@testYourSelf')->name('api.word.test_yourself');
         Route::get('item/{id}', 'WordController@getItem')->name('api.word.item');
+
+        Route::get('list', 'WordController@index')->name('api.word.list');
+        Route::get('list-paginate', 'WordController@listPaginate')->name('api.word.list_paginate');
+        Route::get('item-page/{id}', 'WordController@show')->name('api.word.show');
 
         Route::post('search', 'WordController@search')->name('api.word.search');
     });
@@ -77,7 +82,7 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
     Route::group(['prefix' => 'lyrics', 'namespace' => 'Song'], function ($router) {
 
         Route::get('list', 'SongController@index')->name('api.lyrics.list');
-        Route::get('item/{id}', 'SongController@songPage')->name('api.lyrics.item');
+        Route::get('item/{id}', 'SongController@show')->name('api.lyrics.item');
     });
 
     // forum
@@ -99,7 +104,15 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
     Route::group(['prefix' => 'grammar'], function ($router) {
 
         Route::get('/', 'GrammarController@index')->name('api.grammar_list');
-        Route::get('/item-page/{id}', 'GrammarController@show')->name('api.grammar_item');
-        Route::get('/item/{id}', 'GrammarController@showPage')->name('api.grammar_page');
+        Route::get('/item-page/{id}', 'GrammarController@showPage')->name('api.grammar_page');
+        Route::get('/item/{id}', 'GrammarController@show')->name('api.grammar_item');
+    });
+
+    // lessons
+    Route::group(['prefix' => 'lessons'], function ($router) {
+
+        Route::get('/', 'LessonsController@index')->name('api.lesson_list');
+        Route::get('/item-page/{id}', 'LessonsController@showPage')->name('api.lesson_page');
+        Route::get('/item/{id}', 'LessonsController@show')->name('api.lesson_item');
     });
 });

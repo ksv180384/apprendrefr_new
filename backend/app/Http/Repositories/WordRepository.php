@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Words\Word as Model;
+use App\Models\Words\WordsPartOfSpeech;
 
 /**
  * Хранилище запросов к таблице words
@@ -10,6 +11,7 @@ use App\Models\Words\Word as Model;
  */
 class WordRepository extends CoreRepository
 {
+    const PGINATE = 90;
 
     /**
      * Отдает управляемый класс
@@ -69,5 +71,62 @@ class WordRepository extends CoreRepository
             ->get();
 
         return $wordsList;
+    }
+
+    public function getWordsPaginateFr($pos){
+        $wordsList = $this->startConditions()
+            ->select([
+                'words.id',
+                'words.word AS fr',
+                'words.word',
+                'words.translation',
+                'words.transcription',
+                'words_part_of_speech.title AS pos_title',
+            ])
+            ->leftJoin('words_part_of_speech', 'words_part_of_speech.id', 'words.id_part_of_speech');
+            if($pos){
+                $wordsList = $wordsList->where('id_part_of_speech', '=', $pos);
+            }
+        $wordsList = $wordsList->orderBy('word', 'ASC')->paginate(self::PGINATE);
+        return $wordsList;
+    }
+
+    public function getWordsPaginateRu($pos){
+        $wordsList = $this->startConditions()
+            ->select([
+                'words.id',
+                'words.word AS fr',
+                'words.word AS translation',
+                'words.translation AS word',
+                'words.transcription',
+                'words_part_of_speech.title AS pos_title',
+            ])
+            ->leftJoin('words_part_of_speech', 'words_part_of_speech.id', 'words.id_part_of_speech');
+        if($pos){
+            $wordsList = $wordsList->where('id_part_of_speech', '=', $pos);
+        }
+        $wordsList = $wordsList->orderBy('word', 'ASC')->paginate(self::PGINATE);
+        return $wordsList;
+    }
+
+    /**
+     * Получает часть речи по id
+     * @param $id - идентификатор части речи
+     */
+    public function getPosById($id){
+        $pos = WordsPartOfSpeech::select(['id', 'title'])
+                                    ->where('id', '=', $id)
+                                    ->first();
+        return $pos;
+    }
+
+    /**
+     * Получает все части речи
+     */
+    public function getPosAll(){
+        $pos = WordsPartOfSpeech::select(['id', 'title'])
+            ->orderBy('id', 'ASC')
+            ->get();
+        return $pos;
     }
 }

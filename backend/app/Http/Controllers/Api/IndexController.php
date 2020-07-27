@@ -69,10 +69,10 @@ class IndexController extends BaseController
         return response()->json([
             'title' => 'Французский язык - изучение, форум',
             'description' => 'Французский язык - изучение, форум',
-            'keywords' => '',
+            'keywords' => 'Французский язык - изучение, форум',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
             'data' => $topics,
             'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],

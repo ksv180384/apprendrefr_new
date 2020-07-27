@@ -1,4 +1,4 @@
-import { LYRIC_SET_DATA } from '../actions';
+import { LYRIC_SET_LIST, LYRIC_SET_ITEM } from '../actions';
 
 const stateInit = {
     list: [],
@@ -8,8 +8,10 @@ const stateInit = {
 
 const reducer = (state = stateInit, action) => {
     switch (action.type){
-        case LYRIC_SET_DATA:
+        case LYRIC_SET_LIST:
             return { list: action.payload };
+        case LYRIC_SET_ITEM:
+            return { song: action.payload, song_id: action.payload.id };
         default:
             return state;
     }

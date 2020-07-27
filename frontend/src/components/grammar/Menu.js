@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // actions
 import { getPageItem } from '../../store/actions/grammarActions';
 
-const Grammar = (props) => {
+const Menu = (props) => {
 
     const loadContent = (e) => {
         const el = e.target.parentNode;
@@ -43,4 +43,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, { getPageItem })(Grammar);
+export default connect(mapStateToProps, { getPageItem })(Menu);

@@ -1,7 +1,7 @@
 import React,  { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getPageList } from '../../store/actions/lyricActions';
+import { getPage } from '../../store/actions/wordPageActions';
 
 // components
 import Header from "../../header/Header";
@@ -14,7 +14,7 @@ import WordsList from "../../components/words_list/WordsList";
 import Joke from "../../components/joke/Joke";
 import CenterBlock from "../../layouts/app/center/CenterBlock";
 import Proverb from "../../components/proverb/Proverb";
-import LyricsList from "../../components/lyrics/LyricsList";
+import WordItem from '../../components/words_page/WordItem';
 import Right from "../../layouts/app/right/Right";
 import Statistics from "../../components/statistics/Statistics";
 import OnlineList from "../../components/online_list/OnlineList";
@@ -22,10 +22,11 @@ import Authentification from "../../components/authentification/Authentification
 
 import LoaderPage from "../../components/loader_page/LoaderPage";
 
-class Lyrics extends Component {
+
+class Words extends Component {
 
     componentDidMount(){
-        this.props.getPageList();
+        this.props.getPage({ id: this.props.match.params.id });
     }
 
     render(){
@@ -57,7 +58,7 @@ class Lyrics extends Component {
 
                         <CenterBlock>
                             <Proverb/>
-                            <LyricsList/>
+                            <WordItem/>
                         </CenterBlock>
 
                         <Right>
@@ -66,8 +67,8 @@ class Lyrics extends Component {
                             <OnlineList/>
                         </Right>
                     </LayoutOne>
-
                     <Footer/>
+
                 </React.Fragment>
 
 
@@ -82,4 +83,4 @@ const mapStateToPage = (state) => {
     }
 };
 
-export default connect(mapStateToPage, { getPageList })(Lyrics);
+export default connect(mapStateToPage, { getPage })(Words);

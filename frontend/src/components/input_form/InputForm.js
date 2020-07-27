@@ -5,7 +5,7 @@ class InputForm extends Component{
 
     render(){
 
-        const { type, name, placeholder, value, required = true, className = '', onChange } = this.props;
+        const { type, name, placeholder, value, required = true, className = '', onChange, autoComplete = 'on' } = this.props;
 
         return(
             <div className={ 'Input-Form ' + className }>
@@ -14,6 +14,7 @@ class InputForm extends Component{
                        value={ value }
                        onChange={ onChange }
                        required={ required }
+                       autoComplete={ autoComplete }
                 />
                 <span data-placeholder={ placeholder }></span>
             </div>

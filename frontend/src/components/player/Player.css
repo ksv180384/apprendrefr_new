@@ -3,6 +3,10 @@
     line-height: 1.6;
 }
 
+.Player-info-panel>strong{
+    font-size: 11px;
+}
+
 .Player-control-panel{
 
 }

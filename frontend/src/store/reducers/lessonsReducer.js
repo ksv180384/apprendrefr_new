@@ -1,4 +1,4 @@
-import { GRAMMAR_SET_LIST, GRAMMAR_SET_ITEM } from '../actions';
+import { LESSON_SET_ITEM, LESSON_SET_LIST } from '../actions';
 
 const initState = {
     page_id: 0,
@@ -8,9 +8,9 @@ const initState = {
 
 const reducer = (state = initState, action) => {
     switch (action.type){
-        case GRAMMAR_SET_ITEM:
+        case LESSON_SET_ITEM:
             return { ...state, item: action.payload, page_id: action.payload.id };
-        case GRAMMAR_SET_LIST:
+        case LESSON_SET_LIST:
             return { ...state, list: action.payload };
         default:
             return state;

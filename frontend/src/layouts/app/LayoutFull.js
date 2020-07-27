@@ -1,16 +1,19 @@
 import React from 'react';
 
-import './LayoutTwo.css';
+import './LayoutFull.css';
 
-const LayoutTwo = (props) => {
+const LayoutFull = (props) => {
+
+
 
     const { children } = props;
 
     return(
-        <div className="LayoutTwo">
+        <div className="LayoutFull">
             { children }
         </div>
     );
+
 }
 
-export default LayoutTwo;
+export default LayoutFull;

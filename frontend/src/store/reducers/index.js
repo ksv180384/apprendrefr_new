@@ -29,6 +29,9 @@ import usersListReducer from './usersListReducer';
 import quotesReducer from './quotesReducer';
 import grammarReducer from './grammarReducer';
 import lyricReducer from './lyricReducer';
+import lessonsReducer from './lessonsReducer';
+import wordsPageReducer from './wordsPageReducer';
+import wordPageReducer from './wordPageReducer';
 import errorReducer from './errorReducer';
 
 export default combineReducers({
@@ -61,5 +64,8 @@ export default combineReducers({
     quotesReducer: quotesReducer,
     grammarReducer: grammarReducer,
     lyricReducer: lyricReducer,
+    lessonsReducer: lessonsReducer,
+    wordsPageReducer: wordsPageReducer,
+    wordPageReducer: wordPageReducer,
     errorReducer: errorReducer,
 });

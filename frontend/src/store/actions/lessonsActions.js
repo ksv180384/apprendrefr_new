@@ -1,11 +1,12 @@
 import {
     ERROR_PAGE,
-    GRAMMAR_SET_ITEM,
-    GRAMMAR_SET_LIST,
+    LESSON_SET_ITEM,
+    LESSON_SET_LIST,
     SET_LOGIN,
     SET_USER,
     SET_LOADER_PAGE,
-    SET_META, SET_LOADER,
+    SET_META,
+    SET_LOADER,
 } from './index';
 import {config} from "../../config";
 import axios from "axios/index";
@@ -29,12 +30,12 @@ export const getPage = (path_page) => {
                 }
             });
             dispatch({
-                type: GRAMMAR_SET_LIST,
-                payload: result.data.data.grammars_list
+                type: LESSON_SET_LIST,
+                payload: result.data.data.list
             });
             dispatch({
-                type: GRAMMAR_SET_ITEM,
-                payload: result.data.data.grammar_content
+                type: LESSON_SET_ITEM,
+                payload: result.data.data.content
             });
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
@@ -66,8 +67,8 @@ export const getPageItem = (path_page) => {
             });
 
             dispatch({
-                type: GRAMMAR_SET_ITEM,
-                payload: result.data.data.grammar_content
+                type: LESSON_SET_ITEM,
+                payload: result.data.data.content
             });
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
