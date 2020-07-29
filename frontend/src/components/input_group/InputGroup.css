@@ -1,0 +1,48 @@
+.input-group {
+    box-sizing: border-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    background-color: #fff;
+    font-weight: 400;
+    border: 1px solid rgba(34,36,38,.15);
+    box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+    border-radius: 2px;
+    font-size: 14px;
+    min-height: 30px;
+    width: 100%;
+}
+
+.input-group>label {
+    display: flex;
+    flex: 1 0 auto;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0 8px;
+    background-color: #f7fbff;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.input-group input {
+    flex: 100%;
+    border: none;
+    border-left: 1px solid rgba(34,36,38,.15);
+    padding-left: 6px;
+    padding-right: 6px;
+    outline: 0;
+}
+
+.input-group.vertical {
+    flex-direction: column;
+    flex-wrap: wrap;
+    min-height: 60px;
+}
+
+.input-group.vertical>label{
+    width: 100%;
+}
+
+.input-group.vertical>input{
+    width: 100%;
+}

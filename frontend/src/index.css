@@ -663,7 +663,7 @@ ul{
   border-radius: 2px;
   border: 1px solid rgba(34,36,38,.15);
 }
-
+/*
 .input-group{
   box-sizing: border-box;
   display: inline-flex;
@@ -695,7 +695,7 @@ ul{
   padding-right: 6px;
   outline: 0;
 }
-
+*/
 .input-group .react-datepicker-wrapper input{
   width: 80px;
   text-align: right;

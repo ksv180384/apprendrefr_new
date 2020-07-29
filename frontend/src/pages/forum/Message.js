@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 // actions
-import { loadMessagesListPage } from '../../store/actions/forumActions';
+import { loadMessagesListPage, sendMessage } from '../../store/actions/forumActions';
 
 // components
 import Header from "../../header/Header";
@@ -25,9 +25,11 @@ class Message extends Component {
     constructor(){
         super();
 
-        this.state = {
-            page: 1,
-        };
+        this.sendMessage = (id, message, callback) => {
+            this.props.sendMessage(id, message, (res) => {
+                callback(res);
+            });
+        }
     }
 
     componentDidMount(){
@@ -36,7 +38,7 @@ class Message extends Component {
 
     render(){
 
-        const { auth, loader_page, paginate, meta_data } = this.props;
+        const { auth, loader_page, meta_data, user_auth, message_request } = this.props;
 
         document.title = meta_data.title;
         document.querySelector('meta[name="description"]').content = meta_data.description;
@@ -62,7 +64,15 @@ class Message extends Component {
                         <CenterTwoBlock>
                             <Proverb/>
                             <MessagesList/>
-                            { auth ? <TextEditor topic={ this.props.match.params.topic_id }/> : '' }
+                            { auth && user_auth.rang_alias !== 'zabanen'
+                                ?
+                                <TextEditor topic={ this.props.match.params.topic_id }
+                                            send={ this.sendMessage }
+                                            requestLoad={ message_request }
+                                />
+                                :
+                                ''
+                            }
                             <Quotes/>
                         </CenterTwoBlock>
 
@@ -79,14 +89,9 @@ const mapStateToProps = (state) => {
         loader_page: state.loaderPageReducer,
         meta_data: state.metaReducer,
         auth: state.loginReducer.login,
-        paginate: {
-            current_page: state.forumMessagesListReduer.current_page,
-            last_page: state.forumMessagesListReduer.last_page,
-            per_page: state.forumMessagesListReduer.per_page,
-            to: state.forumMessagesListReduer.to,
-            total: state.forumMessagesListReduer.total,
-        },
+        user_auth: state.userReducer,
+        message_request: state.forumSendMessageReducer.loading,
     };
 };
 
-export default connect(mapStateToProps, { loadMessagesListPage })(Message);
+export default connect(mapStateToProps, { loadMessagesListPage, sendMessage })(Message);

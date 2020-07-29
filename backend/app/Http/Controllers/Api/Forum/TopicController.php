@@ -3,6 +3,12 @@
 namespace App\Http\Controllers\Api\Forum;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\ForumCreateTopicRequest;
+use App\Models\Forum\Forum;
+use App\Models\Forum\Message;
+use App\Models\Forum\MessageStatus;
+use App\Models\Forum\Status;
+use App\Models\Forum\Topic;
 use App\Repositories\ForumMessageRepository;
 use App\Repositories\ForumRepository;
 use App\Repositories\ForumTopicRepository;
@@ -106,6 +112,7 @@ class TopicController extends Controller
     public function create()
     {
         //
+
     }
 
     /**
@@ -114,9 +121,37 @@ class TopicController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ForumCreateTopicRequest $request)
     {
         //
+        $status = Status::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
+        $message_status = MessageStatus::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
+
+        $topic_id = Topic::create([
+            'forum_id' => $request->forum_id,
+            'title' => $request->topic_title,
+            'user_id' => \Auth::id(),
+            'status' => $status->id,
+        ])->id;
+
+        $message_id = Message::create([
+            'message' => $request->message,
+            'topic_id' => $topic_id,
+            'user_id' => \Auth::id(),
+            'status' => $message_status->id,
+        ])->id;
+
+        $topic = Topic::select(['id', 'forum_id'])->where('id', '=', $topic_id)->first();
+        $topic->update(['last_message_id' => $message_id]);
+        Forum::where('id', '=', $request->forum_id)->first()->update(['last_message_id' => $message_id]);
+
+        return response()->json([
+            'messages' => 'Тема форума успешно добавлена.',
+            'data' => [
+                'topic_id' => $topic_id,
+            ]
+        ]);
+
     }
 
     /**

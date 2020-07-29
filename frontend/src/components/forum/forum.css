@@ -343,3 +343,48 @@ blockquote{
 .quote-remove:hover{
     color: #000;
 }
+
+.create-them-control-block{
+    text-align: right;
+    padding: 4px 10px;
+}
+
+.btn{
+    font-size: 12px;
+    position: relative;
+    display: inline-block;
+    background-color: #8db3ce;
+    border: 1px solid #8db3ce;
+    color: #fff;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 4px 10px;
+}
+
+.create-them-block{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e9f1f7;
+    z-index: 3;
+    display: none;
+}
+
+.create-them-form-block{
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.create-them-block.show{
+    display: initial;
+}
+
+.send-forum-message-block{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+}
+

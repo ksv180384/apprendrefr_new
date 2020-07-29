@@ -22,9 +22,6 @@ const MessagesList = (props) => {
     
     const { message, topic, auth, user_auth } = props;
 
-    console.log(auth);
-    console.log(user_auth);
-
     return(
 
         <div className="MessageItem" id={ 'post-id-' + message.id }>
@@ -174,7 +171,7 @@ const MessagesList = (props) => {
                 <div className="message-control">
                     <ul>
                         {
-                            auth && user_auth.admin > 0
+                            auth && (user_auth.admin === 1 || user_auth.rang_alias === 'administrator' || user_auth.rang_alias === 'moderator')
                                 ?
                                 <li title="Скрыть">
                                     <FontAwesomeIcon icon={ faTimesCircle }/>
@@ -182,9 +179,15 @@ const MessagesList = (props) => {
                                 :
                                 ''
                         }
-                        <li title="Цитировать" onClick={ setQuote }>
-                            <FontAwesomeIcon icon={ faCommentDots }/>
-                        </li>
+                        {
+                            auth && user_auth.rang_alias !== 'zabanen'
+                                ?
+                                <li title="Цитировать" onClick={ setQuote }>
+                                    <FontAwesomeIcon icon={ faCommentDots }/>
+                                </li>
+                                :
+                                ''
+                        }
                         {
                             auth && user_auth.id === message.user_id
                                 ?

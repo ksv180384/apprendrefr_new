@@ -10,7 +10,9 @@ import {
     SET_LOGIN,
     WORD_SET_LIST,
     STATISTIC_SET_DATA,
-    ERROR_PAGE
+    FORUM_SEND_MESSAGE_REQUEST,
+    FORUM_SEND_MESSAGE_SUCCESS,
+    ERROR_PAGE, FORUM_CREATE_THEM_REQUEST, FORUM_CREATE_THEM_SUCCESS
 } from './index';
 
 import axios from 'axios';
@@ -190,8 +192,9 @@ export const loadMessagesPaginate = (path_page, params = {}) => {
     }
 };
 
-export const sendMessage = (topic, message) => {
+export const sendMessage = (topic = 0, message, callback) => {
     return (dispatch) => {
+        dispatch({ type: FORUM_SEND_MESSAGE_REQUEST });
         axios.defaults.headers.common = {
             'Authorization': localStorage.getItem('user-token'),
             'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '',
@@ -204,7 +207,13 @@ export const sendMessage = (topic, message) => {
             let arr_url = window.location.pathname.split('/');
             // Если сообщение находится на новой странице, то меняем url на новую страницу
             if(parseInt(arr_url[(arr_url.length - 1)]) !== parseInt(result.data.messages.current_page)){
-                arr_url[(arr_url.length - 1)] = result.data.messages.current_page;
+                if(arr_url[(arr_url.length - 2)] === 'page'){
+                    arr_url[(arr_url.length - 1)] = result.data.messages.current_page;
+                }else{
+                    arr_url[(arr_url.length)] = 'page';
+                    arr_url[(arr_url.length)] = result.data.messages.current_page;
+                }
+
                 const new_url = arr_url.join('/');
                 window.location.pathname = new_url;
             }else{ // Если сообщение находится на этой же странице, то выводим сообщения текущей страницы
@@ -213,10 +222,50 @@ export const sendMessage = (topic, message) => {
                     payload: result.data.messages
                 });
             }
+            dispatch({ type: FORUM_SEND_MESSAGE_SUCCESS });
+            callback(true);
         }).catch((error) => {
             //dispatch({ type: LOAD_PAGE, payload: [], error: 'Ошибка при получении данных.' });
-            errorNotification(error.response.data.message[0]);
-            dispatch({ type: SET_LOADER_PAGE, payload: false });
+            let err_text = '';
+            if(error.response.data){
+                for(let k in error.response.data){
+                    err_text = error.response.data[k][0];
+                }
+            }
+            errorNotification(err_text);
+            dispatch({ type: FORUM_SEND_MESSAGE_SUCCESS });
+            callback(false);
+        });
+    }
+};
+
+export const createTopic = (forum_id, topic_title, message, callback) => {
+    return (dispatch) => {
+        dispatch({ type: FORUM_CREATE_THEM_REQUEST });
+        axios.defaults.headers.common = {
+            'Authorization': localStorage.getItem('user-token'),
+            'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '',
+        };
+        const path = config.path + 'api/forum/create-them';
+        axios.post(path, {page_load: true, forum_id: forum_id, topic_title: topic_title, message: message}).then((result) => {
+            localStorage.setItem('user-token-page', result.data.UserToken);
+            // меняем url страницы
+            const new_url = 'forum/' +  forum_id + '/topic/' + result.data.data.topic_id;
+            dispatch({ type: FORUM_CREATE_THEM_SUCCESS });
+
+            window.location.pathname = new_url;
+            callback(true);
+        }).catch((error) => {
+            //dispatch({ type: LOAD_PAGE, payload: [], error: 'Ошибка при получении данных.' });
+            let err_text = '';
+            if(error.response){
+                for(let k in error.response.data){
+                    err_text = error.response.data[k][0];
+                }
+            }
+            errorNotification(err_text);
+            dispatch({ type: FORUM_CREATE_THEM_SUCCESS });
+            callback(false);
         });
     }
 };

@@ -11,6 +11,7 @@ class Topic extends Model
 
     protected $fillable = [
         'title',
+        'forum_id',
         'user_id',
         'count_views',
         'last_message_id',

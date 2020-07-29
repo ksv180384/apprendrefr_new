@@ -4,9 +4,13 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faTimes, faCheck, faLink, faImage, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 
-import './TextEditor.css';
-import { sendMessage } from "../../../store/actions/forumActions";
+// components
+import BtnLoad from '../../../components/btn_load/BtnLoad';
+
+// actions
 import { removeQuotes } from "../../../store/actions/quotesActions";
+
+import './TextEditor.css';
 
 class TextEditor extends Component{
 
@@ -235,10 +239,10 @@ class TextEditor extends Component{
         // показываем окно со смайликами
         this.showSmiles = (e) => {
             let selection = window.getSelection();
-            console.log(selection);
+            //console.log(selection);
             let range = window.getSelection().getRangeAt(0);
             const el = selection.anchorNode.parentNode;
-            console.log(el);
+            //console.log(el);
             if(!el.closest('.text') && !el.classList.contains('text') && !el.classList.contains('editor')){
                 return true;
             }
@@ -279,23 +283,30 @@ class TextEditor extends Component{
             });
         };
 
-
         // отправка сообщения
-        this.send = (e) => {
-            this.props.sendMessage(this.props.topic, this.state.text);
-            this.setState({
-                ...this.state,
-                text: '',
-                selection: null,
-                range: null,
-                link_text: '',
-                link_url: '',
-                link_window_is_visible: false,
-            });
+        this.sendMessage = (e) => {
+            const message = this.state.text;
+            const topic_id = this.props.topic;
             const btn = e.target;
             const editor = btn.closest('.TextEditor');
             const text = editor.querySelector('.text');
-            text.innerHTML = '';
+
+            // Получем результат отправки сообщения через колбек, если все нормально, то очищаем поля редактора
+            this.props.send(topic_id, message, (res) => {
+                if(!res){
+                    return true;
+                }
+                this.setState({
+                    ...this.state,
+                    text: '',
+                    selection: null,
+                    range: null,
+                    link_text: '',
+                    link_url: '',
+                    link_window_is_visible: false,
+                });
+                text.innerHTML = '';
+            });
         };
     }
 
@@ -312,7 +323,7 @@ class TextEditor extends Component{
         const { text, link_window_is_visible, img_window_is_visible, link_text, link_url,
                 img_url, smiles_window_is_visible } = this.state;
 
-        const { quotes } = this.props;
+        const { quotes, requestLoad } = this.props;
 
         let class_show_link_window = '';
         let class_show_img_window = '';
@@ -508,9 +519,13 @@ class TextEditor extends Component{
                         </ul>
                     </div>
                 </div>
-                <textarea defaultValue={ text } ></textarea>
+                <textarea defaultValue={ text }/>
                 <div className="send-forum-message-block">
-                    <button className="send-forum-message" onClick={ this.send }>отправить</button>
+                    <BtnLoad load={ requestLoad }
+                             type="button"
+                             title="отправить"
+                             onClick={ this.sendMessage }
+                    />
                 </div>
             </div>
         );
@@ -519,8 +534,8 @@ class TextEditor extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        quotes: state.quotesReducer.quotes
+        quotes: state.quotesReducer.quotes,
     }
 };
 
-export default connect(mapStateToProps, { sendMessage, removeQuotes })(TextEditor);
+export default connect(mapStateToProps, { removeQuotes })(TextEditor);

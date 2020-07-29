@@ -32,6 +32,8 @@ import lyricReducer from './lyricReducer';
 import lessonsReducer from './lessonsReducer';
 import wordsPageReducer from './wordsPageReducer';
 import wordPageReducer from './wordPageReducer';
+import forumSendMessageReducer from './forumSendMessageReducer';
+import forumCreateThem from './forumCreateThem';
 import errorReducer from './errorReducer';
 
 export default combineReducers({
@@ -67,5 +69,7 @@ export default combineReducers({
     lessonsReducer: lessonsReducer,
     wordsPageReducer: wordsPageReducer,
     wordPageReducer: wordPageReducer,
+    forumSendMessageReducer: forumSendMessageReducer,
+    forumCreateThem: forumCreateThem,
     errorReducer: errorReducer,
 });

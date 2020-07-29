@@ -9,10 +9,10 @@ class BtnLoad extends Component{
 
     render(){
 
-        const { load, type, title } = this.props;
+        const { load, type, title, onClick } = this.props;
 
         return(
-            <button className="Btn-load" type={ type } disabled={ load }>
+            <button className="Btn-load" type={ type } disabled={ load } onClick={ onClick }>
                 <span>{ title }</span>
                 <FontAwesomeIcon icon={faSpinner} spin/>
             </button>

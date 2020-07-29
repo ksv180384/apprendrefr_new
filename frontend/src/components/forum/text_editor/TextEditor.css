@@ -1,5 +1,6 @@
 .TextEditor{
-    background-color: #8db3ce;
+    /*background-color: #8db3ce;*/
+    background-color: #aacadd;
 }
 
 .TextEditor>.editor{
@@ -36,13 +37,7 @@
     background-color: #fff;
 }
 
-.TextEditor .send-forum-message-block{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60px;
-}
-
+/*
 .TextEditor .send-forum-message-block>.send-forum-message{
     color: #176093;
     font-size: 14px;
@@ -62,6 +57,7 @@
 .TextEditor .send-forum-message-block>.send-forum-message:hover{
     background-color: #fff;
 }
+*/
 
 .TextEditor>.editor>.text{
     font-size: 14px;
