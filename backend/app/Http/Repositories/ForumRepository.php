@@ -40,9 +40,9 @@ class ForumRepository extends CoreRepository
                 'users.rang AS message_create_user_rang',
                 'forum_messages.created_at AS message_created_at',
                 \DB::raw('(SELECT COUNT(*) FROM forum_messages WHERE topic_id IN (
-                                        SELECT `id` FROM `forum_topics` WHERE `forum_id` = forum_forums.`id`
+                                        SELECT `id` FROM `forum_topics` WHERE `forum_id` = forum_forums.`id` AND status <> 3
                                  ) AND forum_messages.`status` = 1) AS count_messages'),
-                \DB::raw('(SELECT COUNT(*) FROM forum_topics WHERE forum_id = forum_forums.id) AS count_topics'),
+                \DB::raw('(SELECT COUNT(*) FROM forum_topics WHERE forum_id = forum_forums.id AND status <> 3) AS count_topics'),
             ])
             ->leftJoin('forum_messages', 'forum_forums.last_message_id', '=', 'forum_messages.id')
             ->leftJoin('forum_topics', 'forum_topics.id', '=', 'forum_messages.topic_id')
@@ -69,9 +69,9 @@ class ForumRepository extends CoreRepository
                 'users.rang AS message_create_user_rang',
                 'forum_messages.created_at AS message_created_at',
                 \DB::raw('(SELECT COUNT(*) FROM forum_messages WHERE topic_id IN (
-                                        SELECT `id` FROM `forum_topics` WHERE `forum_id` = forum_forums.`id`
+                                        SELECT `id` FROM `forum_topics` WHERE `forum_id` = forum_forums.`id` AND status <> 3
                                  ) AND forum_messages.`status` = 1) AS count_messages'),
-                \DB::raw('(SELECT COUNT(*) FROM forum_topics WHERE forum_id = forum_forums.id) AS count_topics'),
+                \DB::raw('(SELECT COUNT(*) FROM forum_topics WHERE forum_id = forum_forums.id AND status <> 3) AS count_topics'),
             ])
             ->leftJoin('forum_messages', 'forum_forums.last_message_id', '=', 'forum_messages.id')
             ->leftJoin('forum_topics', 'forum_topics.id', '=', 'forum_messages.topic_id')

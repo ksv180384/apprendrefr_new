@@ -29,7 +29,7 @@ class CreateThem extends Component{
             this.props.closeCreateThem();
         };
 
-        this.addThem = (id = 0, message, callback) => {
+        this.addThem = (message, callback) => {
             this.props.createTopic(this.props.forum.id, this.state.them_title, message, (res) => {
                 if(res){
                     this.setState({ them_title: '' });

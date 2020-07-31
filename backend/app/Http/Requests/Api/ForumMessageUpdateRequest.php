@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 
-class ForumCreateTopicRequest extends BaseRequest
+class ForumMessageUpdateRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +26,7 @@ class ForumCreateTopicRequest extends BaseRequest
     public function rules()
     {
         return [
-            'forum_id' => 'required|exists:forum_forums,id',
-            'topic_title' => 'min:2',
-            'message' => 'min:2',
+            'message' => 'required|min:2',
         ];
     }
 
@@ -40,9 +38,7 @@ class ForumCreateTopicRequest extends BaseRequest
     public function messages()
     {
         return [
-            'forum_id.required' => 'Не задан форум.',
-            'forum_id.exists' => 'Заданный форум не существует.',
-            'topic_title.min' => 'Минимальная длинна названия темы форума 2 символа.',
+            'message.required' => 'Минмалиная длинна сообщения 2 символа.',
             'message.min' => 'Минмалиная длинна сообщения 2 символа.',
         ];
     }
@@ -58,9 +54,6 @@ class ForumCreateTopicRequest extends BaseRequest
 
         if (!empty($data['message'])){
             $data['message'] = $this->removeScript($this->closeTags($data['message']));
-        }
-        if (!empty($data['topic_title'])){
-            $data['topic_title'] = $this->removeScript($this->closeTags($data['topic_title']));
         }
 
         $this->getInputSource()->replace($data);

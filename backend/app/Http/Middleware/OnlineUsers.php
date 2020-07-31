@@ -20,7 +20,7 @@ class OnlineUsers
     public function handle($request, Closure $next)
     {
         //var_export($request->page_load);
-        return $next($request);
+        //return $next($request);
         //sleep(2);
         if(empty($request->page_load)){
             return $next($request);
@@ -44,6 +44,7 @@ class OnlineUsers
         $online_user = Online::select('id')->where('token', '=', $token)->first();
         if(!$online_user){
             $token = Online::generateToken();
+            $request->newUserToken = $token;
             //$request->headers->set('UserToken', $token);
 
             Online::create([
@@ -63,7 +64,6 @@ class OnlineUsers
                 'date' => \DB::raw('NOW()'),
             ]);
         }
-
 
         $response = $next($request);
 

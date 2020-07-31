@@ -12,7 +12,7 @@ export const getPage = (params = {}) => {
 
         axios.defaults.headers.common = {
             'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
+            'App-User-Token': config.UserToken,
         };
         let params_str = '?page_load=true';
         if(params.page){
@@ -60,7 +60,7 @@ export const getPagePaginate = (path, params = {}) => {
 
         axios.defaults.headers.common = {
             'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
+            'App-User-Token': config.UserToken,
         };
         let params_str = '?page_load=true';
         if(params.page){

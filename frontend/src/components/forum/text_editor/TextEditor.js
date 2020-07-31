@@ -30,17 +30,15 @@ class TextEditor extends Component{
         };
 
         this.textEditor = (target) => {
-            //const el = e.target;
-            //console.log(this);
-            //const editor = el.closest('.TextEditor');
-            //const text = editor.querySelector('.text');
-            //console.log(target.innerHTML);
-            //console.log(this.state.text);
             this.setState({ ...this.state, text: target.innerHTML });
         };
 
-        this.textInput = (e) => {
+        this.setFocus = () => {
+            const el = document.querySelector('.TextEditor .text');
+            el.focus();
+        };
 
+        this.textInput = (e) => {
             this.setState({ ...this.state, [e.target.name]: e.target.value });
         };
 
@@ -71,6 +69,7 @@ class TextEditor extends Component{
         };
 
         this.blockQuote = (e) => {
+            this.setFocus();
             const selection = window.getSelection();
             let range = window.getSelection().getRangeAt(0);
             const el = selection.anchorNode.parentNode;
@@ -238,6 +237,7 @@ class TextEditor extends Component{
 
         // показываем окно со смайликами
         this.showSmiles = (e) => {
+            this.setFocus();
             let selection = window.getSelection();
             //console.log(selection);
             let range = window.getSelection().getRangeAt(0);
@@ -286,13 +286,12 @@ class TextEditor extends Component{
         // отправка сообщения
         this.sendMessage = (e) => {
             const message = this.state.text;
-            const topic_id = this.props.topic;
             const btn = e.target;
             const editor = btn.closest('.TextEditor');
             const text = editor.querySelector('.text');
 
             // Получем результат отправки сообщения через колбек, если все нормально, то очищаем поля редактора
-            this.props.send(topic_id, message, (res) => {
+            this.props.send(message, (res) => {
                 if(!res){
                     return true;
                 }
@@ -312,6 +311,7 @@ class TextEditor extends Component{
 
     componentDidMount(){
         document.addEventListener('click', this.handleClickOutsideLinkWindow, false);
+        this.setState({ ...this.state, text: this.props.defaultText });
     }
 
     componentWillUnmount(){
@@ -323,7 +323,7 @@ class TextEditor extends Component{
         const { text, link_window_is_visible, img_window_is_visible, link_text, link_url,
                 img_url, smiles_window_is_visible } = this.state;
 
-        const { quotes, requestLoad } = this.props;
+        const { quotes, requestLoad, defaultText = '' } = this.props;
 
         let class_show_link_window = '';
         let class_show_img_window = '';
@@ -382,9 +382,9 @@ class TextEditor extends Component{
                              data-text-editor="true"
                              onKeyUp={ (e) => this.textEditor(e.target) }
                              contentEditable
-                             defaultValue={ text }>
-
-                        </div>
+                             defaultValue={ text }
+                             dangerouslySetInnerHTML={ {__html: defaultText } }
+                        />
                     
                     <div className={'link-window' + class_show_link_window }>
                         <ul>

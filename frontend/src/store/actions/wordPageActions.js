@@ -12,7 +12,7 @@ export const getPage = (params = {}) => {
 
         axios.defaults.headers.common = {
             'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
+            'App-User-Token': config.UserToken,
         };
         let params_str = params.id + '?page_load=true';
         axios.get(config.path + 'api/word/item-page/' + params_str).then((result) => {

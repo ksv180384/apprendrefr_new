@@ -21,7 +21,9 @@ class CreateForumTopicViewedsTable extends Migration
 
             $table->unsignedBigInteger('user_id')->unique()
                   ->comment('идентификаор пользователя');
-            $table->unsignedBigInteger('topic_id')->index()
+            $table->string('token', 200)->primary()
+                ->comment('токен пользователя');
+            $table->unsignedBigInteger('topic_id')->index()->nullable()->default(null)
                   ->comment('идентификатор темы форума');
             $table->timestamp('viewed_data')
                   ->comment('дата последнего просмотра темы пользователем');

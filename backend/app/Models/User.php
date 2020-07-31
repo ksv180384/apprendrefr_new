@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User\Rang;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -88,7 +89,11 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function isAdmin(){
-        return $this->admin == 1;
+        return /*$this->admin == 1 || */$this->rangTitle->alias == 'administrator';
+    }
+
+    public function isModerator(){
+        return $this->rangTitle->alias == 'moderator';
     }
 
     /**
@@ -122,5 +127,12 @@ class User extends Authenticatable implements JWTSubject
     {
         $birthday = Carbon::parse($birthday)->format('Y-m-d H:i:s');
         return $birthday;
+    }
+
+    public function rangTitle()
+    {
+        //return $this->hasOne(Rang::class, 'rang', 'id');
+        return $this->belongsTo(Rang::class, 'rang', 'id');
+
     }
 }

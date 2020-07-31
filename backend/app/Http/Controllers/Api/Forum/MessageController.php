@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Api\Forum;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ForumMessageCreateRequest;
+use App\Http\Requests\Api\ForumMessageHideRequest;
+use App\Http\Requests\Api\ForumMessageUpdateRequest;
 use App\Models\Forum\Forum;
+use App\Models\Forum\ForumTopicViewed;
 use App\Models\Forum\Message;
 use App\Models\Forum\MessageStatus;
+use App\Models\Forum\Status;
 use App\Models\Forum\Topic;
 use App\Repositories\ForumMessageRepository;
 use App\Repositories\ForumRepository;
 use App\Repositories\ForumTopicRepository;
+use App\Repositories\ForumTopicViewedRepository;
 use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WordRepository;
@@ -44,6 +49,11 @@ class MessageController extends Controller
     private $forumMessageRepository;
 
     /**
+     * @var ForumTopicViewedRepository
+     */
+    private $forumTopicViewedRepository;
+
+    /**
      * @var ForumTopicRepository
      */
     private $forumTopicRepository;
@@ -56,6 +66,7 @@ class MessageController extends Controller
         $this->statisticRepository = app(StatisticRepository::class);
         $this->forumMessageRepository = app(ForumMessageRepository::class);
         $this->forumTopicRepository = app(ForumTopicRepository::class);
+        $this->forumTopicViewedRepository = app(ForumTopicViewedRepository::class);
     }
 
     /**
@@ -65,12 +76,17 @@ class MessageController extends Controller
      * @param $topic_id - идентификаотр темы форума
      * @return \Illuminate\Http\Response
      */
-    public function index($forum_id, $topic_id)
+    public function index($forum_id, $topic_id, Request $request)
     {
-        //
+        // Показывать ли скрытые сообщения
+        $show_hidden_message = $request->show_hide_mess == 'show';
+        $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
+
+
         $topic = $this->forumTopicRepository->getById((int)$topic_id);
         $forum = $this->forumRepository->getById((int)$forum_id);
-        $messages = $this->forumMessageRepository->getByTopicId((int)$topic_id);
+
+        $messages = $this->forumMessageRepository->getByTopicId((int)$topic_id, $show_hidden_message);
         $messages = $this->formatSocialLinks($this->filterInfo($messages));
         //var_export($messages->toArray());
 
@@ -85,6 +101,17 @@ class MessageController extends Controller
         if(count($messages) == 0){
             return response()->json(['message' => 'Такой страницы не существует.'], 404);
         }
+
+        $m = $messages->toArray();
+        if($m['last_page'] == $m['current_page']){
+            // Помечаем тему как просмотренную
+            $t = $request->headers->get('app-user-token');
+            $token = !empty($t) ? $t : $request->newUserToken;
+            $this->forumTopicViewedRepository->viewedTopic($topic_id, $token);
+        }
+
+        // Удаляем ползователей срок бездействия которых истек
+        ForumTopicViewed::where('viewed_data', '<', \DB::raw('(NOW() -  INTERVAL 30 DAY)'))->delete();
 
         return response()->json([
             'title' => $topic->title . ' - Фоорум (стр ' . $messages->toArray()['current_page'] . ')',
@@ -113,13 +140,25 @@ class MessageController extends Controller
         ]);
     }
 
-    public function getMessagesPaginate($forum_id, $topic_id){
+    public function getMessagesPaginate($forum_id, $topic_id, Request $request){
+        // Показывать ли скрытые сообщения
+        $show_hidden_message = $request->show_hide_mess == 'show';
+        $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
+
         $topic = $this->forumTopicRepository->getById((int)$topic_id);
-        $messages = $this->forumMessageRepository->getByTopicId((int)$topic_id);
+        $messages = $this->forumMessageRepository->getByTopicId((int)$topic_id, $show_hidden_message);
         $messages = $this->formatSocialLinks($this->filterInfo($messages));
 
         if(count($messages) == 0){
             return response()->json(['message' => 'Такой страницы не существует.'], 404);
+        }
+
+        $m = $messages->toArray();
+        if($m['last_page'] == $m['current_page']){
+            // Помечаем тему как просмотренную
+            $t = $request->headers->get('app-user-token');
+            $token = !empty($t) ? $t : $request->newUserToken;
+            $this->forumTopicViewedRepository->viewedTopic($topic_id, $token);
         }
 
         return response()->json([
@@ -148,7 +187,18 @@ class MessageController extends Controller
      */
     public function store(ForumMessageCreateRequest $request)
     {
+        // Показывать ли скрытые сообщения
+        $show_hidden_message = $request->show_hide_mess == 'show';
+        $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
+
         $status = MessageStatus::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
+        $topic = $this->forumTopicRepository->getById($request->topic);
+
+        if($topic->status_topic_alias != 'visible_everyone' &&
+           $topic->status_topic_alias != 'visible_only_registered_users')
+        {
+            return response()->json(['message' => 'Тема закрыта для сообщений.'], 404);
+        }
 
         $message_id = Message::create([
             'message' => $request->message,
@@ -157,12 +207,12 @@ class MessageController extends Controller
             'status' => $status->id,
         ])->id;
 
-        $topic = Topic::select(['id', 'forum_id'])->where('id', '=', $request->topic)->first();
+        $topic = Topic::select(['id', 'forum_id', 'status'])->where('id', '=', $request->topic)->first();
         $topic->update(['last_message_id' => $message_id]);
         Forum::where('id', '=', $topic->forum_id)->first()->update(['last_message_id' => $message_id]);
 
         $topic = $this->forumTopicRepository->getById($request->topic);
-        $messages = $this->forumMessageRepository->getByTopicIdLastPage($request->topic);
+        $messages = $this->forumMessageRepository->getByTopicIdLastPage($request->topic, $show_hidden_message);
         $messages = $this->formatSocialLinks($this->filterInfo($messages));
 
         return response()->json([
@@ -202,9 +252,74 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ForumMessageUpdateRequest $request, $id)
     {
         //
+        $message = Message::select(['id', 'topic_id', 'message', 'user_id'])->where('id', '=', $id)->first();
+        $user = $this->userRepository->getById(\Auth::id());
+        if(!$message){
+            return response()->json(['message' => 'Неудалось найти редактируемое сообщение.'], 404);
+        }
+        if($message->user_id !== \Auth::id() && $user->admin == 0 && $user->rang_alias != 'administrator'){
+            return response()->json(['message' => 'У вас недостаточно прав для редактирования этого сообщения'], 404);
+        }
+
+        $message->update(['message' => $request->message]);
+
+        $messages = $this->forumMessageRepository->getByTopicIdLastPage($message->topic_id);
+        $messages = $this->formatSocialLinks($this->filterInfo($messages));
+
+        return response()->json([
+            'messages' => $messages,
+        ]);
+    }
+
+    public function hide(ForumMessageHideRequest $request){
+
+        $show_hidden_message = $request->show_hide_mess == 'show';
+        $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
+
+        $message = Message::select(['id', 'topic_id', 'status'])->where('id', '=', $request->message_id)->first();
+        $statuses = $this->forumMessageRepository->getStatusList();
+
+        $mew_status_id = 0;
+        foreach ($statuses as $item){
+            if($message->status != $item->id) {
+                $mew_status_id = $item->id;
+                 break;
+            }
+        }
+
+        $message->update(['status' => $mew_status_id]);
+
+        // Получаем последнеесообщение темы
+        $last_message_topic = Message::select(['forum_messages.id'])
+                                ->leftJoin('forum_message_status', 'forum_messages.status', 'forum_message_status.id')
+                                ->where('topic_id', '=', $message->topic_id)
+                                ->where('forum_message_status.alias', '<>', 'hidden')
+                                ->orderBy('created_at', 'DESC')->first();
+
+        $t = Topic::select(['id', 'forum_id'])->where('id', '=', $message->topic_id)->first();
+        $t->update(['last_message_id' => $last_message_topic->id]);
+
+        // Получам последнее сообщение форума
+        $m = Message::select(['forum_messages.id'])
+            ->leftJoin('forum_topics', 'forum_messages.topic_id', 'forum_topics.id')
+            ->leftJoin('forum_message_status', 'forum_messages.status', 'forum_message_status.id')
+            ->leftJoin('forum_statuses', 'forum_topics.status', 'forum_statuses.id')
+            ->where('forum_topics.forum_id', '=', $t->forum_id)
+            ->where('forum_statuses.alias', '<>', 'hidden')
+            ->where('forum_message_status.alias', '<>', 'hidden')
+            ->orderBy('forum_messages.created_at', 'DESC')
+            ->first();
+        Forum::where('id', '=', $t->forum_id)->first()->update(['last_message_id' => $m->id]);
+
+        $messages = $this->forumMessageRepository->getByTopicId($message->topic_id, $show_hidden_message);
+        $messages = $this->formatSocialLinks($this->filterInfo($messages));
+
+        return response()->json([
+            'messages' => $messages,
+        ]);
     }
 
     /**

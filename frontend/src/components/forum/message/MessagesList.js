@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 // actions
 import { loadMessagesPaginate } from '../../../store/actions/forumActions';
 
@@ -14,14 +17,27 @@ class MessagesList extends Component{
     constructor(){
         super();
 
+        this.state = {
+            show_hidden_message: localStorage.getItem('show_hidden_message'),
+        };
+
         this.loadMessages = (path, params) => {
             this.props.loadMessagesPaginate(path, params);
         };
+
+        this.toggleShowHiddenMessage = () => {
+            console.log(localStorage.getItem('show_hidden_message'));
+            const val_hide_mess = !localStorage.getItem('show_hidden_message') || localStorage.getItem('show_hidden_message') === '0' ? '1' : '0';
+            localStorage.setItem('show_hidden_message', val_hide_mess);
+            this.setState({ ...this.state, show_hidden_message: val_hide_mess });
+            this.props.loadMessagesPaginate('api/forum/' + this.props.forum.id + '/topic/' + this.props.topic.id + '/messages-paginate', { page: 1 });
+        }
     }
 
     render(){
 
         const { massages, topic, forum, paginate } = this.props;
+        const { show_hidden_message } = this.state;
 
         return(
             typeof massages !== 'undefined'
@@ -29,6 +45,11 @@ class MessagesList extends Component{
                     <div className="MessagesList">
                         <div className="panel_header">
                             <h1>Форум - { topic.title }</h1>
+                            <div onClick={ this.toggleShowHiddenMessage }>
+                                {
+                                    show_hidden_message === '1' ? <FontAwesomeIcon icon={ faEyeSlash }/> : <FontAwesomeIcon icon={ faEye }/>
+                                }
+                            </div>
                         </div>
                         <div className="breadcrumbs">
                             <ul>

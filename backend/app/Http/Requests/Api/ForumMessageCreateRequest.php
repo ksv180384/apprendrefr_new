@@ -27,7 +27,8 @@ class ForumMessageCreateRequest extends BaseRequest
     {
         return [
             'topic' => 'required|exists:forum_topics,id',
-            'message' => 'min:2',
+            'message' => 'required|min:2',
+            'show_hide_mess' => '',
         ];
     }
 
@@ -41,6 +42,7 @@ class ForumMessageCreateRequest extends BaseRequest
         return [
             'topic.required' => 'Не задана тема сообщения.',
             'topic.exists' => 'Заданной темы сообщения не существует.',
+            'message.required' => 'Минмалиная длинна сообщения 2 символа.',
             'message.min' => 'Минмалиная длинна сообщения 2 символа.',
         ];
     }

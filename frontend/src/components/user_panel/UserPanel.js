@@ -27,7 +27,7 @@ class UserPanel extends Component{
             store.dispatch(setLoader(true));
             axios.defaults.headers.common = {
                 'Authorization':localStorage.getItem('user-token'),
-                'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
+                'App-User-Token': config.UserToken ,
             };
             axios.post(config.path + 'api/auth/logout', {})
                 .then((response) => {

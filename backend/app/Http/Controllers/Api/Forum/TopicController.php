@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api\Forum;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ForumCreateTopicRequest;
+use App\Http\Requests\Api\ForumTopicUpdateRequest;
 use App\Models\Forum\Forum;
 use App\Models\Forum\Message;
 use App\Models\Forum\MessageStatus;
 use App\Models\Forum\Status;
 use App\Models\Forum\Topic;
+use App\Models\User;
 use App\Repositories\ForumMessageRepository;
 use App\Repositories\ForumRepository;
 use App\Repositories\ForumTopicRepository;
@@ -64,11 +66,16 @@ class TopicController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($forum_id)
+    public function index($forum_id, Request $request)
     {
-        //
-        $topics = $this->forumTopicRepository->getTopicByForumId((int)$forum_id);
+        // Получаем токен пользователя
+        $t = $request->headers->get('app-user-token');
+        $token = !empty($t) ? $t : $request->newUserToken;
+
+        $show_hidden = \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
+        $topics = $this->forumTopicRepository->getTopicByForumId((int)$forum_id, $token, $show_hidden);
         $forum = $this->forumRepository->getById((int)$forum_id);
+        $statuses = Status::all(['id', 'title', 'alias']);
 
         $words_list = $this->wordRepository->getRandomWords();
         $online_users = $this->statisticRepository->getOnlineUsers();
@@ -89,6 +96,7 @@ class TopicController extends Controller
             'data' => [
                 'topics' => $topics,
                 'forum' => $forum,
+                'statuses' => $statuses,
             ],
             'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
             'auth' => \Auth::check(),
@@ -151,7 +159,6 @@ class TopicController extends Controller
                 'topic_id' => $topic_id,
             ]
         ]);
-
     }
 
     /**
@@ -183,9 +190,76 @@ class TopicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ForumTopicUpdateRequest $request, $id)
     {
         //
+        $topic = Topic::select(['id', 'title', 'forum_id', 'user_id'])->where('id', '=', $id)->first();
+        $user = $this->userRepository->getById(\Auth::id());
+
+        if(!$topic){
+            return response()->json(['message' => 'Неудалось найти редактируемую тему форума.'], 404);
+        }
+        if($topic->user_id !== \Auth::id() && $user->admin == 0 &&
+            $user->rang_alias != 'administrator' && $user->rang_alias != 'moderator')
+        {
+            return response()->json(['message' => 'У вас недостаточно прав для редактирования этой темы форума.'], 404);
+        }
+
+        $topic->update([
+            'title' => $request->title,
+        ]);
+
+        return response()->json([
+            'messages' => 'Тема форума успешно отредактирована.',
+            'data' => [
+                'topic' => $topic,
+            ]
+        ]);
+    }
+
+    public function updateStatus(Request $request){
+        $topic = Topic::select(['id', 'title', 'forum_id', 'user_id'])->where('id', '=', (int)$request->topic_id)->first();
+        $user = $this->userRepository->getById(\Auth::id());
+
+        if(!$topic){
+            return response()->json(['message' => 'Неудалось найти тему форума.'], 404);
+        }
+        if($user->admin == 0 && $user->rang_alias != 'administrator' && $user->rang_alias != 'moderator')
+        {
+            return response()->json([
+                'message' => 'У вас недостаточно прав для редактирования этой темы форума.'
+            ], 404);
+        }
+        $status = Status::select(['id'])->where('id', '=', (int)$request->status_id)->first();
+        if(!$status){
+            return response()->json(['message' => 'Неверно задан статус.'], 404);
+        }
+
+        $topic->update([
+            'status' => $status->id,
+        ]);
+
+        // Получам последнее сообщение форума
+        $message = Message::select(['forum_messages.id'])
+            ->leftJoin('forum_topics', 'forum_messages.topic_id', 'forum_topics.id')
+            ->leftJoin('forum_message_status', 'forum_messages.status', 'forum_message_status.id')
+            ->leftJoin('forum_statuses', 'forum_topics.status', 'forum_statuses.id')
+            ->where('forum_topics.forum_id', '=', $topic->forum_id)
+            ->where('forum_statuses.alias', '<>', 'hidden')
+            ->where('forum_message_status.alias', '<>', 'hidden')
+            ->orderBy('forum_messages.created_at', 'DESC')
+            ->first();
+        Forum::where('id', '=', $topic->forum_id)->first()->update(['last_message_id' => $message->id]);
+
+        $show_hidden = \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
+        $topics = $this->forumTopicRepository->getTopicByForumId($topic->forum_id, $show_hidden);
+
+        return response()->json([
+            'messages' => 'Тема форума успешно отредактирована.',
+            'data' => [
+                'topics' => $topics,
+            ]
+        ]);
     }
 
     /**

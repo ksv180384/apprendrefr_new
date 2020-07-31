@@ -2,8 +2,8 @@
 namespace App\Repositories;
 
 use App\Models\Forum\Message as Model;
+use App\Models\Forum\MessageStatus;
 use App\Models\User\UserConfigsView;
-use Carbon\Carbon;
 use Illuminate\Pagination\Paginator;
 
 /**
@@ -35,7 +35,12 @@ class ForumMessageRepository extends CoreRepository
         return $count_messages->count;
     }
 
-    public function getByTopicId(int $topic_id){
+    /**
+     * @param int $topic_id - идентификатор темы сообщений
+     * @param bool $hidden_message - получать ли скрытые сообщения
+     * @return mixed
+     */
+    public function getByTopicId(int $topic_id, $hidden_message = false){
         $messages = $this->startConditions()
             ->select([
                 'forum_messages.id',
@@ -91,10 +96,12 @@ class ForumMessageRepository extends CoreRepository
             ->leftJoin('user_configs', 'user_configs.user_id', '=', 'users.id')
             ->leftJoin('user_infos', 'user_infos.user_id', '=', 'users.id')
             ->join('forum_message_status', 'forum_messages.status', '=', 'forum_message_status.id')
-            ->where('forum_messages.topic_id', '=', $topic_id)
-            ->where('forum_message_status.alias', '<>', 'hidden')
-            ->orderBy('forum_messages.created_at', 'ASC')
-            ->paginate(self::SHOW_PAGES);
+            ->where('forum_messages.topic_id', '=', $topic_id);
+        if(!$hidden_message){
+            $messages = $messages->where('forum_message_status.alias', '<>', 'hidden');
+        }
+        $messages = $messages->orderBy('forum_messages.created_at', 'ASC')
+                              ->paginate(self::SHOW_PAGES);
 
         $config_view = $this->userConfigsView();
 
@@ -118,14 +125,17 @@ class ForumMessageRepository extends CoreRepository
         return $messages;
     }
 
-    public function getByTopicIdLastPage(int $topic_id){
+    public function getByTopicIdLastPage(int $topic_id, $show_hide_mess = false){
         // Получаем номер последней страницы
         $p = $this->startConditions()
             ->join('forum_message_status', 'forum_messages.status', '=', 'forum_message_status.id')
-            ->where('forum_messages.topic_id', '=', $topic_id)
-            ->where('forum_message_status.alias', '<>', 'hidden')
-            ->paginate(self::SHOW_PAGES);
+            ->where('forum_messages.topic_id', '=', $topic_id);
+            if(!$show_hide_mess){
+                $p = $p->where('forum_message_status.alias', '<>', 'hidden');
+            }
+        $p = $p->paginate(self::SHOW_PAGES);
         $lastPage = $p->lastPage();
+
         Paginator::currentPageResolver(function() use ($lastPage) {
             return $lastPage;
         });
@@ -185,9 +195,11 @@ class ForumMessageRepository extends CoreRepository
             ->leftJoin('user_configs', 'user_configs.user_id', '=', 'users.id')
             ->leftJoin('user_infos', 'user_infos.user_id', '=', 'users.id')
             ->join('forum_message_status', 'forum_messages.status', '=', 'forum_message_status.id')
-            ->where('forum_messages.topic_id', '=', $topic_id)
-            ->where('forum_message_status.alias', '<>', 'hidden')
-            ->orderBy('forum_messages.created_at', 'ASC')
+            ->where('forum_messages.topic_id', '=', $topic_id);
+        if(!$show_hide_mess){
+            $messages = $messages->where('forum_message_status.alias', '<>', 'hidden');
+        }
+        $messages = $messages->orderBy('forum_messages.created_at', 'ASC')
             ->paginate(self::SHOW_PAGES);
 
         $config_view = $this->userConfigsView();
@@ -210,6 +222,13 @@ class ForumMessageRepository extends CoreRepository
         }
 
         return $messages;
+    }
+
+    public function getStatusList(){
+        $statuses = MessageStatus::all(['id', 'title', 'alias']);//->toArray();
+        //$statuses = array_column($statuses, null, 'id');
+
+        return $statuses;
     }
 
     private function userConfigsView(){

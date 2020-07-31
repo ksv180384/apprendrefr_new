@@ -25,8 +25,8 @@ class Message extends Component {
     constructor(){
         super();
 
-        this.sendMessage = (id, message, callback) => {
-            this.props.sendMessage(id, message, (res) => {
+        this.sendMessage = (message, callback) => {
+            this.props.sendMessage(this.props.match.params.topic_id, message, (res) => {
                 callback(res);
             });
         }
@@ -38,7 +38,7 @@ class Message extends Component {
 
     render(){
 
-        const { auth, loader_page, meta_data, user_auth, message_request } = this.props;
+        const { auth, loader_page, meta_data, user_auth, message_request, topic } = this.props;
 
         document.title = meta_data.title;
         document.querySelector('meta[name="description"]').content = meta_data.description;
@@ -64,10 +64,13 @@ class Message extends Component {
                         <CenterTwoBlock>
                             <Proverb/>
                             <MessagesList/>
-                            { auth && user_auth.rang_alias !== 'zabanen'
+                            { auth && user_auth.rang_alias !== 'zabanen' &&
+                              (
+                                  topic.status_topic_alias === 'visible_everyone' ||
+                                  topic.status_topic_alias === 'visible_only_registered_users'
+                              )
                                 ?
-                                <TextEditor topic={ this.props.match.params.topic_id }
-                                            send={ this.sendMessage }
+                                <TextEditor send={ this.sendMessage }
                                             requestLoad={ message_request }
                                 />
                                 :
@@ -90,6 +93,7 @@ const mapStateToProps = (state) => {
         meta_data: state.metaReducer,
         auth: state.loginReducer.login,
         user_auth: state.userReducer,
+        topic: state.forumTopicReducer,
         message_request: state.forumSendMessageReducer.loading,
     };
 };

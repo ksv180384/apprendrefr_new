@@ -9,6 +9,7 @@ class Rang extends Model
     //
     protected $fillable = [
         'title',
+        'alias',
     ];
     public $timestamps = false;
 }

@@ -92,13 +92,24 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::get('{forum_id?}/topic/list', 'TopicController@index')->name('api.forum_topics_list');
 
         Route::post('send-message', 'MessageController@store')->name('api.forum_send_message');
+        Route::patch('update-message/{id}', 'MessageController@update')->name('api.forum_update_message');
+
         Route::post('create-them', 'TopicController@store')->name('api.forum_topic_create');
+        Route::patch('update-them/{id}', 'TopicController@update')->name('api.forum_topic_update');
 
         Route::group(['prefix' => '{forum_id?}/topic/{topic_id?}'], function ($router) {
 
             Route::get('messages', 'MessageController@index')->name('api.forum_messages_list');
             Route::get('messages-paginate', 'MessageController@getMessagesPaginate')
                     ->name('api.forum_messages_paginate');
+
+            //Route::patch('change-status', 'TopicController@updateStatus')->name('api.forum_topic_update_status');
+        });
+        Route::group(['prefix' => 'topic'], function ($router) {
+            Route::patch('change-status', 'TopicController@updateStatus')->name('api.forum_topic_update_status');
+        });
+        Route::group(['prefix' => 'message'], function ($router) {
+            Route::patch('hide', 'MessageController@hide')->name('api.forum_message_hide');
         });
     });
 

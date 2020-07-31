@@ -17,7 +17,7 @@ export const getPage = (path_page) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
         axios.defaults.headers.common = {
             'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
+            'App-User-Token': config.UserToken,
         };
         const path = config.path + path_page;
         axios.get(path + '?page_load=true').then((result) => {

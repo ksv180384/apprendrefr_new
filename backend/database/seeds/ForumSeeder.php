@@ -17,7 +17,11 @@ class ForumSeeder extends Seeder
                 ['title' => 'Открыт', 'alias' => 'visible_everyone'], // видят все пользователи сайта
                 ['title' => 'Закрыт', 'alias' => 'close'], // видият все, но нельзя оставлять сообщения
                 ['title' => 'Скрыт', 'alias' => 'hidden'], // невиден никому
-                ['title' => 'Открыт только для зарегистрироывнных пользователей', 'alias' => 'visible_only_registered_users'],
+                ['title' => 'Для зарегистрироывнных пользователей', 'alias' => 'visible_only_registered_users'],
+                [
+                    'title' => 'Для зарегистрироывнных пользователей без возможности оставлять сообщения',
+                    'alias' => 'visible_only_registered_users_no_add_message'
+                ],
             ]);
         // Заполняем таблицу статусов сообщений форума
         DB::table('forum_message_status')->insert([

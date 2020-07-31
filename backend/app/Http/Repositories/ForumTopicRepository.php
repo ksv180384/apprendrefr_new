@@ -45,7 +45,7 @@ class ForumTopicRepository extends CoreRepository
             ->join('users AS topic_author', 'topic_author.id', '=', 'forum_topics.user_id')
             ->leftJoin('forum_messages', 'forum_topics.last_message_id', '=', 'forum_messages.id')
             ->join('forum_statuses', 'forum_topics.status', '=', 'forum_statuses.id')
-            ->join('users', 'forum_messages.user_id', '=', 'users.id')
+            ->leftJoin('users', 'forum_messages.user_id', '=', 'users.id')
             ->where('forum_topics.id', '=', $topic_id)
             ->first();
 
@@ -112,7 +112,7 @@ class ForumTopicRepository extends CoreRepository
      * @param int $forum_id - идентификатор форума
      * @return mixed
      */
-    public function getTopicByForumId(int $forum_id){
+    public function getTopicByForumId(int $forum_id, $token = '', $show_hidden = false){
         $topics = $this->startConditions()
             ->select([
                 'forum_forums.id AS forum_id',
@@ -131,15 +131,24 @@ class ForumTopicRepository extends CoreRepository
                 'topic_author.login AS topic_create_user_login',
                 'topic_author.rang AS topic_create_user_rang',
                 'forum_messages.created_at AS message_created_at',
+                'forum_topic_vieweds.viewed_data AS user_last_viewed_data',
                 \DB::raw('(SELECT COUNT(*) FROM forum_messages WHERE topic_id = forum_topics.id AND `status` = 1) AS count_messages'),
             ])
             ->join('forum_forums', 'forum_topics.forum_id', '=', 'forum_forums.id')
             ->join('users AS topic_author', 'topic_author.id', '=', 'forum_topics.user_id')
             ->leftJoin('forum_messages', 'forum_topics.last_message_id', '=', 'forum_messages.id')
             ->join('forum_statuses', 'forum_topics.status', '=', 'forum_statuses.id')
-            ->join('users', 'forum_messages.user_id', '=', 'users.id')
-            ->where('forum_id', '=', $forum_id)
-            ->orderBy('message_created_at', 'DESC')
+            ->leftJoin('users', 'forum_messages.user_id', '=', 'users.id')
+
+            ->leftJoin('forum_topic_vieweds', function ($join) use ($token) {
+                    $join->on('forum_topic_vieweds.topic_id', '=', 'forum_topics.id')
+                        ->where('forum_topic_vieweds.token', '=', $token);
+                })
+            ->where('forum_id', '=', $forum_id);
+            if(!$show_hidden){
+                $topics = $topics->where('forum_statuses.alias', '<>', 'hidden');
+            }
+        $topics = $topics->orderBy('message_created_at', 'DESC')
             ->get();
 
         foreach ($topics as $k=>$item){
