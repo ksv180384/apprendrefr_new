@@ -492,3 +492,9 @@ blockquote{
     display: inline-block;
 }
 
+.control-view-items{
+    position: absolute;
+    right: 10px;
+    top: 4px;
+}
+

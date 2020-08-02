@@ -105,13 +105,8 @@ class MessageController extends Controller
         $m = $messages->toArray();
         if($m['last_page'] == $m['current_page']){
             // Помечаем тему как просмотренную
-            $t = $request->headers->get('app-user-token');
-            $token = !empty($t) ? $t : $request->newUserToken;
-            $this->forumTopicViewedRepository->viewedTopic($topic_id, $token);
+            $this->forumTopicViewedRepository->viewedTopic($topic_id);
         }
-
-        // Удаляем ползователей срок бездействия которых истек
-        ForumTopicViewed::where('viewed_data', '<', \DB::raw('(NOW() -  INTERVAL 30 DAY)'))->delete();
 
         return response()->json([
             'title' => $topic->title . ' - Фоорум (стр ' . $messages->toArray()['current_page'] . ')',
@@ -156,9 +151,7 @@ class MessageController extends Controller
         $m = $messages->toArray();
         if($m['last_page'] == $m['current_page']){
             // Помечаем тему как просмотренную
-            $t = $request->headers->get('app-user-token');
-            $token = !empty($t) ? $t : $request->newUserToken;
-            $this->forumTopicViewedRepository->viewedTopic($topic_id, $token);
+            $this->forumTopicViewedRepository->viewedTopic($topic_id);
         }
 
         return response()->json([
@@ -214,6 +207,9 @@ class MessageController extends Controller
         $topic = $this->forumTopicRepository->getById($request->topic);
         $messages = $this->forumMessageRepository->getByTopicIdLastPage($request->topic, $show_hidden_message);
         $messages = $this->formatSocialLinks($this->filterInfo($messages));
+
+        // Помечаем тему как просмотренную
+        $this->forumTopicViewedRepository->viewedTopic($request->topic);
 
         return response()->json([
             'title' => $topic->title . ' - Фоорум (стр ' . $messages->toArray()['current_page'] . ')',

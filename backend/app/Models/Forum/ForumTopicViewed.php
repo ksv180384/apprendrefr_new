@@ -7,13 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class ForumTopicViewed extends Model
 {
     //
-    protected $primaryKey = 'token';
-
-    protected $keyType = 'string';
+    protected $primaryKey = 'user_id';
 
     protected $fillable = [
         'user_id',
-        'token',
         'topic_id',
         'viewed_data',
     ];

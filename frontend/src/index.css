@@ -29,6 +29,7 @@ ul{
 }
 
 .panel_header{
+  position: relative;
   background-color: #f4f8fa;
   text-align: center;
   text-transform: uppercase;

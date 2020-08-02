@@ -91,6 +91,7 @@ class ForumTopicRepository extends CoreRepository
              ->leftJoin('forum_messages', 'forum_topics.last_message_id', '=', 'forum_messages.id')
              ->join('forum_statuses', 'forum_topics.status', '=', 'forum_statuses.id')
              ->join('users', 'forum_messages.user_id', '=', 'users.id')
+             ->where('forum_statuses.alias', '<>', 'hidden')
              ->orderBy('message_created_at', 'DESC')
              ->limit(20)
              ->get();
@@ -112,7 +113,8 @@ class ForumTopicRepository extends CoreRepository
      * @param int $forum_id - идентификатор форума
      * @return mixed
      */
-    public function getTopicByForumId(int $forum_id, $token = '', $show_hidden = false){
+    public function getTopicByForumId(int $forum_id, $show_hidden = false){
+        $user_id = \Auth::check() ? \Auth::id() : 0;
         $topics = $this->startConditions()
             ->select([
                 'forum_forums.id AS forum_id',
@@ -131,6 +133,7 @@ class ForumTopicRepository extends CoreRepository
                 'topic_author.login AS topic_create_user_login',
                 'topic_author.rang AS topic_create_user_rang',
                 'forum_messages.created_at AS message_created_at',
+                'forum_messages.updated_at AS message_updated_at',
                 'forum_topic_vieweds.viewed_data AS user_last_viewed_data',
                 \DB::raw('(SELECT COUNT(*) FROM forum_messages WHERE topic_id = forum_topics.id AND `status` = 1) AS count_messages'),
             ])
@@ -140,9 +143,9 @@ class ForumTopicRepository extends CoreRepository
             ->join('forum_statuses', 'forum_topics.status', '=', 'forum_statuses.id')
             ->leftJoin('users', 'forum_messages.user_id', '=', 'users.id')
 
-            ->leftJoin('forum_topic_vieweds', function ($join) use ($token) {
+            ->leftJoin('forum_topic_vieweds', function ($join) use ($user_id) {
                     $join->on('forum_topic_vieweds.topic_id', '=', 'forum_topics.id')
-                        ->where('forum_topic_vieweds.token', '=', $token);
+                        ->where('forum_topic_vieweds.user_id', '=', $user_id);
                 })
             ->where('forum_id', '=', $forum_id);
             if(!$show_hidden){
@@ -157,6 +160,15 @@ class ForumTopicRepository extends CoreRepository
                     'day' => $this->formatDay(Carbon::parse($topics[$k]->message_created_at)),
                     'time' => Carbon::parse($topics[$k]->message_created_at)->format('H:i'),
                 ];
+            }
+            // Сравнение дат создания последнего сообщения и даты последнего
+            // просмотра пользвателем темы
+            $topics[$k]->user_view_topic = true;
+            if(!empty($item['user_last_viewed_data'])){
+                $date_mess = !empty($item['message_updated_at']) ? $item['message_updated_at'] : $item['message_created_at'];
+                if($date_mess > $item['user_last_viewed_data']){
+                    $topics[$k]->user_view_topic = false;
+                }
             }
         }
 

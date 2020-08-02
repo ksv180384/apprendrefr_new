@@ -73,7 +73,7 @@ class TopicController extends Controller
         $token = !empty($t) ? $t : $request->newUserToken;
 
         $show_hidden = \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
-        $topics = $this->forumTopicRepository->getTopicByForumId((int)$forum_id, $token, $show_hidden);
+        $topics = $this->forumTopicRepository->getTopicByForumId((int)$forum_id, $show_hidden);
         $forum = $this->forumRepository->getById((int)$forum_id);
         $statuses = Status::all(['id', 'title', 'alias']);
 
@@ -249,7 +249,8 @@ class TopicController extends Controller
             ->where('forum_message_status.alias', '<>', 'hidden')
             ->orderBy('forum_messages.created_at', 'DESC')
             ->first();
-        Forum::where('id', '=', $topic->forum_id)->first()->update(['last_message_id' => $message->id]);
+        $mess_id = !empty($message->id) ? $message->id : null;
+        Forum::where('id', '=', $topic->forum_id)->first()->update(['last_message_id' => $mess_id]);
 
         $show_hidden = \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
         $topics = $this->forumTopicRepository->getTopicByForumId($topic->forum_id, $show_hidden);

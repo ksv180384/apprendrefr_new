@@ -45,7 +45,7 @@ class MessagesList extends Component{
                     <div className="MessagesList">
                         <div className="panel_header">
                             <h1>Форум - { topic.title }</h1>
-                            <div onClick={ this.toggleShowHiddenMessage }>
+                            <div className="control-view-items" onClick={ this.toggleShowHiddenMessage }>
                                 {
                                     show_hidden_message === '1' ? <FontAwesomeIcon icon={ faEyeSlash }/> : <FontAwesomeIcon icon={ faEye }/>
                                 }

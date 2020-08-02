@@ -44,7 +44,7 @@ class OnlineUsers
         $online_user = Online::select('id')->where('token', '=', $token)->first();
         if(!$online_user){
             $token = Online::generateToken();
-            $request->newUserToken = $token;
+            //$request->newUserToken = $token;
             //$request->headers->set('UserToken', $token);
 
             Online::create([

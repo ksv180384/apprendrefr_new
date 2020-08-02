@@ -97,7 +97,10 @@ class TopicItem extends Component{
             <div className={ 'LastActiveTopic-item' + (topic.status_topic_alias === 'hidden' ? ' hidden-st' : '') }>
                 <div className="LastActiveTopic-item-topic-title-info">
                     <div>
-                        <Link to={ '/forum/' + topic.forum_id + '/topic/' + topic.id  } className="link">{ new_topic_title_value }</Link>
+                        <Link to={ '/forum/' + topic.forum_id + '/topic/' + topic.id  }
+                              className={ 'link' + (!topic.user_view_topic ? ' strong' : '') }>
+                            { new_topic_title_value }
+                        </Link>
                         { edit_block }
                         <ul className="menu-topic-control">
                             {
