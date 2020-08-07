@@ -39,12 +39,12 @@ class WordController extends BaseController
 
     public function __construct()
     {
-        parent::__construct();
         $this->wordRepository = app(WordRepository::class);
         $this->proverbRepository = app(ProverbRepository::class);
         $this->userRepository = app(UserRepository::class);
         $this->statisticRepository = app(StatisticRepository::class);
         $this->forumMessageRepository = app(ForumMessageRepository::class);
+        parent::__construct();
     }
 
     /**
@@ -69,6 +69,7 @@ class WordController extends BaseController
             $pos = $this->wordRepository->getPosById((int)$request->pos);
         }
         $pos_list = $this->wordRepository->getPosAll();
+        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
 
         $words_list = $this->wordRepository->getRandomWords();
         $online_users = $this->statisticRepository->getOnlineUsers();
@@ -91,6 +92,7 @@ class WordController extends BaseController
                 $this->yar_life,
                 self::EMAIL,
             ],
+            'proverb' => $proverb,
             'data' => [
                 'words' => $words_page,
                 'pos_list' => $pos_list,
@@ -199,6 +201,8 @@ class WordController extends BaseController
         }
 
         $words_list = $this->wordRepository->getRandomWords();
+        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+
         $online_users = $this->statisticRepository->getOnlineUsers();
         $count_users = count($online_users);
         $count_guests = $this->statisticRepository->countGuests();
@@ -216,6 +220,7 @@ class WordController extends BaseController
                 $this->yar_life,
                 self::EMAIL,
             ],
+            'proverb' => $proverb,
             'data' => [
                 'word' => $word,
             ],
@@ -317,5 +322,53 @@ class WordController extends BaseController
         }
 
         return response()->json($search_result);
+    }
+
+    public function searchPage(Request $request){
+        if(empty($request->search)){
+            return response()->json([]);
+        }
+        if($request->lang === 'ru'){
+            $search_result = $this->wordRepository->searchRuPage($request->search);
+        }else{
+            $search_result = $this->wordRepository->searchFrPage($request->search);
+        }
+
+        $words_list = $this->wordRepository->getRandomWords();
+        $online_users = $this->statisticRepository->getOnlineUsers();
+        $count_users = count($online_users);
+        $count_guests = $this->statisticRepository->countGuests();
+        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_all = $count_users + $count_guests;
+        $count_messages = $this->forumMessageRepository->countAll();
+
+        $title = $request->search;
+
+        return response()->json([
+            'title' => $title,
+            'description' => $title,
+            'keywords' => $title,
+            'footer' => [
+                $this->yar_life,
+                self::EMAIL,
+            ],
+            'data' => [
+                'words' => $search_result,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+            'words_list' => $words_list,
+            'statistic' => [
+                'online_users' => $online_users,
+                'count_guests' => $count_guests,
+                'count_users' => $count_users,
+                'count_all' => $count_all,
+                'count_users_register' => $count_users_register,
+                'count_messages' => $count_messages,
+            ],
+        ]);
+
+        return response()->json($search_result);
+
     }
 }

@@ -2,20 +2,24 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseController;
 
-use App\Http\Requests\JsonData\Auth\RegisterFormRequest;
+use App\Http\Requests\Api\Auth\ChangePasswordRequest;
 use App\Http\Requests\Api\Auth\RegistrationFormApiRequest;
+use App\Mail\ConfirmEmail;
+use App\Mail\LostPassword;
+use App\Mail\OrderShippedLostPassword;
 use App\Models\User;
 use App\Repositories\ForumMessageRepository;
 use App\Repositories\ForumRepository;
 use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
+use Carbon\Carbon;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
 
     /**
@@ -44,13 +48,20 @@ class AuthController extends Controller
             'except' => [
                 'login',
                 'registration',
-                'register_page',
-                'login_page'
+                'registerPage',
+                'loginPage',
+                'confirmEmail',
+                'lostPassword',
+                'changePassword',
+                'lostPasswordPage',
+                'changePassword',
+                'changePasswordPage',
             ]
         ]);
         $this->userRepository = app(UserRepository::class);
         $this->statisticRepository = app(StatisticRepository::class);
         $this->forumMessageRepository = app(ForumMessageRepository::class);
+        parent::__construct();
     }
 
     /**
@@ -71,6 +82,7 @@ class AuthController extends Controller
                 ], 401);
         }
 
+        /*
         if(empty(\Auth::user()->email_verified_at)){
             $this->guard()->logout();
             return response()->json([
@@ -78,6 +90,7 @@ class AuthController extends Controller
                 'message' => 'Вы не подтвердили ваш аккаунт.',
             ], 401);
         }
+        */
 
         // Присваеваем токену идентификатор пользователя
         $token_guest = $request->headers->get('app-user-token');
@@ -103,9 +116,16 @@ class AuthController extends Controller
 
     public function registration(RegistrationFormApiRequest $request)
     {
+        $confirm_token = User::generateConfirmedToken();
+        $rang = User\Rang::select(['id'])->where('alias', '=', 'polzovatel')->first();
+
         $arr_user_data = array_merge(
             $request->only('email', 'login'),
-            ['password' => bcrypt(md5($request->password))]
+            [
+                'password' => bcrypt(md5($request->password)),
+                'confirm_token' => $confirm_token,
+                'rang' => $rang->id,
+            ]
         );
         $user = User::create($arr_user_data);
 
@@ -136,6 +156,11 @@ class AuthController extends Controller
             'user_id' => $user->id,
         ]);
 
+        \Mail::to($user)->send(new ConfirmEmail($user));
+
+        $user->update([
+            'send_verified_email_at' => Carbon::now(),
+        ]);
 
         return response()->json([
             'message' => 'Вы успешно прошли регистрацию. Вам на почту отправлено письмо для подтверждения регистрации.'
@@ -229,7 +254,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login_page(){
+    public function loginPage(){
         return response()->json([
             'auth' => \Auth::check(),
             'user' => \Auth::check() ? \Auth::user() : [],
@@ -243,7 +268,11 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register_page(){
+    /**
+     * Страница регистрации
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function registerPage(){
 
         return response()->json([
             'auth' => \Auth::check(),
@@ -251,11 +280,159 @@ class AuthController extends Controller
             'title' => 'Регистрация',
             'description' => 'Регистрация',
             'keywords' => 'Регистрация',
+            'data' => [
+                'terms_user' => view('registration.terms_user')->render(),
+                'privacy_policy' => view('registration.privacy_policy')->render(),
+            ],
+            'footer' => [
+                $this->yar_life,
+                self::EMAIL,
+            ],
+        ]);
+    }
+
+    public function confirmEmail($token){
+
+        $user = User::where('confirm_token', '=', $token)->update([
+            'email_verified_at' => Carbon::now(),
+            'send_verified_email_at' => Carbon::now(),
+        ]);
+
+        if(empty($user)){
+            return response()->json([
+                'message' => 'Не найден email для подтверждения.',
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Вы успешно подтвердили email.',
+        ]);
+    }
+
+    public function lostPasswordPage(Request $request){
+        return response()->json([
+            'title' => 'Восстановление пароля',
+            'description' => 'Восстановление пароля',
+            'keywords' => 'Восстановление пароля',
             'data' => [],
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+        ]);
+    }
+
+    public function lostPassword(Request $request){
+        $user = User::select(['id', 'login', 'email'])->where('email', '=', $request->email)->first();
+
+        if(empty($user)){
+            return response()->json([
+                'message' => 'Пользователь с заданным email не найден.',
+            ], 404);
+        }
+
+        $lostPass = User\LostPassword::select(['id', 'user_id', 'date'])
+                        ->where('user_id', '=', $user->id)
+                        ->orderBy('date', 'DESC')->first();
+        if(!empty($lostPass)){
+            $from = Carbon::parse($lostPass->date);
+            $to = Carbon::now();
+            $diff_in_min = $to->diffInMinutes($from);
+            if($diff_in_min < 10){
+                return response()->json(['message' => 'Данная операция доступна раз в 10 мин. (прошло ' . $diff_in_min . ' мин.)'], 404);
+            }
+        }
+
+        $token = Str::random(90);
+        $lostPassword = User\LostPassword::create([
+            'user_id' => $user->id,
+            'token' => $token,
+            'date' => Carbon::now(),
+        ]);
+        if(empty($lostPassword)){
+            return response()->json([
+                'message' => 'Ошибка при формировании заявки. Попробуйте позже.',
+            ], 404);
+        }
+        \Mail::to($user)->send(new LostPassword($lostPassword->token));
+        return response()->json([
+            'message' => 'На почту ' . $user->email . ' отправлено письмо со ссылкой для восстановления пароля.',
+        ]);
+    }
+
+    public function changePasswordPage(Request $request){
+
+        return response()->json([
+            'title' => 'Смена пароля',
+            'description' => 'Смена пароля',
+            'keywords' => 'Смена пароля',
+            'data' => [],
+            'footer' => [
+                $this->yar_life,
+                self::EMAIL,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+        ]);
+    }
+
+    public function changePassword(ChangePasswordRequest $request){
+        $lostPassword = User\LostPassword::select('id', 'user_id', 'token', 'date')
+                                            ->where('token', '=', $request->token)
+                                            ->where('used', '=', false)
+                                            ->orderBy('date', 'DESC')->first();
+        if(empty($lostPassword)){
+            return response()->json([
+                'message' => 'Неверная заявка на смену пароля.',
+            ], 404);
+        }
+        $from = Carbon::parse($lostPassword->date);
+        $to = Carbon::now();
+        $diff_in_min = $to->diffInMinutes($from);
+        if($diff_in_min > 15){
+            return response()->json(['message' => 'Заявка на смену пароля устарела. Сделайте новый запрос на смену пароля.'], 404);
+        }
+
+        $exc = false;
+        try{
+            \DB::transaction(function() use ($lostPassword, $request) {
+                $lostPassword->user->update([
+                    'password' => bcrypt(md5($request->password)),
+                ]);
+                $lostPassword->update([
+                    'used' => true
+                ]);
+            });
+        }catch (\Exception $exception){
+            $exc = true;
+        }
+
+        if(!empty($exc)){
+            return response()->json(['message' => 'Ошибка при смене пароля. Попробуйте позже.'], 404);
+        }
+
+        return response()->json([
+            'message' => 'Пароль успешно изменен.',
+        ]);
+    }
+
+    public function profileChangePassword(ChangePasswordRequest $request){
+        if(!\Auth::check()){
+            return response()->json(['message' => 'Вы не авторизованы. Обновите страницу и авторизуйтесь.'], 404);
+        }
+
+
+        if(!password_verify(md5($request->old_password), \Auth::user()->password)){
+            return response()->json(['message' => 'Неверный пароль.'], 404);
+        }
+
+        \Auth::user()->update([
+            'password' => bcrypt(md5($request->password)),
+        ]);
+
+        return response()->json([
+            'message' => 'Пароль успешно изменен.',
         ]);
     }
 

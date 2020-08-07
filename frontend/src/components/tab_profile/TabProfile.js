@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { store as storeNotification } from 'react-notifications-component';
 import { updateProfile } from '../../store/actions/propfileActions';
 import { setLoader } from '../../store/actions/loaderActions';
-//import { getPage } from '../../store/actions/pageActions';
+
 import { config } from '../../config';
 import store from "../../store";
 
@@ -13,9 +12,11 @@ import 'react-datepicker/dist/react-datepicker.min.css';
 import  ru  from 'date-fns/locale/ru';
 registerLocale("ru", ru);
 
+// components
 import BtnDropdown from "../btn_dropdown/BtnDropdown";
 import BtnLoad from "../btn_load/BtnLoad";
 import TextBtn from "../text_btn/TextBtn";
+import NotificationConfirmRegistration from './NotificationConfirmRegistration';
 import { faFacebook, faSkype, faTwitter, faVk, faOdnoklassniki,
     faTelegram, faWhatsapp, faViber, faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
@@ -66,69 +67,7 @@ class TabProfile extends Component{
             this.props.updateProfile(formData, this.props.user.id);
 
         };
-
-        this.showErrorMessage = (arr_error_message) => {
-            // формируем текст ошибки
-            let error_message = '';
-            if(typeof arr_error_message === 'object'){
-                for (let key in arr_error_message){
-                    for (let k in arr_error_message[key]){
-                        // Помечам поля с ошибками
-                        document.querySelector('input[name="' + key + '"]').parentNode.classList.add('error');
-                        error_message += '* ' + arr_error_message[key][k] + "\n";
-                    }
-                }
-            }else{
-                error_message = arr_error_message;
-            }
-
-            storeNotification.addNotification({
-                title: "Ошибка",
-                message: error_message,
-                type: "danger",
-                insert: "top",
-                container: "top-right",
-                animationIn: ["animated", "fadeIn"],
-                animationOut: ["animated", "fadeOut"],
-                dismiss: {
-                    duration: 10000,
-                    showIcon: true,
-                    onScreen: true
-                }
-            });
-        };
-
-        this.showSuccessMessage= (success_message) => {
-
-            storeNotification.addNotification({
-                title: "Оповещение",
-                message: success_message,
-                type: 'success',
-                insert: 'top',
-                container: 'top-right',
-                animationIn: ['animated', 'fadeIn'],
-                animationOut: ['animated', 'fadeOut'],
-                dismiss: {
-                    duration: 10000,
-                    showIcon: true,
-                    onScreen: true
-                }
-            });
-        };
     }
-
-    /*
-    componentWillReceiveProps(nextProps){
-        // Если при отправке формы регистрации произошла ошибка, то ловим ее тут
-        // Формируем текст ошибки и показываем оповещение
-        if(nextProps.profile_state.error){
-            this.showErrorMessage(nextProps.profile_state.error_message);
-        }
-        if(nextProps.profile_state.success){
-            this.showSuccessMessage(nextProps.profile_state.message);
-        }
-    }
-    */
 
     render(){
         const { user } = this.props;
@@ -140,6 +79,13 @@ class TabProfile extends Component{
             sex_list
                 ?
             <div className="TabProfile">
+                {
+                    !user.email_verified_at
+                        ?
+                        <NotificationConfirmRegistration/>
+                        :
+                        ''
+                }
                 <form action={ config.path + 'api/user/update/' + user.id }
                       id="formProfile"
                       method="post"
@@ -421,7 +367,7 @@ class TabProfile extends Component{
 const mapStateToProps = (state) => {
     return {
         user: state.userReducer,
-        page: state.pageDataReducer,
+        page: state.pageReducer,
         load: state.loaderReducer,
         profile_state: state.profileReducer,
     }

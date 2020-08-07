@@ -19,7 +19,8 @@ class CreateForumTopicViewedsTable extends Migration
         Schema::create('forum_topic_vieweds', function (Blueprint $table) {
             $table->engine = "InnoDB";
 
-            $table->unsignedBigInteger('user_id')->unique()
+            $table->id();
+            $table->unsignedBigInteger('user_id')->index()
                   ->comment('идентификаор пользователя');
             $table->unsignedBigInteger('topic_id')->index()->nullable()->default(null)
                   ->comment('идентификатор темы форума');

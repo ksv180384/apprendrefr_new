@@ -16,9 +16,7 @@ export const login = (form) => {
     return (dispatch) => {
         dispatch({type: LOGIN_REQUEST});
         dispatch(setLoader(true));
-        axios.defaults.headers.common = {
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         form.append('page_load', true);
         axios.post(config.path + 'api/auth/login', form).then((result) => {
             localStorage.setItem('user-token', result.data.token_type + ' ' + result.data.access_token);

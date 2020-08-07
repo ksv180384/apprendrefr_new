@@ -7,7 +7,7 @@ import {
     SET_META,
     WORD_SET_LIST,
     STATISTIC_SET_DATA,
-    LYRIC_SET_ITEM
+    LYRIC_SET_ITEM, LOAD_PROVERB
 } from './index';
 import axios from "axios/index";
 import {config} from "../../config";
@@ -15,10 +15,7 @@ import {config} from "../../config";
 export const getPageList = () => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + 'api/lyrics/list';
         axios.get(path + '?page_load=true').then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
@@ -34,6 +31,7 @@ export const getPageList = () => {
                 type: LYRIC_SET_LIST,
                 payload: result.data.data.list
             });
+            dispatch({ type: LOAD_PROVERB, payload: result.data.proverb });
             dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });
             dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             dispatch({ type: SET_USER, payload: result.data.user });
@@ -49,10 +47,7 @@ export const getPageList = () => {
 export const getPageItem = (id) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + 'api/lyrics/item/' + id;
         axios.get(path + '?page_load=true').then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);

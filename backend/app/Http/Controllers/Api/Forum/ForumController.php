@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\ForumMessageRepository;
 use App\Repositories\ForumRepository;
 use App\Repositories\ForumTopicRepository;
+use App\Repositories\ProverbRepository;
 use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WordRepository;
@@ -38,10 +39,15 @@ class ForumController extends Controller
      */
     private $forumMessageRepository;
 
+    /**
+     * @var ProverbRepository
+     */
+    private $proverbRepository;
+
     public function __construct(){
         $this->forumRepository = app(ForumRepository::class);
         $this->wordRepository = app(WordRepository::class);
-        //$this->proverbRepository = app(ProverbRepository::class);
+        $this->proverbRepository = app(ProverbRepository::class);
         $this->userRepository = app(UserRepository::class);
         $this->statisticRepository = app(StatisticRepository::class);
         $this->forumMessageRepository = app(ForumMessageRepository::class);
@@ -56,6 +62,8 @@ class ForumController extends Controller
     {
         $forums = $this->forumRepository->getList();
         $words_list = $this->wordRepository->getRandomWords();
+        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+
         $online_users = $this->statisticRepository->getOnlineUsers();
         $count_users = count($online_users);
         $count_guests = $this->statisticRepository->countGuests();
@@ -71,6 +79,7 @@ class ForumController extends Controller
                 '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
                 'E-mail: admin@apprendrefr.ru'
             ],
+            'proverb' => $proverb,
             'data' => $forums,
             'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
             'auth' => \Auth::check(),

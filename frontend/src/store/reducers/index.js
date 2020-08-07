@@ -35,6 +35,9 @@ import wordPageReducer from './wordPageReducer';
 import forumSendMessageReducer from './forumSendMessageReducer';
 import forumCreateThem from './forumCreateThem';
 import forumStatusesReducer from './forumStatusesReducer';
+import privacyPolicyReducer from './privacyPolicyReducer';
+import termsUserReducer from './termsUserReducer';
+import searchWordPageReducer from './searchWordPageReducer';
 import errorReducer from './errorReducer';
 
 export default combineReducers({
@@ -73,5 +76,8 @@ export default combineReducers({
     forumSendMessageReducer: forumSendMessageReducer,
     forumCreateThem: forumCreateThem,
     forumStatusesReducer: forumStatusesReducer,
+    privacyPolicyReducer: privacyPolicyReducer,
+    termsUserReducer: termsUserReducer,
+    searchWordPageReducer: searchWordPageReducer,
     errorReducer: errorReducer,
 });

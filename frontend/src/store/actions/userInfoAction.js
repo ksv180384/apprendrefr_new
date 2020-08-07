@@ -6,7 +6,7 @@ import {
     ERROR_PAGE,
     SET_LOGIN,
     SET_LOADER_PAGE,
-    WORD_SET_LIST
+    WORD_SET_LIST, LOAD_PROVERB
 } from './index';
 
 import axios from 'axios';
@@ -15,10 +15,7 @@ import { config } from '../../config';
 export const getPage = (path_page) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + path_page;
         axios.get(path + '?page_load=true').then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
@@ -34,6 +31,7 @@ export const getPage = (path_page) => {
                 type: USER_INFO_SET_INFO,
                 payload: result.data.data.user
             });
+            dispatch({ type: LOAD_PROVERB, payload: result.data.proverb });
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });

@@ -14,10 +14,7 @@ import axios from "axios/index";
 export const getPage = (path_page) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + path_page;
         axios.get(path + '?page_load=true').then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
@@ -50,10 +47,7 @@ export const getPage = (path_page) => {
 export const getPageItem = (path_page) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + path_page;
         axios.get(path + '?page_load=true').then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);

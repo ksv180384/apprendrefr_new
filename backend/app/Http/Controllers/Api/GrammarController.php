@@ -82,7 +82,7 @@ class GrammarController extends BaseController
 
         return response()->json([
             'title' => $grammar_content->title . ' - грамматика французского языка',
-            'description' => $grammar_content->title . ' - грамматика французского языка',
+            'description' => $grammar_content->description,
             'keywords' => $grammar_content->title . ' - грамматика французского языка',
             'data' => [
                 'grammar_content' => $grammar_content,

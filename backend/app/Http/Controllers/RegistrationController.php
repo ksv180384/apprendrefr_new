@@ -21,9 +21,9 @@ class RegistrationController extends BaseController
     public function lostPassword(){
 
         $meta = [
-            'title' => 'Забыли пароль? ' . $_SERVER['SERVER_NAME'],
-            'description' => 'Забыли пароль? ' . $_SERVER['SERVER_NAME'],
-            'keywords' => 'Забыли пароль? ' . $_SERVER['SERVER_NAME'],
+            'title' => 'Восстановление пароля ' . $_SERVER['SERVER_NAME'],
+            'description' => 'Восстановление пароля ' . $_SERVER['SERVER_NAME'],
+            'keywords' => 'Восстановление пароля ' . $_SERVER['SERVER_NAME'],
         ];
 
         return view('lost_password', compact('meta'));

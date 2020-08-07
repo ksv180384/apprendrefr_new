@@ -63,6 +63,8 @@ class SongController extends Controller
         $artists = $this->songRepository->getArtists()->toArray();
         $songsList = $this->songRepository->getSongsList()->toArray();
         $words_list = $this->wordRepository->getRandomWords();
+        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+
         $online_users = $this->statisticRepository->getOnlineUsers();
         $count_users = count($online_users);
         $count_guests = $this->statisticRepository->countGuests();
@@ -89,6 +91,7 @@ class SongController extends Controller
                 '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
                 'E-mail: admin@apprendrefr.ru'
             ],
+            'proverb' => $proverb,
             'data' => [
                 'list' => $list,
             ],

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import './OnlineList.css';
 
@@ -22,9 +23,9 @@ class OnlineList extends Component{
                                     Object.keys(online_users).map(key => {
                                         return (
                                             <li key={online_users[key].id}>
-                                                <a href={'#' + online_users[key].id} className="link">
+                                                <Link to={'/user/info/' + online_users[key].id} className="link">
                                                     {online_users[key].login}
-                                                </a>
+                                                </Link>
                                             </li>
                                         )
                                     })

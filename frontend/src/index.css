@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-size: 14px;
 }
 
 body {
@@ -13,6 +12,7 @@ body {
   background-size: cover;
   color: #373737;
   min-height: 100vh;
+  padding-top: 58px;
 }
 
 ul{
@@ -1074,8 +1074,9 @@ ul{
 }
 
 .Grammar-content-block .prim_gramm2 {
-  padding-left: 250px !important;
+  margin: 0 auto;
   width: 550px;
+  line-height: 30px !important;
 }
 
 .Lyrics-list-block{
@@ -1383,4 +1384,79 @@ ul.WordsListPage-list>li:hover{
 
 .WordItemPage{
   margin-top: 2px;
+}
+
+.text-color{
+  color: #6A6A6A;
+}
+
+.up-change-password{
+  margin-top: 10px;
+  padding: 0 20px;
+}
+
+.up-change-password-form-block{
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 0;
+}
+
+.info-terms-user-block{
+  position: fixed;
+  color: #6a6a6a;
+  background-color: #e9f1f7;
+  height: 100vh;
+  display: none;
+  top: 0;
+  z-index: 2;
+}
+
+.info-terms-user-block.show{
+  display: block;
+}
+
+.info-terms-user-block .content{
+  padding: 20px 60px;
+  height: calc(100% - 30px);
+  overflow: auto;
+}
+
+.info-terms-user-block .content h3,
+.info-page-block h3{
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.info-terms-user-block .content p,
+.info-page-block p{
+  padding: 10px 0;
+  font-size: 16px;
+}
+
+.info-terms-user-block .content ul{
+  margin-left: 20px;
+}
+
+.info-terms-user-block .content ul>li{
+  padding: 6px 0;
+}
+
+.info-page-block{
+  padding: 20px 60px;
+  color: #6a6a6a;
+  background-color: #e9f1f7;
+}
+
+.non-words-block{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  padding: 0 20px;
+}
+
+.g-content-block table{
+  width: 100%;
 }

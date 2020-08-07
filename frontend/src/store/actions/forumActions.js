@@ -13,7 +13,7 @@ import {
     FORUM_SEND_MESSAGE_REQUEST,
     FORUM_SET_STATUSES,
     FORUM_SEND_MESSAGE_SUCCESS,
-    ERROR_PAGE, FORUM_CREATE_THEM_REQUEST, FORUM_CREATE_THEM_SUCCESS, SET_LOADER
+    ERROR_PAGE, FORUM_CREATE_THEM_REQUEST, FORUM_CREATE_THEM_SUCCESS, SET_LOADER, LOAD_PROVERB
 } from './index';
 
 import axios from 'axios';
@@ -43,10 +43,7 @@ export const setMessagesList = (messagesList) => {
 export const loadForumsListPage = (path_page, params = {}) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken ,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + path_page;
         axios.get(path+'?page_load=true').then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
@@ -62,6 +59,7 @@ export const loadForumsListPage = (path_page, params = {}) => {
                 type: FORUM_SET_FORUMS_LIST,
                 payload: result.data.data
             });
+            dispatch({ type: LOAD_PROVERB, payload: result.data.proverb });
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });
@@ -80,10 +78,7 @@ export const loadForumsListPage = (path_page, params = {}) => {
 export const loadTopicsListPage = (path_page, params = {}) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken ,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + path_page;
         axios.get(path+'?page_load=true').then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
@@ -107,6 +102,7 @@ export const loadTopicsListPage = (path_page, params = {}) => {
                 type: FORUM_SET_TOPICS_LIST,
                 payload: result.data.data.topics
             });
+            dispatch({ type: LOAD_PROVERB, payload: result.data.proverb });
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });
@@ -122,13 +118,9 @@ export const loadTopicsListPage = (path_page, params = {}) => {
 };
 
 export const loadMessagesListPage = (path_page, params = {}) => {
-    console.log(config);
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken ,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         let show_hide_mess = '';
         if (localStorage.getItem('show_hidden_message') === '1') {
             show_hide_mess = '&show_hide_mess=show';
@@ -156,6 +148,7 @@ export const loadMessagesListPage = (path_page, params = {}) => {
                 type: FORUM_SET_MESSAGES_LIST,
                 payload: result.data.data.messages
             });
+            dispatch({ type: LOAD_PROVERB, payload: result.data.proverb });
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });
@@ -173,10 +166,7 @@ export const loadMessagesListPage = (path_page, params = {}) => {
 export const loadMessagesPaginate = (path_page, params = {}) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken ,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         let show_hide_mess = '';
         if (localStorage.getItem('show_hidden_message') === '1') {
             show_hide_mess = '&show_hide_mess=show';
@@ -209,10 +199,7 @@ export const sendMessage = (topic = 0, message, callback) => {
     return (dispatch) => {
         dispatch({ type: FORUM_SEND_MESSAGE_REQUEST });
         dispatch({ type: SET_LOADER, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization': localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
 
         let show_hide_mess = 'hide';
         if (localStorage.getItem('show_hidden_message') === '1') {
@@ -268,10 +255,7 @@ export const sendMessage = (topic = 0, message, callback) => {
 export const hideMessage = (message_id, callback) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization': localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
 
         let show_hide_mess = 'hide';
         if (localStorage.getItem('show_hidden_message') === '1') {
@@ -301,10 +285,7 @@ export const hideMessage = (message_id, callback) => {
 export const updateMessage = (message_id = 0, message, callback) => {
     return (dispatch) => {
         dispatch({ type: FORUM_SEND_MESSAGE_REQUEST });
-        axios.defaults.headers.common = {
-            'Authorization': localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + 'api/forum/update-message/' + message_id;
         axios.post(path, {page_load: true, message: message, _method: 'PATCH' }).then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
@@ -329,10 +310,7 @@ export const updateMessage = (message_id = 0, message, callback) => {
 export const createTopic = (forum_id, topic_title, message, callback) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization': localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + 'api/forum/create-them';
         axios.post(path, {page_load: true, forum_id: forum_id, topic_title: topic_title, message: message}).then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
@@ -347,7 +325,12 @@ export const createTopic = (forum_id, topic_title, message, callback) => {
             let err_text = '';
             if(error.response){
                 for(let k in error.response.data){
-                    err_text = error.response.data[k][0];
+                    if(Array.isArray(error.response.data[k])){
+                        err_text = error.response.data[k][0];
+                    }else{
+                        err_text = error.response.data[k];
+                    }
+                    break;
                 }
             }
             errorNotification(err_text);
@@ -360,10 +343,7 @@ export const createTopic = (forum_id, topic_title, message, callback) => {
 export const updateTopic = (topic_id, title, callback) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER, payload: true });
-        axios.defaults.headers.common = {
-            'Authorization': localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + 'api/forum/update-them/' + topic_id;
         axios.post(path, { page_load: true, topic_id: topic_id, title: title, _method: 'PATCH' }).then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
@@ -393,10 +373,7 @@ export const changeStatusTopic = (topic_id, status_id, callback) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER, payload: true });
         dispatch({ type: FORUM_CREATE_THEM_REQUEST });
-        axios.defaults.headers.common = {
-            'Authorization': localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + 'api/forum/topic/change-status' ;
         axios.post(path, { page_load: true, topic_id: topic_id, status_id: status_id, _method: 'PATCH' }).then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);

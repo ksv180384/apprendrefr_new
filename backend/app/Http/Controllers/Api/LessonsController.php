@@ -38,7 +38,7 @@ class LessonsController extends BaseController
 
         return response()->json([
             'title' => 'Уроки французского языка',
-            'description' => 'Уроки французского языка',
+            'description' => 'Уроки французского языка. Каждый урок французского языка для начинающих представлен в виде темы для общения.',
             'keywords' => 'Уроки французского языка',
             'footer' => [
                 $this->yar_life,

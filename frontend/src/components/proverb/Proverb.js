@@ -6,10 +6,11 @@ import './Proverb.css';
 
 class Proverb extends Component{
 
+    /*
     componentDidMount(){
         this.props.loadProverb();
     }
-
+    */
     render(){
 
         const { proverb } = this.props;

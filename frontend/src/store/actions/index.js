@@ -46,6 +46,9 @@ export const WORDS_PAGE_SET_POS = 'WORDS_PAGE_SET_POS';
 
 export const WORD_PAGE_SET_DATA = 'WORD_PAGE_SET_DATA';
 
+export const SEARCH_WORD_PAGE_SET_DATA = 'SEARCH_WORD_PAGE_SET_DATA';
+export const SEARCH_WORD_PAGE_GET_DATA = 'SEARCH_WORD_PAGE_GET_DATA';
+
 // proverbs
 export const LOAD_PROVERB = 'LOAD_PROVERB';
 
@@ -143,6 +146,13 @@ export const USERS_LIST_SET_DATA = 'USERS_LIST_SET_DATA';
 // grammar
 export const GRAMMAR_SET_LIST = 'GRAMMAR_SET_LIST';
 export const GRAMMAR_SET_ITEM = 'GRAMMAR_SET_ITEM';
+
+// info
+export const PRIVACY_POLICY_SET = 'PRIVACY_POLICY_SET';
+export const PRIVACY_POLICY_GET = 'PRIVACY_POLICY_GET';
+
+export const TERMS_USER_SET = 'TERMS_USER_SET';
+export const TERMS_USER_GET = 'TERMS_USER_GET';
 
 // error
 export const ERROR_PAGE = 'ERROR_PAGE';

@@ -10,7 +10,7 @@ import {
     SET_LOADER_PAGE,
     STATISTIC_SET_DATA,
     WORD_SET_LIST,
-    ERROR_PAGE
+    ERROR_PAGE, LOAD_PAGE
 } from './index';
 
 
@@ -18,10 +18,7 @@ export const getPage = (path_page, params = {}) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
 
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': config.UserToken,
-        };
+        axios.defaults.headers.common = config.headerAuthorizationToken();
         const path = config.path + path_page;
         //console.log(params);
         axios.get(path+'?page_load=true').then((result) => {
@@ -35,7 +32,7 @@ export const getPage = (path_page, params = {}) => {
                 }
             });
             dispatch({
-                type: SET_PAGE_DATA,
+                type: LOAD_PAGE,
                 payload: result.data.data
             });
             dispatch({ type: SET_USER, payload: result.data.user });

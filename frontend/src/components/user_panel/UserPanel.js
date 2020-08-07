@@ -25,10 +25,7 @@ class UserPanel extends Component{
             e.preventDefault();
 
             store.dispatch(setLoader(true));
-            axios.defaults.headers.common = {
-                'Authorization':localStorage.getItem('user-token'),
-                'App-User-Token': config.UserToken ,
-            };
+            axios.defaults.headers.common = config.headerAuthorizationToken();
             axios.post(config.path + 'api/auth/logout', {})
                 .then((response) => {
                     store.dispatch(setLoader(false));
@@ -69,7 +66,7 @@ class UserPanel extends Component{
                             <li>
                                 <Link to='/profile' onClick={ (e) => this.changePage(e) } className="link">Профиль</Link>
                             </li>
-                            <li><a href="#">Личные сообщения</a></li>
+                            {/*<li><a href="#">Личные сообщения</a></li>*/}
                             <li><Link to={'/users-list'}>Пользователи</Link></li>
                             <li><a href="#" onClick={ (e) => this.logout(e) }>Вход</a></li>
                         </ul>

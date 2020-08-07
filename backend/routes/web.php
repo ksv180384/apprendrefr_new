@@ -22,13 +22,44 @@ Route::get('{any}', function () {
 Route::get('/', 'IndexController@index')->name('index');
 Route::get('/registration', 'RegistrationController@index')->name('registration');
 Route::get('/lost-password', 'RegistrationController@lostPassword')->name('lost_assword');
-Route::get('/grammar', 'GrammarController@index')->name('grammar');
-Route::get('/lyrics', 'LyricsController@index')->name('lyrics');
-Route::get('/lessons', 'LessonsController@index')->name('lessons');
-Route::group(['namespace' => 'Forum', 'prefix' => 'forum'], function () {
-    Route::get('/', 'ForumController@index')->name('forum');
+
+// grammar
+Route::group(['prefix' => 'grammar'], function ($router) {
+    Route::get('/', 'GrammarController@index')->name('grammar_list');
+    Route::get('/item/{id}', 'GrammarController@show')->name('grammar_item');
 });
-Route::get('/dictionary', 'DictionaryController@index')->name('dictionary');
+
+// song page
+Route::group(['prefix' => 'lyrics', 'namespace' => 'Song'], function ($router) {
+    Route::get('/', 'SongController@index')->name('lyrics.list');
+    Route::get('item/{id}', 'SongController@show')->name('lyrics.item');
+});
+
+// lessons
+Route::group(['prefix' => 'lessons'], function ($router) {
+    Route::get('/', 'LessonsController@index')->name('lesson_list');
+    Route::get('/item/{id}', 'LessonsController@show')->name('lesson_item');
+});
+
+// forum
+Route::group(['prefix' => 'forum', 'namespace' => 'Forum'], function ($router) {
+
+    Route::get('/', 'ForumController@index')->name('forums_list');
+    Route::get('/{forum_id}', 'TopicController@index')->name('forum_topics_list');
+
+
+    Route::group(['prefix' => '{forum_id}/topic'], function ($router) {
+        Route::get('/{topic_id}/page/{page?}', 'MessageController@index')->name('forum_messages_list');
+        Route::get('/{topic_id}', 'MessageController@index')->name('forum_messages_list');
+    });
+
+});
+
+// dictionary
+Route::group(['prefix' => 'dictionary'], function ($router) {
+    Route::get('/', 'DictionaryController@index')->name('word.list');
+    Route::get('word/{id}', 'DictionaryController@show')->name('word.show');
+});
 
 Route::group(['namespace' => 'JsonData', 'prefix' => 'json'], function () {
 

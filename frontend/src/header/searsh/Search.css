@@ -27,9 +27,8 @@
     color: #fff;
     font-size: 14px;
     background-color: #8db3ce;
-    /*border-radius: 2px;*/
-    /*border: 2px solid #fff;*/
     cursor: pointer;
+    padding: 6px 0;
     transition: all 0.3s ease 0s;
 }
 

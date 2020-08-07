@@ -73,6 +73,18 @@
     margin-bottom: -3px;
 }
 
+.NotificationConfirmRegistration-block{
+    text-align: center;
+    font-size: 14px;
+    padding: 10px 20px;
+    background-color: #ffffff;
+}
+
+.NotificationConfirmRegistration-block h4{
+    color: #f00;
+    margin-bottom: 10px;
+}
+
 @media (max-width: 1300px){
     .profile-edit-block{
         flex-wrap: wrap;

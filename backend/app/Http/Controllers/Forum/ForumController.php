@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers\Forum;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
+use App\Repositories\ForumRepository;
 use Illuminate\Http\Request;
 
-class ForumController extends Controller
+class ForumController extends BaseController
 {
+    /**
+     * @var ForumRepository
+     */
+    private $forumRepository;
+
+    public function __construct()
+    {
+        $this->forumRepository = app(ForumRepository::class);
+    }
+
     public function index(){
 
         $meta = [

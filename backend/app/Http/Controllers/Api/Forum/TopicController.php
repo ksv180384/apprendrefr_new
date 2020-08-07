@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Repositories\ForumMessageRepository;
 use App\Repositories\ForumRepository;
 use App\Repositories\ForumTopicRepository;
+use App\Repositories\ProverbRepository;
 use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WordRepository;
@@ -51,10 +52,15 @@ class TopicController extends Controller
      */
     private $forumTopicRepository;
 
+    /**
+     * @var ProverbRepository
+     */
+    private $proverbRepository;
+
     public function __construct(){
         $this->forumRepository = app(ForumRepository::class);
         $this->wordRepository = app(WordRepository::class);
-        //$this->proverbRepository = app(ProverbRepository::class);
+        $this->proverbRepository = app(ProverbRepository::class);
         $this->userRepository = app(UserRepository::class);
         $this->statisticRepository = app(StatisticRepository::class);
         $this->forumMessageRepository = app(ForumMessageRepository::class);
@@ -68,13 +74,10 @@ class TopicController extends Controller
      */
     public function index($forum_id, Request $request)
     {
-        // Получаем токен пользователя
-        $t = $request->headers->get('app-user-token');
-        $token = !empty($t) ? $t : $request->newUserToken;
-
         $show_hidden = \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
         $topics = $this->forumTopicRepository->getTopicByForumId((int)$forum_id, $show_hidden);
         $forum = $this->forumRepository->getById((int)$forum_id);
+        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
         $statuses = Status::all(['id', 'title', 'alias']);
 
         $words_list = $this->wordRepository->getRandomWords();
@@ -85,6 +88,10 @@ class TopicController extends Controller
         $count_all = $count_users + $count_guests;
         $count_messages = $this->forumMessageRepository->countAll();
 
+        if($topics->isEmpty()){
+            return response()->json(['message' => 'Такой страницы не существует.'], 404);
+        }
+
         return response()->json([
             'title' => 'Фоорум ',
             'description' => ' - Фоорум ',
@@ -93,6 +100,7 @@ class TopicController extends Controller
                 '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
                 'E-mail: admin@apprendrefr.ru'
             ],
+            'proverb' => $proverb,
             'data' => [
                 'topics' => $topics,
                 'forum' => $forum,
@@ -132,6 +140,11 @@ class TopicController extends Controller
     public function store(ForumCreateTopicRequest $request)
     {
         //
+        if(empty(strip_tags($request->message))){
+            return response()->json([
+                'messages' => 'Слишком короткое сообщение.',
+            ], 404);
+        }
         $status = Status::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
         $message_status = MessageStatus::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
 

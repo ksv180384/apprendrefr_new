@@ -2,16 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Grammar;
 
-class GrammarController extends Controller
+class GrammarController extends BaseController
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function index(){
 
         $meta = [
-            'title' => 'Французский язык - Грамматика',
-            'description' => 'Французский язык - Грамматика',
-            'keywords' => 'Французский язык - Грамматика',
+            'title' => 'Грамматика французского языка',
+            'description' => 'Грамматика французского языка',
+            'keywords' => 'Грамматика французского языка',
+        ];
+
+        return view('index', compact('meta'));
+    }
+
+    public function show($id){
+
+        $grammar_content = Grammar::select(['id', 'title', 'description', 'content'])->where('id', '=', (int)$id)->first();
+
+        $meta = [
+            'title' => $grammar_content->title . ' - грамматика французского языка',
+            'description' => $grammar_content->description,
+            'keywords' => $grammar_content->title . ' - грамматика французского языка',
+
         ];
 
         return view('index', compact('meta'));

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Api\User\ProfileUpdateRequest;
+use App\Mail\ConfirmEmail;
 use App\Models\User;
 use App\Repositories\ForumMessageRepository;
+use App\Repositories\ProverbRepository;
 use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
 use App\Models\User\Sex;
@@ -14,9 +16,8 @@ use App\Repositories\WordRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
 
     /**
@@ -39,18 +40,24 @@ class UserController extends Controller
      */
     private $forumMessageRepository;
 
+    /**
+     * @var ProverbRepository
+     */
+    private $proverbRepository;
 
     public function __construct()
     {
         //$this->middleware('auth:api');
         $this->middleware('auth:api', [
-            'except' => ['show'] // методы с доступ неавторизованным пользователям
+            'except' => ['show', 'confirmEmail'] // методы с доступ неавторизованным пользователям
         ]);
 
         $this->userRepository = app(UserRepository::class);
         $this->wordRepository = app(WordRepository::class);
         $this->statisticRepository = app(StatisticRepository::class);
         $this->forumMessageRepository = app(ForumMessageRepository::class);
+        $this->proverbRepository = app(ProverbRepository::class);
+        parent::__construct();
     }
     /**
      * Display a listing of the resource.
@@ -66,12 +73,12 @@ class UserController extends Controller
         $words_list = $this->wordRepository->getRandomWords();
 
         return response()->json([
-            'title' => '',
-            'description' => '',
-            'keywords' => '',
-            'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+            'title' => 'Ваш профиль | ' . $_SERVER['HTTP_HOST'],
+            'description' => 'Ваш профиль | ' . $_SERVER['HTTP_HOST'],
+            'keywords' => 'Ваш профиль | ' . $_SERVER['HTTP_HOST'],
+            'footer' =>[
+                $this->yar_life,
+                self::EMAIL,
             ],
             'words_list' => $words_list,
             'data' => [
@@ -118,6 +125,8 @@ class UserController extends Controller
             return response()->json(['message' => 'Неверный идентификатор пользователя.'], 404);
         }
         $words_list = $this->wordRepository->getRandomWords();
+        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+
         $online_users = $this->statisticRepository->getOnlineUsers();
         $count_users = count($online_users);
         $count_guests = $this->statisticRepository->countGuests();
@@ -130,9 +139,10 @@ class UserController extends Controller
             'description' => $user->login . ' - профиль пользователя',
             'keywords' => $user->login . ' - профиль пользователя',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
+            'proverb' => $proverb,
             'data' => [
                 'user' => $user,
             ],
@@ -164,6 +174,8 @@ class UserController extends Controller
         }
 
         $words_list = $this->wordRepository->getRandomWords();
+        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+
         $online_users = $this->statisticRepository->getOnlineUsers();
         $count_users = count($online_users);
         $count_guests = $this->statisticRepository->countGuests();
@@ -172,13 +184,14 @@ class UserController extends Controller
         $count_messages = $this->forumMessageRepository->countAll();
 
         return response()->json([
-            'title' => 'Список пользователя',
-            'description' => 'Список пользователя',
-            'keywords' => 'Список пользователя',
+            'title' => 'Список пользователей',
+            'description' => 'Список пользователей',
+            'keywords' => 'Список пользователей',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
+            'proverb' => $proverb,
             'data' => [
                 'users' => $users,
             ],
@@ -254,10 +267,31 @@ class UserController extends Controller
         $infoViewNew['yar_birthday'] = !empty($infoViewNew['yar_birthday']) ?: 0;
 
         $user = $this->userRepository->getUser($id);
+        if($user->email != $data['email']){
+            $data['email_verified_at'] = null;
+            $data['confirm_token'] = User::generateConfirmedToken();
+        }
 
         // Проверяем права пользователя на редактирование профиля
         if($id != \Auth::id() && $user->isAdmin()){
             return response()->json(["success" => "N", "message" => "У вас недостаточно прав для редактирования профиля."]);
+        }
+
+        if(empty($user->email_verified_at)){
+            if($user->email != $data['email']) {
+                User::whereId($id)->update([
+                    'email_verified_at' => null,
+                    'confirm_token' => User::generateConfirmedToken(),
+                    'email' => $data['email'],
+                ]);
+            }
+            $user = $this->userRepository->getById($id);
+            return response()->json([
+                'message' => 'У вас не пдтвержден email. В профиле доступен для редактирования только email.',
+                'data' => [
+                    'user' => $user,
+                ],
+            ]);
         }
 
         if($request->hasFile('avatarImg')){
@@ -281,10 +315,17 @@ class UserController extends Controller
         User\UserInfo::find($id)->update($contacts);
 
 
+        $user = $this->userRepository->getById($id);
+
         if(!$result){
-            return response()->json(["success" => "N", "message" => "Ошибка при сохранении данных. Попробуйте позже."]);
+            return response()->json(['message' => 'Ошибка при сохранении данных. Попробуйте позже.']);
         }
-        return response()->json(["success" => "Y", "message" => "Данные успешно сохранены"]);
+        return response()->json([
+            'message" => "Данные успешно сохранены',
+            'data' => [
+                'user' => $user,
+            ],
+        ]);
     }
 
     /**
@@ -308,5 +349,62 @@ class UserController extends Controller
         $result = $file->store($path, 'public');
 
         return $result;
+    }
+
+
+    public function sendConfirmEmail(){
+
+        $user = $this->userRepository->getById(\Auth::id());
+        $from = Carbon::parse($user->send_verified_email_at);
+        $to = Carbon::now();
+        $diff_in_min = $to->diffInMinutes($from);
+        //var_export($diff_in_hours);
+        if($user->send_verified_email_at && $diff_in_min < 5){
+            return response()->json(['message' => 'Сообщение можно отправить раз в 5 мин. (прошло ' . $diff_in_min . ' мин.)'], 404);
+        }
+
+        \Mail::to($user)->send(new ConfirmEmail($user));
+
+        \Auth::user()->update([
+            'send_verified_email_at' => Carbon::now(),
+        ]);
+        return response()->json([
+            'message' => 'Письмо для подтверждения регистрации успешно отправлено на email: ' . $user->email
+        ]);
+    }
+
+    public function confirmEmail($token){
+        $user = User::select('id')->where('confirm_token', '=', $token)->whereNull('email_verified_at')->first();
+        if(empty($user)){
+            return response()->json([
+                'message' => 'Ошибка при подтверждении email. Неверный токен.',
+                'title' => 'Подтверждение email',
+                'description' => 'Подтверждение email',
+                'keywords' => 'Подтверждение email',
+                'data' => [],
+                'footer' => [
+                    $this->yar_life,
+                    self::EMAIL,
+                ],
+                'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+                'auth' => \Auth::check(),
+            ]);
+        }
+
+        $user->update(['email_verified_at' => Carbon::now()]);
+
+        return response()->json([
+            'message' => 'Вы успешно подтвердили email.',
+            'title' => 'Подтверждение email',
+            'description' => 'Подтверждение email',
+            'keywords' => 'Подтверждение email',
+            'data' => [],
+            'footer' => [
+                $this->yar_life,
+                self::EMAIL,
+            ],
+            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'auth' => \Auth::check(),
+        ]);
     }
 }

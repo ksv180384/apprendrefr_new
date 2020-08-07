@@ -21,6 +21,11 @@ import Lyrics from "./pages/lyrics/Lyrics";
 import Lyric from "./pages/lyrics/Lyric";
 import Words from "./pages/word/Words";
 import Word from "./pages/word/Word";
+import ConfirmEmail from "./pages/confirm_email/ConfirmEmail";
+import ChangePasswordPage from "./pages/change_password/ChangePasswordPage";
+import TermsUser from "./pages/info/TermsUser";
+import SearchWordPage from "./pages/search/SearchWordPage";
+import PrivacyPolicy from "./pages/info/PrivacyPolicy";
 
 // Components
 import ModalWindow from './components/modals_windows/ModalWindow';
@@ -61,6 +66,11 @@ ReactDOM.render(
                     <Route exact path='/dictionary' component={ Words }/>
                     <Route exact path='/dictionary/:pos?/:lang?/page/:page' component={ Words }/>
                     <Route exact path='/dictionary/word/:id' component={ Word }/>
+                    <Route exact path='/user/confirm-email/:token' component={ ConfirmEmail }/>
+                    <Route exact path='/user/change-password/:token' component={ ChangePasswordPage }/>
+                    <Route exact path='/info/privacy-policy' component={ PrivacyPolicy }/>
+                    <Route exact path='/info/terms-user' component={ TermsUser }/>
+                    <Route exact path='/word/search/:word/:lang?' component={ SearchWordPage }/>
                     <Route exact component={ ErrorIndicator }/>
                 </Switch>
             </Router>

@@ -41,11 +41,8 @@ class Words extends Component {
 
             loader_page
                 ?
-                <React.Fragment>
-                    <LoaderPage/>
-                </React.Fragment>
+                <LoaderPage/>
                 :
-
                 <React.Fragment>
                     <Header/>
                     <LayoutOne>

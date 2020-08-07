@@ -1,12 +1,13 @@
 .LayoutTwo{
-    min-height: calc(100vh - 146px);
+    min-height: calc(100vh - 173px);
     display: flex;
     flex-direction: row;
     /*margin-top: 56px;*/
     max-width: 1300px;
-    margin: 58px auto 0 auto;
+    margin: 0 auto;
     background-color: #e9f1f7b3;
     position: relative;
+    border-bottom: 1px solid #fff;
 }
 
 .LayoutTwo .Left-block{

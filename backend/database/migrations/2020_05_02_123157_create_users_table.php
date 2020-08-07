@@ -27,6 +27,8 @@ class CreateUsersTable extends Migration
             $table->string('login', 255)->unique()->comment('login пользователя');
             $table->string('email', 255)->unique()->nullable()->default(null)->comment('email пользователя');;
             $table->timestamp('email_verified_at')->nullable()->default(null)->comment('дата подтверждения email');
+            $table->timestamp('send_verified_email_at')->nullable()->default(null)
+                        ->comment('дата отправки сообщения на почту для подтверждения email');
             $table->string('password')->comment('пароль пользователя');
             $table->string('avatar', 500)->nullable()->default(null)->comment('аватар пользователя');
             $table->unsignedBigInteger('sex')->nullable()->default(null)->comment('пол пользователя');
@@ -36,6 +38,8 @@ class CreateUsersTable extends Migration
             $table->string('residence', 500)->nullable()->default(null)->comment('масто жительства'); // Место жительства
             $table->unsignedBigInteger('rang')->index()->nullable()->default(null)->comment('ранг пользователя');
             $table->boolean('admin')->default(false)->comment('является ли пользователь администратором');
+            $table->string('confirm_token', 100)->unique()->nullable()->default(null)
+                    ->comment('токен подверждения регистрации по email');
             $table->rememberToken();
             $table->timestamps();
 

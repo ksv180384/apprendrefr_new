@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setLoadLearningWrite, loadLearningWriteContent } from '../../../store/actions/learningWriteActions';
 
+// components
 import InputForm from '../../../components/input_form/InputForm';
+import ModalLoader from '../../modals_windows/ModalLoader';
 
 class LearningWriteContent extends Component{
 
@@ -113,40 +115,45 @@ class LearningWriteContent extends Component{
         const { learning_write } = this.state;
 
         return(
-            <div className="LearningWrite-block">
-                
-                <div className="LearningWrite-word mb-10 mt-15">
-                    { word }
+           !word
+                ?
+                <ModalLoader/>
+                :
+                <div className="LearningWrite-block">
+
+                    <div className="LearningWrite-word mb-10 mt-15">
+                        {word}
+                    </div>
+                    <div className="LearningWrite-transcription mb-10">
+                        {transcription}
+                    </div>
+                    <div className="LearningWrite-translation translation">
+                        {translation}
+                    </div>
+                    <div className="">
+                        <InputForm name="learning_write"
+                                   placeholder={'Напишите слово ' + word}
+                                   type="text"
+                                   value={learning_write}
+                                   onChange={this.handleChangeLearningWrite}/>
+                    </div>
+                    <div className="LearningWrite-keyboard mt-25 mb-25">
+                        <ul>
+                            <li onClick={this.keyboardClick}>ë</li>
+                            <li onClick={this.keyboardClick}>ô</li>
+                            <li onClick={this.keyboardClick}>ê</li>
+                            <li onClick={this.keyboardClick}>û</li>
+                            <li onClick={this.keyboardClick}>â</li>
+                            <li onClick={this.keyboardClick}>î</li>
+                            <li onClick={this.keyboardClick}>ù</li>
+                            <li onClick={this.keyboardClick}>ç</li>
+                            <li onClick={this.keyboardClick}>è</li>
+                            <li onClick={this.keyboardClick}>à</li>
+                            <li onClick={this.keyboardClick}>é</li>
+                        </ul>
+                    </div>
                 </div>
-                <div className="LearningWrite-transcription mb-10">
-                    { transcription }
-                </div>
-                <div className="LearningWrite-translation translation">
-                    { translation }
-                </div>
-                <div className="">
-                    <InputForm name="learning_write"
-                               placeholder={'Напишите слово ' + word }
-                               type="text"
-                               value={ learning_write }
-                               onChange={ this.handleChangeLearningWrite } />
-                </div>
-                <div className="LearningWrite-keyboard mt-25 mb-25">
-                    <ul>
-                        <li onClick={ this.keyboardClick }>ë</li>
-                        <li onClick={ this.keyboardClick }>ô</li>
-                        <li onClick={ this.keyboardClick }>ê</li>
-                        <li onClick={ this.keyboardClick }>û</li>
-                        <li onClick={ this.keyboardClick }>â</li>
-                        <li onClick={ this.keyboardClick }>î</li>
-                        <li onClick={ this.keyboardClick }>ù</li>
-                        <li onClick={ this.keyboardClick }>ç</li>
-                        <li onClick={ this.keyboardClick }>è</li>
-                        <li onClick={ this.keyboardClick }>à</li>
-                        <li onClick={ this.keyboardClick }>é</li>
-                    </ul>
-                </div>
-            </div>
+
         );
     }
 }

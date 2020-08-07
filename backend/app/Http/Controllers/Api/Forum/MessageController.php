@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Forum;
 
+use App\Http\Controllers\Api\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ForumMessageCreateRequest;
 use App\Http\Requests\Api\ForumMessageHideRequest;
@@ -16,12 +17,13 @@ use App\Repositories\ForumMessageRepository;
 use App\Repositories\ForumRepository;
 use App\Repositories\ForumTopicRepository;
 use App\Repositories\ForumTopicViewedRepository;
+use App\Repositories\ProverbRepository;
 use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WordRepository;
 use Illuminate\Http\Request;
 
-class MessageController extends Controller
+class MessageController extends BaseController
 {
     /**
      * @var ForumRepository
@@ -58,15 +60,25 @@ class MessageController extends Controller
      */
     private $forumTopicRepository;
 
+    /**
+     * @var ProverbRepository
+     */
+    private $proverbRepository;
+
     public function __construct(){
+        $this->middleware(['auth:api','confirm_email'], [
+            'only' => ['store', 'update', 'hide', 'destroy'] // методы для выполнения которых нужна проверка пользователя
+        ]);
+
         $this->forumRepository = app(ForumRepository::class);
         $this->wordRepository = app(WordRepository::class);
-        //$this->proverbRepository = app(ProverbRepository::class);
+        $this->proverbRepository = app(ProverbRepository::class);
         $this->userRepository = app(UserRepository::class);
         $this->statisticRepository = app(StatisticRepository::class);
         $this->forumMessageRepository = app(ForumMessageRepository::class);
         $this->forumTopicRepository = app(ForumTopicRepository::class);
         $this->forumTopicViewedRepository = app(ForumTopicViewedRepository::class);
+        parent::__construct();
     }
 
     /**
@@ -85,10 +97,10 @@ class MessageController extends Controller
 
         $topic = $this->forumTopicRepository->getById((int)$topic_id);
         $forum = $this->forumRepository->getById((int)$forum_id);
+        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
 
         $messages = $this->forumMessageRepository->getByTopicId((int)$topic_id, $show_hidden_message);
         $messages = $this->formatSocialLinks($this->filterInfo($messages));
-        //var_export($messages->toArray());
 
         $words_list = $this->wordRepository->getRandomWords();
         $online_users = $this->statisticRepository->getOnlineUsers();
@@ -113,9 +125,10 @@ class MessageController extends Controller
             'description' => $topic->title . ' - Фоорум (стр ' . $messages->toArray()['current_page'] . ')',
             'keywords' => $topic->title . ' - Фоорум (стр ' . $messages->toArray()['current_page'] . ')',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL
             ],
+            'proverb' => $proverb,
             'data' => [
                 'topic' => $topic,
                 'forum' => $forum,

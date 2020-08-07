@@ -36,7 +36,7 @@ class MessagesList extends Component{
 
     render(){
 
-        const { massages, topic, forum, paginate } = this.props;
+        const { massages, topic, forum, paginate, user } = this.props;
         const { show_hidden_message } = this.state;
 
         return(
@@ -45,11 +45,18 @@ class MessagesList extends Component{
                     <div className="MessagesList">
                         <div className="panel_header">
                             <h1>Форум - { topic.title }</h1>
-                            <div className="control-view-items" onClick={ this.toggleShowHiddenMessage }>
-                                {
-                                    show_hidden_message === '1' ? <FontAwesomeIcon icon={ faEyeSlash }/> : <FontAwesomeIcon icon={ faEye }/>
-                                }
-                            </div>
+                            {
+                                user.admin === 1 || user.rang_alias === 'administrator' || user.rang_alias === 'moderator'
+                                    ?
+                                    <div className="control-view-items" onClick={ this.toggleShowHiddenMessage }>
+                                        {
+                                            show_hidden_message === '1' ? <FontAwesomeIcon icon={ faEyeSlash }/> : <FontAwesomeIcon icon={ faEye }/>
+                                        }
+                                    </div>
+                                    :
+                                    ''
+                            }
+
                         </div>
                         <div className="breadcrumbs">
                             <ul>
@@ -96,6 +103,7 @@ const mapStateToProps = (state) => {
         massages: state.forumMessagesListReduer.data,
         topic: state.forumTopicReducer,
         forum: state.forumReducer,
+        user: state.userReducer,
         paginate: {
             current_page: state.forumMessagesListReduer.current_page,
             last_page: state.forumMessagesListReduer.last_page,

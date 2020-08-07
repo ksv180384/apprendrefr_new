@@ -10,7 +10,12 @@ const LastActiveTopicItem = (props) => {
     return(
         <div className="LastActiveTopic-item">
             <div className="LastActiveTopic-item-topic-title-info">
-                <div><Link to={ 'forum/' + topic.forum_id + '/topic/' + topic.id } className="link">{ topic.title }</Link></div>
+                <div>
+                    <Link to={ 'forum/' + topic.forum_id + '/topic/' + topic.id }
+                          className={ 'link' + (!topic.user_view_topic ? ' strong' : '') }>
+                        { topic.title }
+                    </Link>
+                </div>
                 <span>Раздел: <Link to={ '/forum/' + topic.forum_id } className="link">{ topic.forum_title }</Link></span>
                 <span>Автор: <Link to={ '/user/info/' + topic.topic_create_user_id } className="link">{ topic.topic_create_user_login }</Link></span>
             </div>

@@ -42,6 +42,7 @@ class IndexController extends BaseController
      */
     private $forumTopicRepository;
 
+
     public function __construct()
     {
         parent::__construct();
@@ -59,6 +60,8 @@ class IndexController extends BaseController
 
         $topics = $this->forumTopicRepository->getLastActiveTopics();
         $words_list = $this->wordRepository->getRandomWords();
+        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+
         $online_users = $this->statisticRepository->getOnlineUsers();
         $count_users = count($online_users);
         $count_guests = $this->statisticRepository->countGuests();
@@ -74,6 +77,7 @@ class IndexController extends BaseController
                 $this->yar_life,
                 self::EMAIL,
             ],
+            'proverb' => $proverb,
             'data' => $topics,
             'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
             'auth' => \Auth::check(),

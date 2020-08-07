@@ -7,9 +7,10 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject//, MustVerifyEmail
 {
     use Notifiable;
 
@@ -26,6 +27,7 @@ class User extends Authenticatable implements JWTSubject
         'login',
         'email',
         'email_verified_at',
+        'send_verified_email_at',
         'password',
         'avatar',
         'sex',
@@ -35,6 +37,7 @@ class User extends Authenticatable implements JWTSubject
         'residence',
         'rang',
         'admin',
+        'confirm_token',
         'created_at',
         'updated_at',
     ];
@@ -134,5 +137,21 @@ class User extends Authenticatable implements JWTSubject
         //return $this->hasOne(Rang::class, 'rang', 'id');
         return $this->belongsTo(Rang::class, 'rang', 'id');
 
+    }
+
+    /**
+     * Формируем токен подтверждения емаил
+     */
+    public static function generateConfirmedToken(){
+        return Str::random(90);
+    }
+
+
+    /**
+     * Проверяем подтвердил ли пользователь емаил
+     * @return bool
+     */
+    public function isConfirmed(){
+        return !empty($this->email_verified_at);
     }
 }

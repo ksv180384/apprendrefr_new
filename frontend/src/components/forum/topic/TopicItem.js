@@ -150,7 +150,7 @@ class TopicItem extends Component{
                     <div className="LastActiveTopic-item-topic-message-info-date">
                         { topic.created_message ? topic.created_message.time : '' } <strong>{ topic.created_message ? topic.created_message.day : '' }</strong>
                      </div>
-                    <div>Автор: <a href={ '#' + topic.message_create_user_id } className="link">{ topic.message_create_user_login }</a></div>
+                    <div>Автор: <Link to={ '/user/info/' + topic.message_create_user_id } className="link">{ topic.message_create_user_login }</Link></div>
                 </div>
             </div>
         );

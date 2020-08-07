@@ -33,12 +33,14 @@ class UserRepository extends CoreRepository
                 'users.login',
                 'users.email',
                 'users.email_verified_at',
+                'users.send_verified_email_at',
                 'users.avatar',
                 'users.birthday',
                 'users.info',
                 'users.signature',
                 'users.residence',
                 'users.admin',
+                'users.confirm_token',
                 'users.created_at',
                 'users.updated_at',
                 'user_configs.day_birthday',
@@ -211,6 +213,10 @@ class UserRepository extends CoreRepository
 
     // Убирает информацию о пользователе взависимости от выставленных на нее прав
     private function filterInfo($user){
+
+        if(\Auth::check() && $user->id == \Auth::id()){
+            return $user;
+        }
 
         if(\Auth::check()){ // для зарегистрированных пользователей
                 if($user->config_email_alias != 'zaregistrirovannym' && $user->config_email_alias != 'vsem'){

@@ -19,6 +19,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 */
 
+// Включаем подтверждение регистрации по емаил
+//Auth::routes(['verify' => true]);
+
 Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) {
 
     Route::get('index', 'IndexController@index')->name('api.index');
@@ -30,8 +33,10 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::get('info-page/{id}', 'UserController@show')->name('api.user.info');
         Route::get('list-page', 'UserController@listUsers')->name('api.user.list_users');
         Route::get('list/paginate', 'UserController@getUsersListPaginate')->name('api.user.list_users_paginate');
+        Route::get('confirm-email/{token}', 'UserController@confirmEmail')->name('api.user.confirm-email');
 
         Route::post('update/{id}', 'UserController@update')->name('api.user.update');
+        Route::post('send-confirm-email', 'UserController@sendConfirmEmail')->name('api.user.send_confirm_email');
     });
 
     // Auth
@@ -41,9 +46,14 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::post('registration', 'AuthController@registration');
         Route::post('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
+        Route::get('change-password-page', 'AuthController@changePasswordPage');
+        Route::get('lost-password-page', 'AuthController@lostPasswordPage');
 
-        Route::get('register-page', 'AuthController@register_page')->name('api.registration_page');
-        Route::post('login-page', 'AuthController@login_page')->name('api.login_page');
+        Route::get('register-page', 'AuthController@registerPage')->name('api.registration_page');
+        Route::post('login-page', 'AuthController@loginPage')->name('api.login_page');
+        Route::post('lost-password', 'AuthController@lostPassword')->name('api.lost_password');
+        Route::post('change-password', 'AuthController@changePassword')->name('api.change_password');
+        Route::post('profile-change-password', 'AuthController@profileChangePassword')->name('api.profile_change_password');
 
     });
 
@@ -60,14 +70,16 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::get('item-page/{id}', 'WordController@show')->name('api.word.show');
 
         Route::post('search', 'WordController@search')->name('api.word.search');
+        Route::post('search-page', 'WordController@searchPage')->name('api.word.search_page');
     });
 
     // Proverb
+    /*
     Route::group(['prefix' => 'proverb', 'namespace' => 'Proverb'], function ($router) {
 
         Route::get('random', 'ProverbController@randomProverb')->name('api.proverb.random');
     });
-
+    */
     // song player
     Route::group(['prefix' => 'song', 'namespace' => 'Song'], function ($router) {
 
@@ -127,5 +139,11 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::get('/', 'LessonsController@index')->name('api.lesson_list');
         Route::get('/item-page/{id}', 'LessonsController@showPage')->name('api.lesson_page');
         Route::get('/item/{id}', 'LessonsController@show')->name('api.lesson_item');
+    });
+
+    // info
+    Route::group(['prefix' => 'info'], function ($router) {
+        Route::get('privacy-policy', 'InfoController@PrivacyPolicy');
+        Route::get('terms-user', 'InfoController@TermsUser');
     });
 });

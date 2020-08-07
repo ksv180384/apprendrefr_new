@@ -42,6 +42,7 @@ class OnlineUsers
         $token = $request->headers->get('app-user-token');
 
         $online_user = Online::select('id')->where('token', '=', $token)->first();
+        //var_export($token);
         if(!$online_user){
             $token = Online::generateToken();
             //$request->newUserToken = $token;

@@ -143,6 +143,7 @@
     width: 280px;
     bottom: 0;
     height: calc(100% - 58px);
+    z-index: 1;
 }
 
 .player-songs-list-content{

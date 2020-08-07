@@ -1,6 +1,25 @@
 import { store as storeNotification } from 'react-notifications-component';
 
 export const errorNotification = (message) => {
+    /*let error_text = '';
+    if(Array.isArray(message)){
+        for(let k in message){
+            if(k === 'UserToken'){
+                continue;
+            }
+            if(Array.isArray(message[k])){
+                error_text = message[k][0];
+                console.log('hhh');
+            }else{
+                console.log('3333');
+                error_text = message[k];
+            }
+            break;
+        }
+    }else{
+        console.log('4444');
+        error_text = message;
+    }*/
     message = arrayToMessage(message);
     storeNotification.addNotification({
         title: 'Ошибка',
@@ -60,6 +79,9 @@ const arrayToMessage = (arr) => {
     }
     let result = '';
     for (let k in arr){
+        if(k === 'UserToken'){
+            continue;
+        }
         if(Array.isArray(arr[k]) || arr[k] instanceof Object){
             for (let key in arr[k]){
                 result += arr[k][key] + "\n";
