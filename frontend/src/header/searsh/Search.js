@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-
-import { createBrowserHistory } from 'history';
 
 import WordModalContent from '../../components/words_list/WordModalContent';
 
@@ -13,11 +10,9 @@ import { modalShow, modalSetContent, modalSetHeader } from '../../store/actions/
 
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes, faEye, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes, faEye } from '@fortawesome/free-solid-svg-icons';
 
 import './Search.css';
-
-const history = createBrowserHistory();
 
 class Search extends Component{
 
@@ -25,7 +20,6 @@ class Search extends Component{
         super(props);
 
         this.state = {
-            word: '',
             show_select: false,
             select_title: 'слово',
             type: 'word',
@@ -56,26 +50,21 @@ class Search extends Component{
         this.changeSearch = (e) => {
             let search_text = e.currentTarget.value;
             search_text = search_text.trim();
-            //if(search_text.length < 1){
+            if(search_text.length < 1){
                 this.setState({
                     ...this.state,
-                    word: search_text,
-                    lang: this.langSearch(search_text),
+                    lang: null,
                 });
-            //}
-
-            console.log(this.langSearch(search_text));
-
+            }
             if(search_text.length < 3){
                 this.props.removeSearch();
                 return true;
             }
+            this.langSearch(search_text);
 
-            if(search_text.length > 1) {
-                const search_form = document.getElementById('searchForm');
-                const formData = new FormData(search_form);
-                this.props.loadSearch(formData);
-            }
+            const search_form = document.getElementById('searchForm');
+            const formData = new FormData(search_form);
+            this.props.loadSearch(formData);
 
         };
 
@@ -87,19 +76,33 @@ class Search extends Component{
             const ru = ru_pattern.test(text);
             if(text.length >= 1){
                 if(fr && ru){
-                    return 'non';
+                    this.setState({
+                        ...this.state,
+                        lang: 'non',
+                    });
                 }else{
                     if(fr){
-                        return 'fr';
+                        this.setState({
+                            ...this.state,
+                            lang: 'fr',
+                        });
                     }else{
-                        return 'ru';
+                        this.setState({
+                            ...this.state,
+                            lang: 'ru',
+                        });
                     }
                 }
+            }else{
+                this.setState({
+                    ...this.state,
+                    lang: null,
+                });
             }
-            return null;
         };
 
         this.searchList = (search_result, type) => {
+            //console.log(search_result);
             if(search_result === undefined || search_result.length === 0){
                 return '';
             }
@@ -112,7 +115,6 @@ class Search extends Component{
                         <li key={ search_result[key].id } data-id={ search_result[key].id } onClick={ this.selectSong }>
                             <span className="search-artist-name">{ search_result[key].artist_name }</span>
                             { search_result[key].title }
-                            <Link to={ '/lyrics/item/' + search_result[key].id } className="link ml-10"><FontAwesomeIcon icon={ faLink }/></Link>
                         </li>
                     )
                 });
@@ -123,16 +125,12 @@ class Search extends Component{
                         return '';
                     }
                     return (
-                        <li key={ search_result[key].id }
-                            onClick={ this.selectWord }
-                        >
+                        <li key={ search_result[key].id }>
                             <span className="inline-block mr-10" onClick={ this.selectViewWord }
-                                  data-word={ this.state.lang === 'ru' ? search_result[key].translation : search_result[key].word }
+                                  data-word={ search_result[key].word }
                                   data-id={ search_result[key].id }
                             ><FontAwesomeIcon icon={ faEye }/></span>
-                            <span className="text-search-item">
-                                { this.state.lang === 'ru' ? search_result[key].translation : search_result[key].word }
-                             </span>
+                            <span onClick={ this.selectWord }>{ search_result[key].word }</span>
                         </li>
                     )
                 });
@@ -154,16 +152,14 @@ class Search extends Component{
 
         this.selectWord = (e) => {
             const el = e.currentTarget;
-            const text = el.querySelector('.text-search-item').innerHTML;
-            //document.getElementById('searchHeader').value = text;
+            const text = el.innerHTML;
+            document.getElementById('searchHeader').value = text;
             this.props.removeSearch();
 
             this.setState({
                 ...this.state,
-                word: text,
-                //lang: null,
+                lang: null,
             });
-            document.getElementById('searchHeader').focus();
         };
 
         this.selectViewWord = (e) => {
@@ -177,19 +173,11 @@ class Search extends Component{
             this.props.modalSetContent(<WordModalContent/>);
             this.props.modalShow();
         };
-
-        this.submitSearch = (e) => {
-            e.preventDefault();
-            if(this.state.type === 'word'){
-                //history.push('/word/search/' + this.state.word + '/' + this.state.lang);
-                location.href = '/word/search/' + this.state.word + '/' + this.state.lang;
-            }
-        }
     }
 
     render(){
 
-        const { show_select, select_title, type, lang, word } = this.state;
+        const { show_select, select_title, type, lang } = this.state;
         const { search_result } = this.props;
         const select_class = show_select ? 'show' : '';
 
@@ -197,8 +185,9 @@ class Search extends Component{
         const show_search_result = search_result === undefined || search_result.length === 0 ? '' : ' show-search-result';
 
         return(
-            <form action="/" method="POST" id="searchForm" onSubmit={ this.submitSearch }>
+            <form action="/" method="POST" id="searchForm">
                 <div className="search">
+                    <div className="label">найти</div>
                     <div className="select" onClick={ this.toggleVisibleSelect }>
                         <span>{ select_title }</span>
                         <ul className={ select_class }>
@@ -211,8 +200,8 @@ class Search extends Component{
                                type="text"
                                name="search"
                                placeholder="Поиск..."
+                               defaultValue=""
                                autoComplete="off"
-                               value={ word }
                                onChange={ this.changeSearch }
                         />
                         <input type="hidden" name="type" value={ type }/>

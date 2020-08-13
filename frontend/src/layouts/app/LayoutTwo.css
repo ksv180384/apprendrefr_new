@@ -17,3 +17,13 @@
 .LayoutTwo .Center-block{
     flex: 100%;
 }
+
+body.sidebar-open .LayoutTwo{
+    overflow: hidden;
+}
+
+@media (max-width: 870px) {
+    .LayoutTwo{
+        min-height: calc(100vh - 188px);
+    }
+}

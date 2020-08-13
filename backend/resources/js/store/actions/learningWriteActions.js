@@ -38,3 +38,7 @@ export const loadLearningWriteContent = () => {
 export const setLoadLearningWrite = (data) => {
     return { type: LEARNING_WRITE_SET_LOADING, payload: data }
 };
+
+export const removeLearningWrite = () => {
+    return { type: LEARNING_WRITE_DATA, payload: [] }
+};

@@ -21,3 +21,44 @@
 .label-personal-data-protection-policy.error a{
     color: red;
 }
+
+@media (max-width: 870px) {
+    .panel-registration{
+        display: flex;
+        flex-wrap: wrap;
+        width: calc(100vw - 10px) !important;
+        height: calc(100vh - 40px);
+    }
+
+    .panel-registration-header{
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .panel-registration-content{
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-go-home-page{
+        font-size: 30px;
+        width: 30px;
+        height: 30px;
+        top: 28px;
+        left: 12px !important;
+    }
+
+    .panel-registration-content>form{
+        width: 100%;
+    }
+
+    .info-terms-user-block .content{
+        padding: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .info-terms-user-block .content p, .info-page-block p{
+        font-size: 14px !important;
+    }
+
+}

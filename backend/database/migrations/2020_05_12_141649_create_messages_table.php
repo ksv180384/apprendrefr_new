@@ -18,7 +18,7 @@ class CreateMessagesTable extends Migration
 
             $table->id();
             $table->string('title', 200);
-            $table->string('alias', 200)->unique();
+            $table->string('alias', 150)->unique();
         });
 
         Schema::create('forum_messages', function (Blueprint $table) {

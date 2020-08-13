@@ -1,3 +1,11 @@
 .Statistics{
     margin: 1px 0;
 }
+
+.Statistics-list{
+
+}
+
+.Footer-block .Statistics-list li{
+    margin-bottom: 4px;
+}

@@ -5,6 +5,9 @@ import { loadTestYourselfData } from '../../../store/actions/testYourselfActions
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 
+// components
+import ModalLoader from '../../modals_windows/ModalLoader';
+
 class TestYourSelfContent extends Component{
 
     constructor(props){
@@ -57,10 +60,11 @@ class TestYourSelfContent extends Component{
                     lang = true;
                 }
             }
-
+/*
             if(!lang){
                 alert('Ваш браузер не поддерживает Французкий язык. Используйте Chrome.')
             }
+            */
             return lang;
         };
 
@@ -102,26 +106,26 @@ class TestYourSelfContent extends Component{
                 {
                     typeof questions_list[count] === 'undefined'
                     ?
-                    <div>Загрузка</div>
+                        <ModalLoader/>
                     :
-                    <ul className="answer_list">
-                        {
-                            Object.keys(questions_list[count].answer_options).map(key => {
-                                return (
-                                    <li key={questions_list[count].answer_options[key].id}
-                                        data-id={questions_list[count].answer_options[key].id}
-                                        onClick={this.selectAnswer}>
-                                        {questions_list[count].answer_options[key].translation}
-                                    </li>
-                                );
-                            })
-                        }
-                        <li className="border-non mt-30 mb-20">
-                            <span className="question_voice" onClick={ this.voice }>
-                                <FontAwesomeIcon icon={faPlay}/>
-                            </span>
-                        </li>
-                     </ul>
+                        <ul className="answer_list">
+                            {
+                                Object.keys(questions_list[count].answer_options).map(key => {
+                                    return (
+                                        <li key={questions_list[count].answer_options[key].id}
+                                            data-id={questions_list[count].answer_options[key].id}
+                                            onClick={this.selectAnswer}>
+                                            {questions_list[count].answer_options[key].translation}
+                                        </li>
+                                    );
+                                })
+                            }
+                            <li className="border-non mt-30 mb-20">
+                                <span className="question_voice" onClick={ this.voice }>
+                                    <FontAwesomeIcon icon={faPlay}/>
+                                </span>
+                            </li>
+                         </ul>
                 }
             </div>
         );

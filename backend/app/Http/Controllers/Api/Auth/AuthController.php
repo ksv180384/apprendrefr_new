@@ -135,8 +135,8 @@ class AuthController extends BaseController
 
         User\UserConfig::create([
             'user_id' => $user->id,
-            'day_birthday' => 1,
-            'yar_birthday' => 1,
+            'day_birthday' => 0,
+            'yar_birthday' => 0,
             'email' => $configs_view->id,
             'facebook' => $configs_view->id,
             'skype' => $configs_view->id,

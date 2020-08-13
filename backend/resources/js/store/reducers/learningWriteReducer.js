@@ -8,12 +8,6 @@ const initState = {
 const reducer = (state = initState, action) => {
     switch (action.type){
         case LEARNING_WRITE_DATA:
-            /*
-            if(state.data[0]){
-                action.payload.unshift(state.data[9]);
-            }
-            console.log(action.payload);
-            */
             return {
                 ...state,
                 data: action.payload,

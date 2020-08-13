@@ -42,10 +42,11 @@ class WordModalContent extends Component{
                     lang = true;
                 }
             }
-
+/*
             if(!lang){
                 alert('Ваш браузер не поддерживает Французкий язык. Используйте Chrome.')
             }
+            */
             return lang;
         };
 
@@ -74,7 +75,7 @@ class WordModalContent extends Component{
                                     { item.word }
                                 </li>
                                 <li>
-                                    { item.translation }
+                                    { item.transcription }
                                 </li>
                                 <li className="translation">
                                     { item.translation }

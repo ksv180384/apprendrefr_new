@@ -22,6 +22,12 @@ Route::get('{any}', function () {
 Route::get('/', 'IndexController@index')->name('index');
 Route::get('/registration', 'RegistrationController@index')->name('registration');
 Route::get('/lost-password', 'RegistrationController@lostPassword')->name('lost_assword');
+Route::get('/profile', 'User\UserController@index')->name('profile');
+
+Route::get('/users-list/page/{page}', 'User\UserController@listUsers')->name('users_list');
+Route::get('/users-list', 'User\UserController@listUsers')->name('users_list');
+Route::get('/user/confirm-email/{token?}', 'User\UserController@confirmEmail')->name('users_confirm_email');
+Route::get('/user/change-password/{token?}', 'User\UserController@changePassword')->name('users_change_password');
 
 // grammar
 Route::group(['prefix' => 'grammar'], function ($router) {
@@ -56,10 +62,14 @@ Route::group(['prefix' => 'forum', 'namespace' => 'Forum'], function ($router) {
 });
 
 // dictionary
+Route::get('word/search/{word}/{lang?}', 'DictionaryController@search')->name('word.search');
 Route::group(['prefix' => 'dictionary'], function ($router) {
+    Route::get('{pos}/{lang}/page/{page}', 'DictionaryController@index')->name('word.list');
     Route::get('/', 'DictionaryController@index')->name('word.list');
     Route::get('word/{id}', 'DictionaryController@show')->name('word.show');
 });
+
+// ---------------------------------------------
 
 Route::group(['namespace' => 'JsonData', 'prefix' => 'json'], function () {
 

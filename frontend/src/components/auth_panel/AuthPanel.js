@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { config } from '../../config';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faTimes} from "@fortawesome/free-solid-svg-icons/index";
 
 import { login } from '../../store/actions/loginActions';
 
@@ -21,6 +23,7 @@ class AuthPanel extends Component{
             email: '',
             password: '',
             remember: false,
+            show_panel: false,
         };
 
         this.handleChangeFormInpitText = (e) => {
@@ -42,56 +45,76 @@ class AuthPanel extends Component{
             this.setState({...this.state, password: ''});
         };
 
+        this.toggleShowPanel = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.setState({...this.state, show_panel: !this.state.show_panel });
+        };
+
+        this.stopPropagation = (e) => {
+            e.stopPropagation();
+        }
+
     }
 
 
     render(){
 
-        const { email, password, remember } = this.state;
+        const { email, password, remember, show_panel } = this.state;
         const { loading} = this.props.login_state;
+
+        let class_show_panel = '';
+        if(!show_panel){
+            class_show_panel = ' hidden';
+        }
 
         return(
             <div className="AuthPanel-block">
-                <div className="panel">
-                    <div className="panel_header">
-                        Панель авторизации
-                    </div>
-                    <div className="panel_content">
-                        <form action={ config.path + 'api/auth/login' }
-                              method="post"
-                              id="loginForm"
-                              onSubmit={ this.handleSubmit }
-                        >
-                            <div className="login-block">
-                                <div className="login-input-block">
-                                    <div className="login-input-item">
-                                        <input name="email"
-                                               type="text"
-                                               placeholder="Ваш логин/email"
-                                               required
-                                               value={ email }
-                                               data-tip data-for="tooltipLoginInput"
-                                               onChange={ this.handleChangeFormInpitText }
-                                        />
-                                        <ReactTooltip id="tooltipLoginInput" effect="solid" delayShow={1000} className="tooltip-header">
-                                            Votre identifiant/email
-                                        </ReactTooltip>
-                                    </div>
-                                    <div className="login-input-item">
-                                        <input name="password"
-                                               type="password"
-                                               placeholder="пароль"
-                                               value={ password }
-                                               data-tip data-for="tooltipPasswordInput"
-                                               required
-                                               onChange={ this.handleChangeFormInpitText }
-                                        />
-                                        <ReactTooltip id="tooltipPasswordInput" effect="solid" delayShow={1000} className="tooltip-header">
-                                            Votre mot de passe
-                                        </ReactTooltip>
-                                    </div>
+                <div className="AuthPanel-control-block"><a href="#" className="link" onClick={ this.toggleShowPanel }>Войти</a></div>
+                <div className={ 'AuthPanel-content' + class_show_panel } onClick={ this.toggleShowPanel }>
+                    <form action={ config.path + 'api/auth/login' }
+                          method="post"
+                          id="loginForm"
+                          onSubmit={ this.handleSubmit }
+                          onClick={ this.stopPropagation }
+                    >
+                        <div className="panel_header mb-10">
+                            Авторизация
+                            <div className="modal-close" onClick={ this.toggleShowPanel }>
+                                <FontAwesomeIcon icon={ faTimes }/>
+                            </div>
+                        </div>
+                        <div className="login-block">
+                            <div className="login-input-block">
+                                <div className="login-input-item">
+                                    <input name="email"
+                                           type="text"
+                                           placeholder="Ваш логин/email"
+                                           required
+                                           value={ email }
+                                           data-tip data-for="tooltipLoginInput"
+                                           onChange={ this.handleChangeFormInpitText }
+                                    />
+                                    <ReactTooltip id="tooltipLoginInput" effect="solid" delayShow={1000} className="tooltip-header">
+                                        Votre identifiant/email
+                                    </ReactTooltip>
+                                </div>
+                                <div className="login-input-item">
+                                    <input name="password"
+                                           type="password"
+                                           placeholder="пароль"
+                                           value={ password }
+                                           data-tip data-for="tooltipPasswordInput"
+                                           required
+                                           onChange={ this.handleChangeFormInpitText }
+                                    />
+                                    <ReactTooltip id="tooltipPasswordInput" effect="solid" delayShow={1000} className="tooltip-header">
+                                        Votre mot de passe
+                                    </ReactTooltip>
                                 </div>
                             </div>
+                        </div>
+                        <div className="enter-line mt-5">
                             <div className="login-remember-block" data-tip data-for="tooltipRememberCheckbox">
                                 <div className="checkbox-apr">
                                     <input id="remember"
@@ -113,18 +136,22 @@ class AuthPanel extends Component{
                                     Connexion
                                 </ReactTooltip>
                             </div>
-                            <div className="login-registration-link-block">
+                        </div>
+                        <div className="login-registration-link-block">
+                            <div className="mt-5">
                                 <Link to='/lost-password' className="link">Забыли пароль?</Link>
+                            </div>
+                            <div className="mt-10">
                                 <Link to="/registration"
-                                   className="link"
-                                   data-tip data-for="tooltipRegistrationLink"
+                                      className="link"
+                                      data-tip data-for="tooltipRegistrationLink"
                                 >Регистрация</Link>
                                 <ReactTooltip id="tooltipRegistrationLink" effect="solid" delayShow={1000} className="tooltip-header">
                                     S'inscrire
                                 </ReactTooltip>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         );

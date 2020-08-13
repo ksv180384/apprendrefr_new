@@ -1,6 +1,6 @@
 import { GET_PAGE_DATA, SET_PAGE_DATA } from '../actions';
 
-const initState = {};
+const initState = [];
 
 const reducer = (state = initState, action) => {
     switch (action.type){

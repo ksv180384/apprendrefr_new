@@ -56,4 +56,28 @@ class UserController extends BaseController
 
         return view('index', compact('meta'));
     }
+
+    public function confirmEmail()
+    {
+        //
+        $meta = [
+            'title' => 'Подтверждение регистрации ' . $_SERVER['HTTP_HOST'],
+            'description' => 'Подтверждение регистрации ' . $_SERVER['HTTP_HOST'],
+            'keywords' => 'Подтверждение регистрации ' . $_SERVER['HTTP_HOST'],
+        ];
+
+        return view('index', compact('meta'));
+    }
+
+    public function changePassword()
+    {
+        //
+        $meta = [
+            'title' => 'Смена пароля ' . $_SERVER['HTTP_HOST'],
+            'description' => 'Смена пароля ' . $_SERVER['HTTP_HOST'],
+            'keywords' => 'Смена пароля ' . $_SERVER['HTTP_HOST'],
+        ];
+
+        return view('index', compact('meta'));
+    }
 }

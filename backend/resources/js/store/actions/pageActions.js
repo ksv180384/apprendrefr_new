@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { store as storeNotification } from 'react-notifications-component';
 import { config } from '../../config';
 
 
@@ -10,19 +9,19 @@ import {
     SET_PAGE_DATA,
     SET_LOADER_PAGE,
     STATISTIC_SET_DATA,
-    WORD_SET_LIST
+    WORD_SET_LIST,
+    ERROR_PAGE, LOAD_PAGE
 } from './index';
 
 
-export const getPage = (path_page) => {
+export const getPage = (path_page, params = {}) => {
     return (dispatch) => {
         dispatch({ type: SET_LOADER_PAGE, payload: true });
 
-        axios.defaults.headers.common = {
-            'Authorization':localStorage.getItem('user-token'),
-            'App-User-Token': typeof localStorage.getItem('user-token-page') !== 'undefined' ? localStorage.getItem('user-token-page') : '' ,
-        };
-        axios.post(config.path + path_page, { page: true }).then((result) => {
+        axios.defaults.headers.common = config.headerAuthorizationToken();
+        const path = config.path + path_page;
+        //console.log(params);
+        axios.get(path+'?page_load=true').then((result) => {
             localStorage.setItem('user-token-page', result.data.UserToken);
             dispatch({
                 type: SET_META,
@@ -33,7 +32,7 @@ export const getPage = (path_page) => {
                 }
             });
             dispatch({
-                type: SET_PAGE_DATA,
+                type: LOAD_PAGE,
                 payload: result.data.data
             });
             dispatch({ type: SET_USER, payload: result.data.user });
@@ -44,21 +43,8 @@ export const getPage = (path_page) => {
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
         }).catch((error) => {
-            //dispatch({ type: LOAD_PAGE, payload: [], error: 'Ошибка при получении данных.' });
-            storeNotification.addNotification({
-                title: 'Ошибка',
-                message: 'Ошибка при получении данных. Сайт временно не работат.',
-                type: "danger",
-                insert: "top",
-                container: "top-right",
-                animationIn: ["animated", "fadeIn"],
-                animationOut: ["animated", "fadeOut"],
-                dismiss: {
-                    duration: 10000,
-                    showIcon: true,
-                    onScreen: true
-                }
-            });
+            dispatch({ type: ERROR_PAGE, payload: 'Ошибка при получении данных.' });
+
             dispatch({ type: SET_LOADER_PAGE, payload: false });
         });
     }

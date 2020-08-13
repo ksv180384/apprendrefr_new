@@ -1,10 +1,11 @@
 .LayoutOne{
-    min-height: calc(100vh - 146px);
+    min-height: calc(100vh - 173px);
     display: flex;
     flex-direction: row;
     max-width: 1300px;
-    margin: 58px auto 0 auto;
+    margin: 0 auto;
     position: relative;
+    background-color: #e9f1f7b3;
 }
 
 .LayoutOne .Left-block{

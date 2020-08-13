@@ -28,8 +28,9 @@ class BaseRequest extends FormRequest
         $text = str_replace('</style', '&lang;/style', $text);
 
         // Удаляем пустые теги
-        $pattern = "/<.[^>]*>(\s+|()|(&nbsp;)*|\s+(&nbsp;)*|(&nbsp;)*\s+|\s+(&nbsp;)*\s+)<\/.[^>]*>/i";
-        $text = preg_replace($pattern,'',$text);
+        //$pattern = "/<.[^>]*>(\s+|()|(&nbsp;)*|\s+(&nbsp;)*|(&nbsp;)*\s+|\s+(&nbsp;)*\s+)<\/.[^>]*>/i";
+        //$text = preg_replace($pattern,'',$text);
+        $text = preg_replace("#(<[^\/]>[\s]{0,}<\/.+?>)#uis", "", $text);
         return $text;
     }
 

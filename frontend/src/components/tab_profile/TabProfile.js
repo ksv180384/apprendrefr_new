@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import { updateProfile } from '../../store/actions/propfileActions';
 import { setLoader } from '../../store/actions/loaderActions';
@@ -76,6 +77,10 @@ class TabProfile extends Component{
         const { birthday } = this.state;
 
         return(
+            typeof user.id === "undefined"
+                ?
+                    <Redirect to="/" />
+                :
             sex_list
                 ?
             <div className="TabProfile">

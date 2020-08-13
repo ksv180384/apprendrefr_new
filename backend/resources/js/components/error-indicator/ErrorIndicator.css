@@ -1,0 +1,30 @@
+.ErrorIndicator{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ErrorIndicator-content{
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(3px) saturate(120%);
+    box-shadow: 0 0px 8px 2px rgba(34,36,38,.25);
+}
+
+.ErrorIndicator-header{
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.ErrorIndicator-text{
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.ErrorIndicator small{
+    display: block;
+    font-size: 12px;
+}

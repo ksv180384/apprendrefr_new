@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import './UserProfileEdit.css';
 
+// components
 import TabProfile from '../tab_profile/TabProfile';
+import ChangePassword from '../tab_profile/ChangePassword';
 import { TabBar, TabBarNav, TabNavItem, TabItem } from "../tab_bar";
 
 
@@ -17,12 +19,14 @@ class UserProfileEdit extends Component{
                         <TabBar>
                             <TabBarNav>
                                 <TabNavItem active={ true }>Профиль</TabNavItem>
-                                <TabNavItem>Изменить пароль</TabNavItem>
+                                <TabNavItem>Сменить пароль</TabNavItem>
                             </TabBarNav>
                             <TabItem>
                                 <TabProfile/>
                             </TabItem>
-                            <TabItem>3333</TabItem>
+                            <TabItem>
+                                <ChangePassword/>
+                            </TabItem>
                         </TabBar>
 
                     </div>

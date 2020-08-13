@@ -7,12 +7,24 @@ class BtnDropdown extends Component{
     constructor(props){
         super(props);
 
+        this.selectItem = (itemId, list) => {
+            let res = {};
+            for(let key in list){
+                if(list[key].id === itemId){
+                    res = list[key];
+                    break;
+                }
+            }
+            return res;
+        };
+
         const selectI = this.props.selectItem ? this.props.selectItem : 0;
+        const si = this.selectItem(selectI, this.props.selectList);
 
         this.state = {
             show_list: false,
             select_id: selectI,
-            select_item: this.selectItem(selectI, this.props.selectList)
+            select_item: si,
         };
 
         this.toggleList = (e) => {
@@ -28,17 +40,6 @@ class BtnDropdown extends Component{
                 select_item: { id: el.dataset.id, title: el.innerHTML }
             });
             //this.props.onChange({name: this.props.name, value: el.dataset.id});
-        };
-
-        this.selectItem = (itemId, list) => {
-            let res = {};
-            for(let key in list){
-                if(list[key].id === itemId){
-                    res = list[key];
-                    break;
-                }
-            }
-            return res;
         };
     }
 

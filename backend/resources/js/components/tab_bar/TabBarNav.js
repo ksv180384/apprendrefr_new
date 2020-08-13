@@ -6,6 +6,18 @@ class TabBarNav extends Component{
     constructor(props){
         super(props);
 
+        // Получаем активный элемент из массива дочерних элементов
+        this.getActive = () => {
+            let res = React.Children.map(this.props.children, (child, i) => {
+                if(child.props.active){
+                    return i;
+                }
+            })[0];
+            return res;
+        };
+
+        this.props.parentInitSelectElement(this.getActive());
+
         this.state = {
             indexActive: this.getActive()
         };
@@ -18,18 +30,8 @@ class TabBarNav extends Component{
         //this.props.parentInitSelectElement(this.getActive());
     }
 
-    // Получаем активный элемент из массива дочерних элементов
-    getActive(){
-        let res = React.Children.map(this.props.children, (child, i) => {
-            if(child.props.active){
-                return i;
-            }
-        })[0];
-        return res;
-    };
-
     componentDidMount(){
-        this.props.parentInitSelectElement(this.getActive());
+
     }
 
     render(){

@@ -18,7 +18,7 @@ class CreateOnlinesTable extends Migration
 
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable()->default(null)->comment('Идентификатор пользователя');
-            $table->string('token', 200)->unique()->comment('Токен пользователя');
+            $table->string('token', 150)->unique()->comment('Токен пользователя');
             $table->string('ip', 100)->nullable()->default(null)->comment('ip пользователя');
             $table->boolean('is_bot')->default(false)->default(null)->comment('Является липользователь ботом');
             $table->string('bot_name', 255)->nullable()->default(null)->comment('Название бота');

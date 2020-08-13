@@ -1,19 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import './LayoutTwo.css';
 
-class LayoutTwo extends Component{
+const LayoutTwo = (props) => {
 
-    render(){
+    const { children } = props;
 
-        const { children } = this.props;
-
-        return(
-            <div className="LayoutTwo">
-                { children }
-            </div>
-        );
-    }
+    return(
+        <div className="LayoutTwo">
+            { children }
+        </div>
+    );
 }
 
 export default LayoutTwo;

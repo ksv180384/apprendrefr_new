@@ -34,8 +34,14 @@
 
 .WordModalContent{
     max-width: 800px;
+    max-height: calc(100vh - 120px);
     background-color: #e9f1f7;
     border-radius: 4px;
+    overflow: auto;
+}
+
+.WordItemPage .WordModalContent{
+    max-width: initial;
 }
 
 .WordModalContent>ul,

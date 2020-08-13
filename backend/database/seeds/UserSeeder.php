@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
                'email' => $user->email?:null,
                'email_verified_at' => \Carbon\Carbon::now(),
                'password' => bcrypt($user->password),
-               'avatar' => $user->avatar,
+               'avatar' => !empty($user->avatar) ? 'uploads/users/' . $user->id . '/' . $user->avatar : null,
                'sex' => $pol,
                'info' => $user->o_sebe,
                'rang' => $user->rang,

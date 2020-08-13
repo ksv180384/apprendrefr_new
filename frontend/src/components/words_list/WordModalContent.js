@@ -42,10 +42,11 @@ class WordModalContent extends Component{
                     lang = true;
                 }
             }
-
+/*
             if(!lang){
                 alert('Ваш браузер не поддерживает Французкий язык. Используйте Chrome.')
             }
+            */
             return lang;
         };
 

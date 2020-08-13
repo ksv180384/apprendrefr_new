@@ -21,3 +21,10 @@
 .Footer-block ul li{
     margin-bottom: 10px;
 }
+
+@media (max-width: 870px) {
+    .Footer-block ul li a{
+        display: block;
+        margin: 0 !important;
+    }
+}

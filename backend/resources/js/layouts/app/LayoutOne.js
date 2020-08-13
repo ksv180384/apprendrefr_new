@@ -1,20 +1,19 @@
-import React, { Component } from 'react';
-
+import React from 'react';
 
 import './LayoutOne.css';
 
-class LayoutOne extends Component{
+const LayoutOne = (props) => {
 
-    render(){
 
-        const { children } = this.props;
 
-        return(
-            <div className="LayoutOne">
-                { children }
-            </div>
-        );
-    }
+    const { children } = props;
+
+    return(
+        <div className="LayoutOne">
+            { children }
+        </div>
+    );
+
 }
 
-export default LayoutOne
+export default LayoutOne;

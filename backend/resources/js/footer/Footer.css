@@ -2,7 +2,6 @@
     background-color: #aacadd;
     color: #373737;
     font-size: 12px;
-    border-top: 1px solid #fff;
 }
 
 .Footer-block{
@@ -21,4 +20,11 @@
 
 .Footer-block ul li{
     margin-bottom: 10px;
+}
+
+@media (max-width: 870px) {
+    .Footer-block ul li a{
+        display: block;
+        margin: 0 !important;
+    }
 }

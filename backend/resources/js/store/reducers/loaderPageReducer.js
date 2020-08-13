@@ -1,6 +1,6 @@
 import {GET_LOADER_PAGE, SET_LOADER_PAGE} from '../actions';
 
-const initState = true;
+const initState = false;
 
 const reducer = (state = initState, action) => {
     switch (action.type){

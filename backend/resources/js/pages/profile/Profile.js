@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { getPage } from '../../store/actions/pageActions';
-import { setLoaderPage } from '../../store/actions/loaderPageActions';
 
 import LayoutTwo from "../../layouts/app/LayoutTwo";
 import Header from "../../header/Header";
@@ -21,9 +20,24 @@ class Profile extends Component{
 
     componentDidMount(){
         this.props.getPage('api/user/profile-page');
+    }
 
-        this.pageContent = () => {
-            return (
+    render(){
+
+        const { loader_page, meta_data } = this.props;
+
+        document.title = meta_data.title;
+        document.querySelector('meta[name="description"]').content = meta_data.description;
+        document.querySelector('meta[name="keywords"]').content = meta_data.keywords;
+
+        return(
+
+            loader_page
+                ?
+                <React.Fragment>
+                <LoaderPage/>
+                </React.Fragment>
+                :
                 <React.Fragment>
                     <Header/>
                     <LayoutTwo>
@@ -37,18 +51,7 @@ class Profile extends Component{
                     </LayoutTwo>
                     <Footer/>
                 </React.Fragment>
-            );
-        };
-    }
 
-    render(){
-
-        const { loader_page } = this.props;
-
-        return(
-            <React.Fragment>
-                { loader_page ? <LoaderPage/> : this.pageContent() }
-            </React.Fragment>
         );
     }
 }
@@ -56,7 +59,8 @@ class Profile extends Component{
 const mapSateToProps = (state) => {
     return {
         loader_page: state.loaderPageReducer,
+        meta_data: state.metaReducer,
     }
 };
 
-export default connect(mapSateToProps, { getPage, setLoaderPage })(Profile);
+export default connect(mapSateToProps, { getPage })(Profile);

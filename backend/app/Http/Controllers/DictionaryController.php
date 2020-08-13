@@ -51,4 +51,18 @@ class DictionaryController extends BaseController
 
         return view('index', compact('meta'));
     }
+
+    public function search($word)
+    {
+        //
+
+        $title = 'Поиск слова ' . $word;
+        $meta = [
+            'title' => $title,
+            'description' => $title,
+            'keywords' => $title,
+        ];
+
+        return view('index', compact('meta'));
+    }
 }

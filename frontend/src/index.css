@@ -15,6 +15,11 @@ body {
   padding-top: 58px;
 }
 
+body.sidebar-open{
+  height: 100vh;
+  overflow: hidden;
+}
+
 ul{
   list-style: none;
 }
@@ -515,6 +520,7 @@ ul{
 .panel-list>li>a{
   color: #176093;
   text-decoration: none;
+  font-size: 14px;
 }
 
 .panel-list>li>a:hover{
@@ -664,39 +670,7 @@ ul{
   border-radius: 2px;
   border: 1px solid rgba(34,36,38,.15);
 }
-/*
-.input-group{
-  box-sizing: border-box;
-  display: inline-flex;
-  background-color: #fff;
-  font-weight: 400;
-  border: 1px solid rgba(34,36,38,.15);
-  box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
-  border-radius: 2px;
-  font-size: 14px;
-  min-height: 30px;
-}
 
-.input-group>label{
-  display: flex;
-  flex: 1 1 auto;
-  align-items: center;
-  white-space: nowrap;
-  padding: 0 8px;
-  background-color: #f7fbff;
-  font-size: 12px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.input-group input{
-  border: none;
-  border-left: 1px solid rgba(34,36,38,.15);
-  padding-left: 6px;
-  padding-right: 6px;
-  outline: 0;
-}
-*/
 .input-group .react-datepicker-wrapper input{
   width: 80px;
   text-align: right;
@@ -996,6 +970,10 @@ ul{
   font-size: 14px;
 }
 
+.CenterTwoBlock-block .Grammar-menu-block{
+  display: none;
+}
+
 .Grammar-menu-block>ul{
   position: relative;
 }
@@ -1059,8 +1037,8 @@ ul{
   font-size: 14px;
 }
 
-.Grammar-content-block{
-
+.Grammar-content-block.show-menu-block .g-content-block{
+  display: none;
 }
 
 .Grammar-content-block p{
@@ -1129,6 +1107,48 @@ ul{
 
 .g-content-block{
   line-height: 24px;
+}
+
+.lyric-mini-menu{
+  position: fixed;
+  top: 96px;
+  right: 10px;
+  background-color: #fff;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  border-radius: 4px;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, .4);
+  border: 1px solid #fff;
+  z-index: 1;
+  overflow: hidden;
+  transition: all 0.5s ease 0s;
+  display: none;
+}
+
+.lyric-mini-menu>ul{
+
+}
+
+.lyric-mini-menu>ul>li{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  width: 30px;
+  height: 30px;
+  border-top: 1px solid #e6f0f6;
+  cursor: pointer;
+}
+
+.lyric-mini-menu>ul>li:first-child{
+  border-top: none;
+}
+
+.lyric-mini-menu>ul>li.active{
+  color: #fff;
+  background-color: #8db3ce;
 }
 
 .lesson-play-btn{
@@ -1459,4 +1479,221 @@ ul.WordsListPage-list>li:hover{
 
 .g-content-block table{
   width: 100%;
+}
+
+.user-name-mini{
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.user-rang-mini{
+  font-size: 12px;
+}
+
+.menu-content-block{
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  position: fixed;
+  overflow: auto;
+  display: none;
+  z-index: 2;
+}
+
+.menu-content-block .Grammar-menu-block{
+  overflow: auto;
+}
+
+.show-menu-content-block-btn{
+  position: fixed;
+  top: 96px;
+  right: 10px;
+  background-color: #8db3ce;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  border-radius: 4px;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, .4);
+  border: 1px solid #fff;
+  z-index: 1;
+  display: none;
+}
+
+.close-content-menu{
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 22px;
+  color: #176093;
+}
+
+.close-content-menu + ul{
+  margin-top: 34px;
+}
+
+@media (max-width: 870px) {
+  .show-menu-content-block-btn{
+    display: flex;
+  }
+
+  .Grammar-content-block .prim_gramm{
+    width: 300px;
+    margin: 10px auto;
+    float: none;
+    padding: 0;
+  }
+
+  .Grammar-content-block .prim_gramm + div{
+    width: 300px;
+    margin: 10px auto;
+    float: none;
+    padding: 0;
+  }
+
+  .Grammar-content-block .prim_gramm2{
+    width: 300px;
+    margin: auto;
+  }
+
+  .show-menu-block .menu-content-block{
+    display: block;
+  }
+
+  .g-content-block table{
+    font-size: 12px;
+  }
+
+  .g-content-block table{
+    font-size: 12px;
+  }
+
+  .CenterTwoBlock-block .Grammar-menu-block{
+    display: block;
+  }
+
+  .Lyric-item table{
+    display: block;
+  }
+
+  .Lyric-item table>tbody{
+    display: block;
+  }
+
+  .Lyric-item table>tbody>tr{
+    display: block;
+  }
+
+  .Lyric-item table>tbody>tr>td{
+    padding: 6px 12px;
+    display: none;
+    width: 100vw;
+  }
+
+  .Lyric-item.fr table>tbody>tr>td:nth-child(1){
+    display: block;
+  }
+
+  .Lyric-item.ru table>tbody>tr>td:nth-child(2){
+    display: block;
+  }
+
+  .Lyric-item.tr table>tbody>tr>td:nth-child(3){
+    display: block;
+  }
+
+  .lyric-mini-menu{
+    display: block;
+  }
+
+  .lesson-test-block{
+    margin: 0 10px 20px;
+  }
+
+  .lesson-btn-test{
+    height: 60px;
+  }
+
+  .modal-block .LessonsTestBlock{
+    min-width: initial;
+    max-width: calc(100vw - 40px);
+  }
+
+  .modal-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-close{
+    /*position: initial;*/
+  }
+
+  .user-name{
+    display: none;
+  }
+
+  .profile-edit-user-data-block-item{
+    display: block;
+  }
+
+  .profile-edit-avatar{
+    margin: 0 auto;
+  }
+
+  .user-info-data{
+    width: calc(100% - 20px);
+    margin: 0 auto;
+  }
+
+  .users-list-item{
+    width: calc(100vw - 20px);
+  }
+
+  .users-list-item-left{
+    flex: 1 0 60px;
+  }
+
+  .users-list-item-right{
+    flex: 100%;
+  }
+
+  ul.WordsListPage-list>li{
+    width: 50%;
+  }
+
+  .WordsListPage-word-item{
+    display: flex;
+    align-items: center;
+  }
+
+  .WordsListPage-list .question_voice{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    width: 26px;
+    height: 26px;
+    flex: 1 0 26px;
+  }
+
+  .WordsListPage-word-item-text{
+    flex: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  .WordsListPage-list small>a{
+    font-size: 14px;
+  }
+
+  .WordModalContent{
+    max-width: calc(100vw - 30px);
+    font-size: 13px;
+  }
 }

@@ -14,7 +14,7 @@ export const updateProfile = (form, user_id) => {
             dispatch(setLoader(false));
             dispatch({ type: SET_USER, payload: result.data.data.user });
             dispatch({ type: PROFILE_FORM_SUCCESS });
-            successNotification(result.data.message);
+            successNotification(result.data[0].message);
         }).catch(error => {
             dispatch(setLoader(false));
             dispatch({ type: PROFILE_FORM_ERROR });

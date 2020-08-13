@@ -61,15 +61,17 @@ class Player extends Component{
             //
             Jsmediatags.read(file, {
                 onSuccess: (tag) => {
+                    /*
                     console.log(Moment(audio.duration*1000).format('mm:ss'));
                     console.log(file.name);
                     console.log(tag.tags.artist);
                     console.log(tag.tags.title);
                     console.log(tag.tags);
+                    */
                     this.props.searchSong(tag.tags.artist, tag.tags.title, file.name);
                 },
                 onError: function(error) {
-                    console.log(':(', error.type, error.info);
+                    //console.log(':(', error.type, error.info);
                 }
             });
             this.setState({upload_file: true});

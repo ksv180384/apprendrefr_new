@@ -172,3 +172,9 @@
     color: #176093;
     background-color: #e6f0f6;
 }
+
+@media (max-width: 870px) {
+    .search{
+        margin-left: 6px;
+    }
+}

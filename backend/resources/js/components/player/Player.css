@@ -3,6 +3,10 @@
     line-height: 1.6;
 }
 
+.Player-info-panel>strong{
+    font-size: 11px;
+}
+
 .Player-control-panel{
 
 }
@@ -139,6 +143,7 @@
     width: 280px;
     bottom: 0;
     height: calc(100% - 58px);
+    z-index: 1;
 }
 
 .player-songs-list-content{

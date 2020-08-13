@@ -119,6 +119,12 @@ class MessageController extends BaseController
             // Помечаем тему как просмотренную
             $this->forumTopicViewedRepository->viewedTopic($topic_id);
         }
+        if($m['current_page'] == 1){
+            Topic::where('id', $topic_id)
+                ->update([
+                    'count_views'=> \DB::raw('count_views+1'),
+                ]);
+        }
 
         return response()->json([
             'title' => $topic->title . ' - Фоорум (стр ' . $messages->toArray()['current_page'] . ')',
@@ -165,6 +171,10 @@ class MessageController extends BaseController
         if($m['last_page'] == $m['current_page']){
             // Помечаем тему как просмотренную
             $this->forumTopicViewedRepository->viewedTopic($topic_id);
+            Topic::where('id', $topic_id)
+                ->update([
+                    'count_views'=> \DB::raw('count_views+1'),
+                ]);
         }
 
         return response()->json([

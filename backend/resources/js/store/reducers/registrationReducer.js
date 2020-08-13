@@ -2,9 +2,7 @@ import { REGISTRATION_REQUEST, REGISTRATION_SUCCESS, REGISTRATION_ERROR, REGISTR
 
 const initState = {
     loading: false,
-    message: '',
-    error: false,
-    error_message: '',
+    registration: false,
 };
 
 const reducer = (state = initState, action) => {
@@ -13,31 +11,25 @@ const reducer = (state = initState, action) => {
             return {
                 ...state,
                 loading: true,
-                message: '',
-                error: false,
-                error_message: '',
+                registration: false,
             };
         case REGISTRATION_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                error: false,
-                message: action.payload,
+                registration: true,
             };
         case REGISTRATION_ERROR:
             return {
                 ...state,
                 loading: false,
-                error: true,
-                error_message: action.payload,
+                registration: false,
             };
         case REGISTRATION_RESET_DATA:
             return {
                 ...state,
                 loading: false,
-                message: '',
-                error: false,
-                error_message: '',
+                registration: false,
             };
         default:
             return state;

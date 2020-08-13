@@ -20,8 +20,10 @@ class TabBar extends Component{
 
         this.getChildren = () => {
             let cTabItem = 0; // Счетчик TabItem компонентов в children элементах
-            return React.Children.map(this.props.children, (child) => {
-                if(child.type.name === 'TabBarNav'){
+            return React.Children.map(this.props.children, (child, i) => {
+                //console.log(child.type.name);
+                //if(child.type.name === 'TabBarNav'){
+                if(i === 0){
                     // Клонируем дочерний элемент и добовляем в него дополнительные пропсы
                     return React.cloneElement(child, { onClick: this.handleSelected, parentInitSelectElement: this.initSelectElement });
                 }else{

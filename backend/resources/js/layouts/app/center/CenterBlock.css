@@ -1,3 +1,15 @@
 .CenterBlock-block{
     padding: 0 2px 0 2px;
 }
+
+.CenterTwoBlock-block{
+    flex: 100%;
+    padding: 0 2px 0 2px;
+}
+
+@media (max-width: 870px) {
+    .CenterTwoBlock-block{
+        flex: 100%;
+        padding: 0;
+    }
+}

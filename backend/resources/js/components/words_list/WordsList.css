@@ -23,24 +23,42 @@
     cursor: pointer;
 }
 
-.WordModalContent{
-    max-width: 800px;
+.WordSearchContent{
     background-color: #e9f1f7;
-    border-radius: 4px;
+    margin-bottom: 4px;
 }
 
-.WordModalContent>ul{
+.WordSearchContent:last-child{
+    margin-bottom: 0;
+}
+
+.WordModalContent{
+    max-width: 800px;
+    max-height: calc(100vh - 120px);
+    background-color: #e9f1f7;
+    border-radius: 4px;
+    overflow: auto;
+}
+
+.WordItemPage .WordModalContent{
+    max-width: initial;
+}
+
+.WordModalContent>ul,
+.WordSearchContent>ul{
     display: flex;
 
 }
 
-.WordModalContent>ul>li{
+.WordModalContent>ul>li,
+.WordSearchContent>ul>li{
     width: 100%;
     padding: 20px 0;
     text-align: center;
 }
 
-.WordModalContent>ul>li>span{
+.WordModalContent>ul>li>span,
+.WordSearchContent>ul>li>span{
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -55,7 +73,8 @@
     transition: all 0.5s ease 0s;
 }
 
-.WordModalContent>ul>li>span:hover{
+.WordModalContent>ul>li>span:hover,
+.WordSearchContent>ul>li>span:hover{
     color: #4caf50;
     border: 1px solid #4caf50;
 }

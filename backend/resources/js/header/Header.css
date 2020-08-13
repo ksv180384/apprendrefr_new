@@ -1,22 +1,32 @@
 header{
-    display: flex;
-    flex-direction: row;
+    min-height: 56px;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     background-color: #e6f0f6;
-    color: #fff;
+    color: #6a6a6a;
     padding: 0 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,.3);
     z-index: 2;
 }
 
-header>.navigation{
+.header-content-block{
+    display: flex;
+    flex: 100%;
+    flex-direction: row;
+    max-width: 1300px;
+    min-height: 56px;
+    margin: 0 auto;
+}
+
+header .navigation{
     flex: 100%;
 }
 
-header>.search-block{
-    flex: 1 0 360px;
-    padding: 13px 0;
+header .search-block{
+    flex: 1 0 280px;
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
 }

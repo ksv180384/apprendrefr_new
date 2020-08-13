@@ -17,15 +17,15 @@ class CreateUsersTable extends Migration
             $table->engine = "InnoDB";
 
             $table->id();
-            $table->string('title', 255)->unique();
+            $table->string('title', 100)->unique();
         });
 
         Schema::create('users', function (Blueprint $table) {
             $table->engine = "InnoDB";
 
             $table->id();
-            $table->string('login', 255)->unique()->comment('login пользователя');
-            $table->string('email', 255)->unique()->nullable()->default(null)->comment('email пользователя');;
+            $table->string('login', 150)->unique()->comment('login пользователя');
+            $table->string('email', 150)->unique()->nullable()->default(null)->comment('email пользователя');;
             $table->timestamp('email_verified_at')->nullable()->default(null)->comment('дата подтверждения email');
             $table->timestamp('send_verified_email_at')->nullable()->default(null)
                         ->comment('дата отправки сообщения на почту для подтверждения email');
@@ -38,7 +38,7 @@ class CreateUsersTable extends Migration
             $table->string('residence', 500)->nullable()->default(null)->comment('масто жительства'); // Место жительства
             $table->unsignedBigInteger('rang')->index()->nullable()->default(null)->comment('ранг пользователя');
             $table->boolean('admin')->default(false)->comment('является ли пользователь администратором');
-            $table->string('confirm_token', 100)->unique()->nullable()->default(null)
+            $table->string('confirm_token', 150)->unique()->nullable()->default(null)
                     ->comment('токен подверждения регистрации по email');
             $table->rememberToken();
             $table->timestamps();

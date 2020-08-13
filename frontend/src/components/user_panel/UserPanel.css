@@ -1,16 +1,38 @@
 .User-panel{
+    position: relative;
     background-color: #E6EFF5;
 }
 
-.User-panel .avatar-right-mini-panel{
-    width: 180px;
-    height: 220px;
+.User-mini-panel{
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.User-panel .avatar-mini-panel{
+    width: 46px;
+    height: 46px;
     margin: 4px auto;
     background-color: transparent;
-    border: 1px solid #649ec2;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-image: url(http://apprendrefr.ru/img/avatar/none_avatar.png);
-    border-radius: 8px;
+    border-radius: 50%;
+}
+
+.User-panel-control{
+    position: absolute;
+    background-color: #fff;
+    padding: 10px;
+    right: 0;
+    border-radius: 4px;
+    box-shadow: 0 0 4px 1px rgba(0, 0, 0, .3);
+}
+
+.User-panel .list-panel{
+    margin-left: 10px;
 }
