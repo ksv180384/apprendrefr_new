@@ -8,7 +8,6 @@ import Header from "../../header/Header";
 import Footer from "../../footer/Footer";
 import LayoutFull from "../../layouts/app/LayoutFull";
 import LyricItem from "../../components/lyrics/LyricItem";
-import StatisticBlock from "../../layouts/app/StatisticBlock";
 
 import LoaderPage from "../../components/loader_page/LoaderPage";
 
@@ -40,7 +39,6 @@ class Lyric extends Component {
                     <LayoutFull>
                         <LyricItem/>
                     </LayoutFull>
-                    <StatisticBlock/>
                     <Footer/>
                 </React.Fragment>
 

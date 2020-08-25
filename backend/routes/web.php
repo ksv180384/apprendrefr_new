@@ -19,6 +19,24 @@ Route::get('{any}', function () {
 })->where('any', '.*');
 */
 
+if(isset($_GET['list_songs'])){
+    $_GET['list_songs'] = (int)$_GET['list_songs'];
+    if($_GET['list_songs'] == 0){
+        Route::redirect('{any}', 'lyrics')->where('any', '.*');
+    }else{
+        Route::redirect('{any}', 'lyrics/item/' . $_GET['list_songs'])->where('any', '.*');
+    }
+
+}
+
+if(!empty($_GET['gramm'])){
+    Route::redirect('{any}', 'grammar/item/' . $_GET['gramm'])->where('any', '.*');
+}
+
+if(!empty($_GET['gramm'])){
+    Route::redirect('{any}', 'grammar/item/' . $_GET['gramm'])->where('any', '.*');
+}
+
 Route::get('/', 'IndexController@index')->name('index');
 Route::get('/registration', 'RegistrationController@index')->name('registration');
 Route::get('/lost-password', 'RegistrationController@lostPassword')->name('lost_assword');
@@ -28,6 +46,8 @@ Route::get('/users-list/page/{page}', 'User\UserController@listUsers')->name('us
 Route::get('/users-list', 'User\UserController@listUsers')->name('users_list');
 Route::get('/user/confirm-email/{token?}', 'User\UserController@confirmEmail')->name('users_confirm_email');
 Route::get('/user/change-password/{token?}', 'User\UserController@changePassword')->name('users_change_password');
+
+
 
 // grammar
 Route::group(['prefix' => 'grammar'], function ($router) {
