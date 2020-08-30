@@ -41,6 +41,10 @@ class SongController extends BaseController
             'keywords' => $song['artist_name'] . ' - ' . $song['title'] . ' (текст, транскрипция, перевод)',
         ];
 
-        return view('index', compact('meta'));
+        $song->text_fr = $this->songRepository->formatText($song->text_fr);
+        $song->text_ru = $this->songRepository->formatText($song->text_ru);
+        $song->text_transcription = $this->songRepository->formatText($song->text_transcription);
+
+        return view('song.item', compact('meta', 'song'));
     }
 }
