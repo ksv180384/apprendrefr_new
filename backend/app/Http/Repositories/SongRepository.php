@@ -129,6 +129,31 @@ class SongRepository extends CoreRepository
         return $song_list;
     }
 
+    /**
+     * Поиск по тексту
+     * @param $search_text - название песни или артиста
+     * @return mixed
+     */
+    public function searchText($search_text){
+        $song_list = $this->startConditions()
+            ->select([
+                'text_fr',
+                'text_ru',
+                'text_transcription',
+            ])
+            ->where('hidden', '=', 0)
+            ->where('text_fr', 'LIKE', '%' . $search_text . '%')
+            ->get();
+
+        foreach ($song_list as $k => $song){
+            $song_list[$k]->text_fr = $this->formatText($song->text_fr);
+            $song_list[$k]->text_ru = $this->formatText($song->text_ru);
+            $song_list[$k]->text_transcription = $this->formatText($song->text_transcription);
+        }
+
+        return $song_list;
+    }
+
     public function getArtists(){
         $artists = PlayerArtistsSong::select(['id', 'name'])->orderBy('name', 'ASC')->get();
 

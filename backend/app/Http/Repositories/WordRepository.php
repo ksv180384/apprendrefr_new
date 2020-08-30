@@ -73,6 +73,16 @@ class WordRepository extends CoreRepository
         return $wordsList;
     }
 
+    public function searchFrNoLimit(string $search_text){
+        $search_text = preg_replace("#\b(la |le |les |un |une |se )#", "", $search_text);
+        $wordsList = $this->startConditions()
+            ->select(['id', 'word', 'translation', 'example'])
+            ->where('word', 'LIKE', '%' . $search_text . '%')
+            ->get();
+
+        return $wordsList;
+    }
+
     public function searchRuPage(string $search_text){
         $wordsList = $this->startConditions()
             ->select(['id', 'word', 'translation', 'example'])

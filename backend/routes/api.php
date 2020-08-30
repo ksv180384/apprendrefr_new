@@ -146,4 +146,7 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
         Route::get('privacy-policy', 'InfoController@PrivacyPolicy');
         Route::get('terms-user', 'InfoController@TermsUser');
     });
+
+    // search
+    Route::post('search', 'SearchController@searchAll')->name('api.search_all');
 });
