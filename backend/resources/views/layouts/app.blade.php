@@ -15,6 +15,15 @@
 </head>
 <body>
     <div id="root">
+        <div class="loader"></div>
+        <menu>
+            <li><a href="/">Главная</a></li>
+            <li><a href="/grammar">Грамматика</a></li>
+            <li><a href="/lyrics">Тексты песен</a></li>
+            <li><a href="/lessons">Уроки</a></li>
+            <li><a href="/forum">Форум</a></li>
+            <li><a href="/dictionary">Словарь</a></li>
+        </menu>
         @yield('content')
     </div>
     <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>

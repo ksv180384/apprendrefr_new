@@ -9,17 +9,26 @@ class LyricItem extends Component{
 
         this.state = {
             lang: 'fr',
+            active: false,
         };
 
         this.changeLang = (e) => {
             const lang = e.target.innerText.toLowerCase();
             this.setState({ ...this.state, lang: lang });
         };
+
+        this.toggleActive = (e) => {
+            const i = e.currentTarget.dataset.key;
+           this.setState({
+               ...this.state,
+               active: (this.state.active !== i ? i : false),
+           });
+        }
     }
 
     render(){
         const { song } = this.props;
-        const { lang } = this.state;
+        const { lang, active } = this.state;
 
         return(
             song
@@ -32,13 +41,16 @@ class LyricItem extends Component{
                             <li className={ lang === 'ru' ? 'active' : '' } onClick={ this.changeLang }>Ru</li>
                         </ul>
                     </div>
-                    <div className="panel_header">{ song.artist_name } - { song.title }</div>
+                    <div className="panel_header"><h1>{ song.artist_name } - { song.title }</h1></div>
                     <table>
                         <tbody>
                         {
                             Object.keys(song.text_fr).map((key) => {
                                 return (
-                                    <tr key={ key }>
+                                    <tr key={ key }
+                                        data-key={ key }
+                                        className={ active === key ? 'active' : '' }
+                                        onClick={ this.toggleActive }>
                                         <td dangerouslySetInnerHTML={{__html: song.text_fr[key] }}/>
                                         <td dangerouslySetInnerHTML={{__html: song.text_ru[key] }}/>
                                         <td dangerouslySetInnerHTML={{__html: song.text_transcription[key] }}/>

@@ -20,6 +20,8 @@ class SongController extends BaseController
 
     public function index()
     {
+        $artists = $this->songRepository->getArtists();
+        $songs = $this->songRepository->getSongsList();
 
         $meta = [
             'title' => 'Тексты, транскрипции и переводы французских песен',
@@ -27,7 +29,7 @@ class SongController extends BaseController
             'keywords' => 'Тексты, транскрипции и переводы французских песен',
         ];
 
-        return view('index', compact('meta'));
+        return view('song.list', compact('meta', 'artists', 'songs'));
     }
 
     public function show($id)

@@ -20,8 +20,6 @@ class PrivacyPolicy extends Component {
 
         const { loader_page, meta_data, page } = this.props;
 
-        console.log(this.props);
-
         document.title = meta_data.title;
         document.querySelector('meta[name="description"]').content = meta_data.description;
         document.querySelector('meta[name="keywords"]').content = meta_data.keywords;
