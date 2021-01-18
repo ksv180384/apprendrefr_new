@@ -1,6 +1,8 @@
 /.idea
 /.git
 
+/storage
+
 # front
 /backend/node_modules
 /backend/public/hot
