@@ -15,7 +15,7 @@
         "@fortawesome/free-brands-svg-icons": "^5.13.0",
         "@fortawesome/free-solid-svg-icons": "^5.13.0",
         "@fortawesome/react-fontawesome": "^0.1.9",
-        "axios": "^0.19",
+        "axios": "^0.21",
         "date-fns": "^2.14.0",
         "history": "^4.10.1",
         "cross-env": "^7.0.2",
