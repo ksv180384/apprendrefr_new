@@ -1,2 +1,2 @@
 ## Сайт
-Ссылка на сайт: [ApprendreFr](http://ksv-test.ru)
+Ссылка на сайт: [ApprendreFr](http://apprendrefr.ru)
