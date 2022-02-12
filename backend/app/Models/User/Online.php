@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -33,6 +34,10 @@ class Online extends Model
     protected $casts = [
         'date' => 'datetime:d.m.Y H:i:s',
     ];
+
+    public function user(){
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 
     /**
      * Генерирует токен

@@ -22,6 +22,7 @@ class OnlineUsers
         //var_export($request->page_load);
         //return $next($request);
         //sleep(2);
+
         if(empty($request->page_load)){
             return $next($request);
         }

@@ -2,75 +2,83 @@
 
 namespace App\Http\Controllers\Api\Song;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseController;
 use App\Models\Player\PlayerSearchSong;
-use App\Repositories\ForumMessageRepository;
-use App\Repositories\ProverbRepository;
-use App\Repositories\SongRepository;
-use App\Repositories\StatisticRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\WordRepository;
+use App\Services\ForumMessageService;
+use App\Services\ProverbService;
+use App\Services\SongService;
+use App\Services\StatisticService;
+use App\Services\UserService;
+use App\Services\WordService;
 use Illuminate\Http\Request;
 
-class SongController extends Controller
+class SongController extends BaseController
 {
 
     /**
-     * @var SongRepository
+     * @var SongService
      */
-    private $songRepository;
+    private $songService;
 
     /**
-     * @var WordRepository
+     * @var WordService
      */
-    private $wordRepository;
+    private $wordService;
     /**
-     * @var UserRepository
+     * @var ProverbService
      */
-    private $userRepository;
+    private $proverbService;
     /**
-     * @var ProverbRepository
+     * @var StatisticService
      */
-    private $proverbRepository;
+    private $statisticService;
 
     /**
-     * @var StatisticRepository
+     * @var UserService
      */
-    private $statisticRepository;
+    private $userService;
 
     /**
-     * @var ForumMessageRepository
+     * @var ForumMessageService
      */
-    private $forumMessageRepository;
+    private $forumMessageService;
 
-    public function __construct(){
-        $this->songRepository = app(SongRepository::class);
-        $this->wordRepository = app(WordRepository::class);
-        $this->proverbRepository = app(ProverbRepository::class);
-        $this->userRepository = app(UserRepository::class);
-        $this->statisticRepository = app(StatisticRepository::class);
-        $this->forumMessageRepository = app(ForumMessageRepository::class);
+    public function __construct(
+        SongService $songService,
+        WordService $wordService,
+        ProverbService $proverbService,
+        StatisticService $statisticService,
+        UserService $userService,
+        ForumMessageService $forumMessageService
+    ){
+        parent::__construct();
+        $this->songService = $songService;
+        $this->wordService = $wordService;
+        $this->proverbService = $proverbService;
+        $this->statisticService = $statisticService;
+        $this->userService = $userService;
+        $this->forumMessageService = $forumMessageService;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        //
-        $artists = $this->songRepository->getArtists()->toArray();
-        $songsList = $this->songRepository->getSongsList()->toArray();
-        $words_list = $this->wordRepository->getRandomWords();
-        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+        $artists = $this->songService->getArtists()->toArray();
+        $songsList = $this->songService->getSongsList()->toArray();
+        $wordsList = $this->wordService->wordsRandom();
+        $proverb = $this->proverbService->proverbRandomOne();
 
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+        $onlineUsers = $this->statisticService->onlineUsers();
+        $countUsers = $onlineUsers->count();
+        $countGuests = $this->statisticService->countGuests();
+        $countUsersRegister = $this->userService->countUsersRegister();
+        $countAll = $countUsers + $countGuests;
+        $countMessages = $this->forumMessageService->countMessagesAll();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         $list = [];
         foreach ($artists as $key=>$artist){
@@ -88,120 +96,66 @@ class SongController extends Controller
             'description' => 'Тексты, транскрипции и переводы французских песен',
             'keywords' => 'Тексты, транскрипции и переводы французских песен',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
             'proverb' => $proverb,
             'data' => [
                 'list' => $list,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
-            'words_list' => $words_list,
+            'words_list' => $wordsList,
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $onlineUsers,
+                'count_guests' => $countGuests,
+                'count_users' => $countUsers,
+                'count_all' => $countAll,
+                'count_users_register' => $countUsersRegister,
+                'count_messages' => $countMessages,
             ],
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        //
-        $song = $this->songRepository->getById((int)$id)->toArray();
+        $song = $this->songService->getById((int)$id)->toArray();
         if(empty($song)){
             return response()->json(['message' => 'Такой страницы не существует.'], 404);
         }
-        $song['text_fr'] = explode("\n", $this->songRepository->formatText($song['text_fr']));
-        $song['text_ru'] = explode("\n", $this->songRepository->formatText($song['text_ru']));
-        $song['text_transcription'] = explode("\n", $this->songRepository->formatText($song['text_transcription']));
+        $user = \Auth::check() ? \Auth::user() : [];
+        $song['text_fr'] = explode("\n", $this->songService->formatText($song['text_fr']));
+        $song['text_ru'] = explode("\n", $this->songService->formatText($song['text_ru']));
+        $song['text_transcription'] = explode("\n", $this->songService->formatText($song['text_transcription']));
 
         return response()->json([
             'title' => $song['artist_name'] . ' - ' . $song['title'] . ' (текст, транскрипция, перевод)',
             'description' => $song['artist_name'] . ' - ' . $song['title'] . ' (текст, транскрипция, перевод)',
             'keywords' => $song['artist_name'] . ' - ' . $song['title'] . ' (текст, транскрипция, перевод)',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
             'data' => [
                 'song' => $song,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    /**
      * Получаем список всех треков
+     * @return \Illuminate\Http\JsonResponse
      */
     public function list(){
-        $songsList = $this->songRepository->getSongsList();
+        $songsList = $this->songService->getSongsList();
 
         return response()->json($songsList);
     }
@@ -213,7 +167,7 @@ class SongController extends Controller
      */
     public function song(Request $request){
         $id = (int)$request->id;
-        $song = $this->songRepository->getById($id);
+        $song = $this->songService->getById($id);
 
         return response()->json($song);
     }
@@ -222,7 +176,7 @@ class SongController extends Controller
         $artist = $request->artist;
         $title = $request->title;
         $file_name = $request->file_name;
-        $song = $this->songRepository->searchByArtistAndTitle($artist, $title);
+        $song = $this->songService->searchByArtistAndTitle($artist, $title);
         if(empty($song)){
             PlayerSearchSong::create([
                 'artist' => $artist,
@@ -242,7 +196,8 @@ class SongController extends Controller
         $search = strip_tags(trim($search));
         $search = str_replace(['-', '_', ',', '.'], " ", $search);
         $search = preg_replace('/\s+/', ' ', $search);
-        $search_result = $this->songRepository->search($search);
+
+        $search_result = $this->songService->search($search);
 
         return response()->json($search_result);
     }

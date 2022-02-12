@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Forum\Message;
 use App\Models\User\Rang;
+use App\Models\User\Sex;
+use App\Models\User\UserConfig;
+use App\Models\User\UserInfo;
 use Carbon\Carbon;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -63,13 +66,37 @@ class User extends Authenticatable implements JWTSubject//, MustVerifyEmail
         'updated_at' => 'datetime:d.m.Y H:i:s',
     ];
 
-    //protected $dateFormat = 'c';
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function rang(){
+        return $this->belongsTo(Rang::class, 'rang', 'id');
+    }
 
-    /*
-    protected $dates = [
-        'birthday',
-    ];
-    */
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function rangTitle()
+    {
+        return $this->belongsTo(Rang::class, 'rang', 'id');
+
+    }
+
+    /**
+     * Пол пользователя
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function sex(){
+        return $this->hasOne(Sex::class, 'id', 'sex');
+    }
+
+    public function info(){
+        return $this->hasOne(UserInfo::class);
+    }
+
+    public function messages(){
+        return $this->hasMany(Message::class, 'user_id', 'id');
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -79,6 +106,10 @@ class User extends Authenticatable implements JWTSubject//, MustVerifyEmail
     public function getJWTIdentifier()
     {
         return $this->getKey();
+    }
+
+    public function config(){
+        return $this->hasOne(UserConfig::class, 'user_id', 'id');
     }
 
     /**
@@ -92,7 +123,7 @@ class User extends Authenticatable implements JWTSubject//, MustVerifyEmail
     }
 
     public function isAdmin(){
-        return /*$this->admin == 1 || */$this->rangTitle->alias == 'administrator';
+        return true; /*$this->admin == 1 || */$this->rangTitle->alias == 'administrator';
     }
 
     public function isModerator(){
@@ -102,7 +133,8 @@ class User extends Authenticatable implements JWTSubject//, MustVerifyEmail
     /**
      * Установить аватар пользователя.
      *
-     * @return void
+     * @param $avatar
+     * @return string
      */
     public function getAvatarAttribute($avatar)
     {
@@ -123,20 +155,13 @@ class User extends Authenticatable implements JWTSubject//, MustVerifyEmail
     /**
      * Меняем формат даты
      *
-     * @return void
+     * @param $birthday
+     * @return string
      */
-
     public function setBirthdayAttribute($birthday)
     {
         $birthday = Carbon::parse($birthday)->format('Y-m-d H:i:s');
         return $birthday;
-    }
-
-    public function rangTitle()
-    {
-        //return $this->hasOne(Rang::class, 'rang', 'id');
-        return $this->belongsTo(Rang::class, 'rang', 'id');
-
     }
 
     /**

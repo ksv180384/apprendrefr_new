@@ -2,72 +2,76 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\User\Sex;
-use App\Models\User\UserConfigsView;
-use App\Repositories\ForumMessageRepository;
-use App\Repositories\ForumTopicRepository;
-use App\Repositories\ProverbRepository;
-use App\Repositories\StatisticRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\WordRepository;
-use Illuminate\Http\Request;
+use App\Services\ForumMessageService;
+use App\Services\ProverbService;
+use App\Services\StatisticService;
+use App\Services\ForumTopicService;
+use App\Services\UserService;
+use App\Services\WordService;
 
 class IndexController extends BaseController
 {
     /**
-     * @var WordRepository
+     * @var ForumTopicService
      */
-    private $wordRepository;
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-    /**
-     * @var ProverbRepository
-     */
-    private $proverbRepository;
+    private $topicService;
 
     /**
-     * @var ForumMessageRepository
+     * @var WordService
      */
-    private $forumMessageRepository;
+    private $wordService;
 
     /**
-     * @var StatisticRepository
+     * @var ProverbService
      */
-    private $statisticRepository;
+    private $proverbService;
 
     /**
-     * @var ForumTopicRepository
+     * @var StatisticService
      */
-    private $forumTopicRepository;
+    private $statisticService;
+
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    /**
+     * @var ForumMessageService
+     */
+    private $forumMessageService;
 
 
-    public function __construct()
+    public function __construct(
+        ForumTopicService $topicService,
+        WordService $wordService,
+        ProverbService $proverbService,
+        StatisticService $statisticService,
+        UserService $userService,
+        ForumMessageService $forumMessageService
+    )
     {
         parent::__construct();
-        //$this->middleware('auth:api');
-        $this->wordRepository = app(WordRepository::class);
-        $this->proverbRepository = app(ProverbRepository::class);
-        $this->userRepository = app(UserRepository::class);
-        $this->statisticRepository = app(StatisticRepository::class);
-        $this->forumMessageRepository = app(ForumMessageRepository::class);
-        $this->forumTopicRepository = app(ForumTopicRepository::class);
+        $this->topicService = $topicService;
+        $this->wordService = $wordService;
+        $this->proverbService = $proverbService;
+        $this->statisticService = $statisticService;
+        $this->userService = $userService;
+        $this->forumMessageService = $forumMessageService;
     }
 
 
-    public function index(Request $request){
-
-        $topics = $this->forumTopicRepository->getLastActiveTopics();
-        $words_list = $this->wordRepository->getRandomWords();
-        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
-
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+    public function index(){
+        $topics = $this->topicService->topicsLastActive();
+        $words = $this->wordService->wordsRandom();
+        $proverb = $this->proverbService->proverbRandomOne();
+        $usersOnline = $this->statisticService->onlineUsers();
+        $usersOnlineCount = $usersOnline->count();
+        $guestsCount = $this->statisticService->countGuests();
+        $usersRegisterCount = $this->userService->countUsersRegister();
+        $usersOnlineAllCount = $usersOnlineCount + $guestsCount;
+        $countAllMessages = $this->forumMessageService->countMessagesAll();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         return response()->json([
             'title' => 'Французский язык - изучение, форум',
@@ -79,16 +83,16 @@ class IndexController extends BaseController
             ],
             'proverb' => $proverb,
             'data' => $topics,
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
-            'words_list' => $words_list,
+            'words_list' => $words,
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $usersOnline,
+                'count_users' => $usersOnlineCount,
+                'count_guests' => $guestsCount,
+                'count_users_register' => $usersRegisterCount,
+                'count_all' => $usersOnlineAllCount,
+                'count_messages' => $countAllMessages,
             ],
         ]);
     }

@@ -8,7 +8,7 @@ import {
     SET_META,
     TERMS_USER_SET,
     SET_LOADER_PAGE,
-    ERROR_PAGE
+    ERROR_PAGE, SET_FOOTER
 } from './index';
 
 
@@ -35,6 +35,7 @@ export const getPage = () => {
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

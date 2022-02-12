@@ -3,33 +3,33 @@
 namespace App\Http\Controllers\Forum;
 
 use App\Http\Controllers\BaseController;
-use App\Repositories\ForumRepository;
-use App\Repositories\ForumTopicRepository;
+use App\Services\ForumService;
+use App\Services\ForumTopicService;
 use Illuminate\Http\Request;
 
 class MessageController extends BaseController
 {
     /**
-     * @var ForumRepository
+     * @var ForumService
      */
-    private $forumRepository;
+    private $forumService;
 
     /**
-     * @var ForumTopicRepository
+     * @var ForumTopicService
      */
-    private $forumTopicRepository;
+    private $forumTopicService;
 
 
-    public function __construct(){
-        $this->forumRepository = app(ForumRepository::class);
-        $this->forumTopicRepository = app(ForumTopicRepository::class);
+    public function __construct(ForumService $forumService, ForumTopicService $forumTopicService){
+        parent::__construct();
+        $this->forumService = $forumService;
+        $this->forumTopicService = $forumTopicService;
     }
 
     //
     public function index($forum_id, $topic_id, Request $request)
     {
-        $topic = $this->forumTopicRepository->getById($topic_id);
-        //$forum = $this->forumRepository->getById($forum_id);
+        $topic = $this->forumTopicService->getById($topic_id);
 
         $title = $topic->title . ' - Фоорум';
         if(!empty($request->page)){

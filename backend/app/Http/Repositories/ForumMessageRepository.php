@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositories;
+namespace App\Http\Repositories;
 
 use App\Models\Forum\Message as Model;
 use App\Models\Forum\MessageStatus;

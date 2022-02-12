@@ -2,6 +2,7 @@
 
 namespace App\Models\Forum;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Topic extends Model
@@ -20,38 +21,44 @@ class Topic extends Model
         'update_at',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'created_at' => 'datetime:d.m.Y H:i:s',
-        'updated_at' => 'datetime:d.m.Y H:i:s',
-    ];
-
     public function messages()
     {
-        return $this->hasMany('App\Models\Forum\Message');
+        return $this->hasMany(Message::class)->where('status', '=', 1);
+    }
+
+    public function messagesAll()
+    {
+        return $this->hasMany(Message::class);
     }
 
     public function forum()
     {
-        return $this->belongsTo('App\Models\Forum\Forum');
+        return $this->belongsTo(Forum::class);
     }
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
     public function statusTitle()
     {
-        return $this->hasOne('App\Models\Forum\Status', 'id', 'status');
+        return $this->hasOne(Status::class, 'id', 'status');
     }
 
     public function lastMessages()
     {
-        return $this->hasOne('App\Models\Forum\Message', 'id', 'last_message_id');
+        return $this->hasOne(Message::class, 'id', 'last_message_id');
+    }
+
+    /**
+     * Дата последнего сообщения посмотренного пользователем в топике
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function userViewLastMessage()
+    {
+        $userId = \Auth::check() ? \Auth::id() : 0;
+        return $this->hasOne(ForumTopicViewed::class, 'id', 'topic_id')
+            ->where('user_id', '=', $userId);
     }
 }

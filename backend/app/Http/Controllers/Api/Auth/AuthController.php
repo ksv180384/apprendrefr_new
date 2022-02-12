@@ -10,12 +10,10 @@ use App\Mail\ConfirmEmail;
 use App\Mail\LostPassword;
 use App\Mail\OrderShippedLostPassword;
 use App\Models\User;
-use App\Repositories\ForumMessageRepository;
-use App\Repositories\ForumRepository;
-use App\Repositories\StatisticRepository;
-use App\Repositories\UserRepository;
+use App\Services\ForumMessageService;
+use App\Services\StatisticService;
+use App\Services\UserService;
 use Carbon\Carbon;
-use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -23,26 +21,30 @@ class AuthController extends BaseController
 {
 
     /**
-     * @var UserRepository
+     * @var UserService
      */
-    private $userRepository;
+    private $userService;
 
     /**
-     * @var StatisticRepository
+     * @var StatisticService
      */
-    private $statisticRepository;
+    private $statisticService;
 
     /**
-     * @var ForumMessageRepository
+     * @var ForumMessageService
      */
-    private $forumMessageRepository;
+    private $forumMessageService;
 
     /**
      * Create a new AuthController instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(
+        UserService $userService,
+        StatisticService $statisticService,
+        ForumMessageService $forumMessageService
+    )
     {
         $this->middleware('auth:api', [
             'except' => [
@@ -58,10 +60,11 @@ class AuthController extends BaseController
                 'changePasswordPage',
             ]
         ]);
-        $this->userRepository = app(UserRepository::class);
-        $this->statisticRepository = app(StatisticRepository::class);
-        $this->forumMessageRepository = app(ForumMessageRepository::class);
+
         parent::__construct();
+        $this->userService = $userService;
+        $this->statisticService = $statisticService;
+        $this->forumMessageService = $forumMessageService;
     }
 
     /**
@@ -74,23 +77,13 @@ class AuthController extends BaseController
         $credentialsEmail = $request->only('email', 'password');
         $credentialsEmail['password'] = md5($credentialsEmail['password']);
         $credentialsLogin = ['login' => $credentialsEmail['email'], 'password' => $credentialsEmail['password']];
-        
+
         if (!($token = $this->guard()->attempt($credentialsLogin)) && !($token = $this->guard()->attempt($credentialsEmail))) {
             return response()->json([
                     'error' => true,
                     'message' => 'Неверный логин или пароль.',
                 ], 401);
         }
-
-        /*
-        if(empty(\Auth::user()->email_verified_at)){
-            $this->guard()->logout();
-            return response()->json([
-                'error' => true,
-                'message' => 'Вы не подтвердили ваш аккаунт.',
-            ], 401);
-        }
-        */
 
         // Присваеваем токену идентификатор пользователя
         $token_guest = $request->headers->get('app-user-token');
@@ -184,16 +177,16 @@ class AuthController extends BaseController
             ]);
         }
 
-        $online_users = $this->statisticRepository->getOnlineUsers();
+        $online_users = $this->statisticService->onlineUsers();
         $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
+        $count_guests = $this->statisticService->countGuests();
+        $count_users_register = $this->userService->countUsersRegister();
         $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+        $count_messages = $this->forumMessageService->countMessagesAll();
 
         return response()->json([
             'auth' => false,
-            'user' => [],
+            'user' => null,
             'statistic' => [
                 'online_users' => $online_users,
                 'count_guests' => $count_guests,
@@ -224,13 +217,13 @@ class AuthController extends BaseController
      */
     protected function respondWithToken($token)
     {
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
-        $user = $this->userRepository->getById(\Auth::id());
+        $onlineUsers = $this->statisticService->onlineUsers();
+        $countUsers = $onlineUsers->count();
+        $countGuests = $this->statisticService->countGuests();
+        $countUsersRegister = $this->userService->countUsersRegister();
+        $countAll = $countUsers + $countGuests;
+        $countMessages = $this->forumMessageService->countMessagesAll();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
         if(empty($user)){
             return response()->json(['message' => 'Ошибка авторизации.'], 401);
         }
@@ -241,29 +234,31 @@ class AuthController extends BaseController
             'expires_in' => $this->guard()->factory()->getTTL() * 60,
             'user_data' => [
                 'auth' => \Auth::check(),
-                'user' => $user->toArray(),
+                'user' => $user,
             ],
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $onlineUsers,
+                'count_guests' => $countGuests,
+                'count_users' => $countUsers,
+                'count_all' => $countAll,
+                'count_users_register' => $countUsersRegister,
+                'count_messages' => $countMessages,
             ],
         ]);
     }
 
     public function loginPage(){
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
+
         return response()->json([
             'auth' => \Auth::check(),
-            'user' => \Auth::check() ? \Auth::user() : [],
+            'user' => $user,
             'title' => 'Авторизация',
             'description' => 'Авторизация',
             'keywords' => 'Авторизация',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
         ]);
     }
@@ -309,6 +304,8 @@ class AuthController extends BaseController
     }
 
     public function lostPasswordPage(Request $request){
+        $user = \Auth::check() ? \Auth::user() : null;
+
         return response()->json([
             'title' => 'Восстановление пароля',
             'description' => 'Восстановление пароля',
@@ -318,7 +315,7 @@ class AuthController extends BaseController
                 $this->yar_life,
                 self::EMAIL,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
     }
@@ -362,6 +359,7 @@ class AuthController extends BaseController
     }
 
     public function changePasswordPage(Request $request){
+        $user = \Auth::check() ? \Auth::user() : null;
 
         return response()->json([
             'title' => 'Смена пароля',
@@ -372,7 +370,7 @@ class AuthController extends BaseController
                 $this->yar_life,
                 self::EMAIL,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
     }

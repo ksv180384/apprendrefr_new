@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 // actions
 import { updateTopic, changeStatusTopic } from '../../../store/actions/forumActions';
+import Moment from "moment";
 
 class TopicItem extends Component{
 
@@ -92,20 +93,24 @@ class TopicItem extends Component{
         if(show_statuses_list){
             class_show_statuses_list = ' show-statuses-list';
         }
-
         return(
-            <div className={ 'LastActiveTopic-item' + (topic.status_topic_alias === 'hidden' ? ' hidden-st' : '') }>
+            <div className={ 'LastActiveTopic-item' + (topic.status.alias === 'hidden' ? ' hidden-st' : '') }>
                 <div className="LastActiveTopic-item-topic-title-info">
                     <div>
                         <Link to={ '/forum/' + topic.forum_id + '/topic/' + topic.id  }
-                              className={ 'link' + (!topic.user_view_topic ? ' strong' : '') }>
+                              className={ 'link' + (topic.user_view_last_message && topic.user_view_last_message.viewed_data < topic.last_messages.created_at ? ' strong' : '') }>
                             { new_topic_title_value }
                         </Link>
                         { edit_block }
                         <ul className="menu-topic-control">
                             {
-                                user.admin === 1 || user.rang_alias === 'administrator' ||
-                                user.rang_alias === 'moderator' || user.id === topic.topic_create_user_id
+                                user &&
+                                (
+                                    user.admin === 1 ||
+                                    user.rang_alias === 'administrator' ||
+                                    user.rang_alias === 'moderator' ||
+                                    user.id === topic.user.id
+                                )
                                     ?
                                     <li title="Редактировать название темы"
                                         onClick={ this.toggleEditBlock }
@@ -116,7 +121,12 @@ class TopicItem extends Component{
                                     ''
                             }
                             {
-                                user.admin === 1 || user.rang_alias === 'administrator' || user.rang_alias === 'moderator'
+                                user &&
+                                (
+                                    user.admin === 1 ||
+                                    user.rang_alias === 'administrator' ||
+                                    user.rang_alias === 'moderator'
+                                )
                                     ?
                                         <li title="Запретить писать сообщения" onClick={ this.showStatusesList }>
                                             <FontAwesomeIcon icon={ faEye }/>
@@ -140,17 +150,27 @@ class TopicItem extends Component{
                             }
                         </ul>
                     </div>
-                    <span>Автор: <Link to={ '/user/info/' + topic.topic_create_user_id } className="link">{ topic.topic_create_user_login }</Link></span>
+                    <span>Автор: <Link to={ '/user/info/' + topic.user.id } className="link">{ topic.user.login }</Link></span>
                 </div>
                 <div className="LastActiveTopic-item-topic-statistic-info">
-                    <div>Ответов: <strong>{ topic.count_messages === 0 ? 0 : (topic.count_messages - 1) }</strong></div>
+                    <div>Ответов: <strong>{ topic.messages_count === 0 ? 0 : (topic.messages_count - 1) }</strong></div>
                     <div>Просмотров: <strong>{ topic.count_views }</strong></div>
                 </div>
                 <div className="LastActiveTopic-item-topic-message-info">
-                    <div className="LastActiveTopic-item-topic-message-info-date">
-                        { topic.created_message ? topic.created_message.time : '' } <strong>{ topic.created_message ? topic.created_message.day : '' }</strong>
-                     </div>
-                    <div>Автор: <Link to={ '/user/info/' + topic.message_create_user_id } className="link">{ topic.message_create_user_login }</Link></div>
+                    { topic.last_messages
+                        ?
+                        <div>
+                            <div className="LastActiveTopic-item-topic-message-info-date">
+                                { Moment(topic.last_messages.created_at, 'YYYY-MM-DDTHH:mm:ss.SSSSZ').format('HH:mm') }
+                                <strong> { Moment(topic.last_messages.created_at, 'YYYY-MM-DDTHH:mm:ss.SSSSZ').format('DD MMM YYYY') }</strong>
+                            </div>
+                            <div>
+                                Автор: <Link to={ '/user/info/' + topic.last_messages.user.id } className="link">{ topic.last_messages.user.login }</Link>
+                            </div>
+                        </div>
+                        :
+                        ''
+                    }
                 </div>
             </div>
         );

@@ -48,7 +48,7 @@ class UserPanel extends Component{
                 .then((response) => {
                     store.dispatch(setLoader(false));
                     store.dispatch(setLogin(response.data.auth));
-                    store.dispatch(setUser({}));
+                    store.dispatch(setUser(null));
                     if(response.data.statistic){
                         store.dispatch(setStatistic(response.data.statistic));
                     }
@@ -78,7 +78,7 @@ class UserPanel extends Component{
     
     render(){
 
-        const { login, avatar, rang_title } = this.props.user;
+        const { login, avatar, rang } = this.props.user;
         const { show_list } = this.state;
 
         let class_show_list = ' hidden';
@@ -104,7 +104,7 @@ class UserPanel extends Component{
                     </div>
 
                     <div className="user-rang-mini text-center mt-5 mb-10">
-                        { rang_title }
+                        { rang.title }
                     </div>
                     <ul className="panel-list">
                         <li>

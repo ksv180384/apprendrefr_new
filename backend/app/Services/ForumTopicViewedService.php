@@ -1,26 +1,11 @@
 <?php
-namespace App\Http\Repositories;
+namespace App\Services;
 
-use App\Models\Forum\ForumTopicViewed as Model;
+
 use App\Models\Forum\ForumTopicViewed;
 use Carbon\Carbon;
 
-/**
- *
- * Class ForumTopicViewedRepository
- * @package App\Repositories
- */
-class ForumTopicViewedRepository extends CoreRepository
-{
-
-    /**
-     * Отдает управляемый класс
-     * @return string
-     */
-    public function getModelClass()
-    {
-        return Model::class;
-    }
+class ForumTopicViewedService {
 
     /**
      * Отмечаем время в которое пользователь последний раз просматривал тему форума
@@ -28,13 +13,14 @@ class ForumTopicViewedRepository extends CoreRepository
      * @param int $topic_id - идентификатор темы форума
      */
     public function viewedTopic($topic_id){
-        $viewed = $this->startConditions()->select(['user_id', 'topic_id', 'viewed_data'])
-                                         ->where('topic_id', '=', $topic_id)
-                                         ->where('user_id', '=', (\Auth::check() ? \Auth::id() : 0))
-                                         ->first();
+        $viewed = ForumTopicViewed::where('topic_id', '=', $topic_id)
+            ->where('user_id', '=', (\Auth::check() ? \Auth::id() : 0))
+            ->first(['user_id', 'topic_id', 'viewed_data']);
+
         if(!\Auth::check()){
             return true;
         }
+
         if($viewed){
             $viewed->update([
                 // Проеряем записан ли уже идентификатор пользователя в бд, если нет,

@@ -4,6 +4,7 @@ import {
 } from './index';
 import { config } from '../../config';
 import axios from 'axios';
+import {SET_FOOTER} from "../../../../../frontend/src/store/actions";
 
 // Подгрузка списка слов
 export const getPage = (params = {}) => {
@@ -29,6 +30,7 @@ export const getPage = (params = {}) => {
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

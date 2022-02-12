@@ -2,6 +2,7 @@
 
 namespace App\Models\Forum;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Forum extends Model
@@ -31,21 +32,26 @@ class Forum extends Model
 
     public function topics()
     {
-        return $this->hasMany('App\Models\Forum\Topic');
+        return $this->hasMany(Topic::class);
     }
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
-    public function statusTitle()
+    public function status()
     {
-        return $this->hasOne('App\Models\Forum\Status', 'id', 'status');
+        return $this->hasOne(Status::class, 'id', 'status');
+    }
+
+    public function messages()
+    {
+        return $this->hasManyThrough(Message::class, Topic::class, 'forum_id', 'topic_id', 'id', 'id')->where('forum_messages.status', 1);
     }
 
     public function lastMessages()
     {
-        return $this->hasOne('App\Models\Forum\Message', 'id', 'last_message_id');
+        return $this->hasOne(Message::class, 'id', 'last_message_id');
     }
 }

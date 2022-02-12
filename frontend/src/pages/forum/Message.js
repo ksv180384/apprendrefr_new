@@ -65,11 +65,12 @@ class Message extends Component {
                         <CenterTwoBlock>
                             <Proverb/>
                             <MessagesList/>
-                            { auth && user_auth.rang_alias !== 'zabanen' &&
-                              (
-                                  topic.status_topic_alias === 'visible_everyone' ||
-                                  topic.status_topic_alias === 'visible_only_registered_users'
-                              )
+                            {
+                                auth && user_auth.rang.alias !== 'zabanen' &&
+                                (
+                                    (topic.status && topic.status.alias === 'visible_everyone') ||
+                                    (topic.status && topic.status.alias === 'visible_only_registered_users')
+                                )
                                 ?
                                 <TextEditor send={ this.sendMessage }
                                             requestLoad={ message_request }

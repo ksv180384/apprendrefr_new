@@ -1,25 +1,14 @@
 <?php
-namespace App\Http\Repositories;
+
+namespace App\Services;
+
+
 
 use App\Models\Player\PlayerArtistsSong;
-use App\Models\Player\PlayerSongs as Model;
+use App\Models\Player\PlayerSongs;
 
-/**
- * Хранилище запросов к таблице proverbs
- * Class SongRepository
- * @package App\Repositories
- */
-class SongRepository extends CoreRepository
+class SongService
 {
-
-    /**
-     * Отдает управляемый класс
-     * @return string
-     */
-    public function getModelClass()
-    {
-        return Model::class;
-    }
 
     /**
      * Получает песню
@@ -27,8 +16,7 @@ class SongRepository extends CoreRepository
      * @return mixed
      */
     public function getById(int $id){
-        $song = $this->startConditions()
-            ->select([
+        $song = PlayerSongs::select([
                 'player_songs.id',
                 'player_songs.artist_name',
                 'player_songs.title',
@@ -62,12 +50,10 @@ class SongRepository extends CoreRepository
         ];
 
         if($all){
-            $songsList = $this->startConditions()
-                ->select($select)
+            $songsList = PlayerSongs::select($select)
                 ->get();
         }else{
-            $songsList = $this->startConditions()
-                ->select($select)
+            $songsList = PlayerSongs::select($select)
                 ->where('hidden', '=', 0)
                 ->orderBy('artist_name', 'ASC')
                 ->orderBy('title', 'ASC')
@@ -84,8 +70,7 @@ class SongRepository extends CoreRepository
      * @return mixed
      */
     public function searchByArtistAndTitle(string $artist, string $title){
-        $song = $this->startConditions()
-            ->select([
+        $song = PlayerSongs::select([
                 'player_songs.artist_id',
                 'player_songs.artist_name',
                 'player_songs.title',
@@ -111,8 +96,7 @@ class SongRepository extends CoreRepository
      * @return mixed
      */
     public function search($search_text){
-        $song_list = $this->startConditions()
-            ->select([
+        $song_list = PlayerSongs::select([
                 'player_songs.id',
                 'player_songs.artist_id',
                 'player_songs.artist_name',
@@ -135,8 +119,7 @@ class SongRepository extends CoreRepository
      * @return mixed
      */
     public function searchText($search_text){
-        $song_list = $this->startConditions()
-            ->select([
+        $song_list = PlayerSongs::select([
                 'text_fr',
                 'text_ru',
                 'text_transcription',

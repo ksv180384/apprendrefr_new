@@ -1,6 +1,6 @@
 import {
     SET_LOADER_PAGE, ERROR_PAGE, SET_META, SET_USER,
-    SET_LOGIN, STATISTIC_SET_DATA, WORD_PAGE_SET_DATA, WORD_SET_LIST, LOAD_PROVERB
+    SET_LOGIN, STATISTIC_SET_DATA, WORD_PAGE_SET_DATA, WORD_SET_LIST, LOAD_PROVERB, SET_FOOTER
 } from './index';
 import { config } from '../../config';
 import axios from 'axios';
@@ -29,6 +29,7 @@ export const getPage = (params = {}) => {
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

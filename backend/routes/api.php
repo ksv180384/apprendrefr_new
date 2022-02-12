@@ -24,7 +24,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) {
 
-    Route::get('index', 'IndexController@index')->name('api.index');
+    Route::get('index', [\App\Http\Controllers\Api\IndexController::class, 'index']);
 
     // User
     Route::group(['prefix' => 'user', 'namespace' => 'User'], function ($router) {
@@ -42,9 +42,9 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
     // Auth
     Route::group(['prefix' => 'auth','namespace' => 'Auth',], function ($router) {
 
-        Route::post('login', 'AuthController@login');
+        Route::post('login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
         Route::post('registration', 'AuthController@registration');
-        Route::post('logout', 'AuthController@logout');
+        Route::post('logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout']);
         Route::post('refresh', 'AuthController@refresh');
         Route::get('change-password-page', 'AuthController@changePasswordPage');
         Route::get('lost-password-page', 'AuthController@lostPasswordPage');
@@ -83,18 +83,18 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
     // song player
     Route::group(['prefix' => 'song', 'namespace' => 'Song'], function ($router) {
 
-        Route::get('list', 'SongController@list')->name('api.song.list');
-        Route::get('item/{id}', 'SongController@song')->name('api.song.item');
+        Route::get('list', [\App\Http\Controllers\Api\Song\SongController::class, 'list'])->name('api.song.list');
+        Route::get('item/{id}', [\App\Http\Controllers\Api\Song\SongController::class, 'song'])->name('api.song.item');
 
-        Route::post('search-by-artist-and-title', 'SongController@searchByArtistAndTitle')->name('api.song.search_by_artist_and_title');
-        Route::post('search', 'SongController@search')->name('api.song.search');
+        Route::post('search-by-artist-and-title', [\App\Http\Controllers\Api\Song\SongController::class, 'searchByArtistAndTitle'])->name('api.song.search_by_artist_and_title');
+        Route::post('search', [\App\Http\Controllers\Api\Song\SongController::class, 'search'])->name('api.song.search');
     });
 
     // song page
     Route::group(['prefix' => 'lyrics', 'namespace' => 'Song'], function ($router) {
 
-        Route::get('list', 'SongController@index')->name('api.lyrics.list');
-        Route::get('item/{id}', 'SongController@show')->name('api.lyrics.item');
+        Route::get('list', [\App\Http\Controllers\Api\Song\SongController::class, 'index'])->name('api.lyrics.list');
+        Route::get('item/{id}', [\App\Http\Controllers\Api\Song\SongController::class, 'show'])->name('api.lyrics.item');
     });
 
     // forum
@@ -111,14 +111,12 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
 
         Route::group(['prefix' => '{forum_id?}/topic/{topic_id?}'], function ($router) {
 
-            Route::get('messages', 'MessageController@index')->name('api.forum_messages_list');
-            Route::get('messages-paginate', 'MessageController@getMessagesPaginate')
+            Route::get('messages', [\App\Http\Controllers\Api\Forum\MessageController::class, 'index'])->name('api.forum_messages_list');
+            Route::get('messages-paginate', [\App\Http\Controllers\Api\Forum\MessageController::class, 'getMessagesPaginate'])
                     ->name('api.forum_messages_paginate');
-
-            //Route::patch('change-status', 'TopicController@updateStatus')->name('api.forum_topic_update_status');
         });
         Route::group(['prefix' => 'topic'], function ($router) {
-            Route::patch('change-status', 'TopicController@updateStatus')->name('api.forum_topic_update_status');
+            Route::patch('change-status', [\App\Http\Controllers\Api\Forum\TopicController::class, 'updateStatus'])->name('api.forum_topic_update_status');
         });
         Route::group(['prefix' => 'message'], function ($router) {
             Route::patch('hide', 'MessageController@hide')->name('api.forum_message_hide');

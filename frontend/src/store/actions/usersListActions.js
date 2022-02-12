@@ -6,7 +6,7 @@ import {
     WORD_SET_LIST,
     STATISTIC_SET_DATA,
     SET_META,
-    SET_USER, FORUM_SET_MESSAGES_LIST, LOAD_PROVERB
+    SET_USER, FORUM_SET_MESSAGES_LIST, LOAD_PROVERB, SET_FOOTER
 } from './index';
 
 import axios from 'axios';
@@ -40,6 +40,7 @@ export const getPage = (path_page, params = {}) => {
             if(result.data.statistic){
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

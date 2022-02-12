@@ -8,14 +8,10 @@ use Illuminate\Http\Request;
 
 class ForumController extends BaseController
 {
-    /**
-     * @var ForumRepository
-     */
-    private $forumRepository;
 
     public function __construct()
     {
-        $this->forumRepository = app(ForumRepository::class);
+        parent::__construct();
     }
 
     public function index(){

@@ -7,18 +7,12 @@ use App\Repositories\ForumRepository;
 
 class TopicController extends BaseController
 {
-
-    /**
-     * @var ForumRepository
-     */
-    private $forumRepository;
-
-
     public function __construct(){
-        $this->forumRepository = app(ForumRepository::class);
+        parent::__construct();
     }
 
     public function index($forum_id){
+
 
         $forum = $this->forumRepository->getById($forum_id);
 

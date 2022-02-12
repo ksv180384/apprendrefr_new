@@ -20,7 +20,6 @@ class UserConfig extends Model
         'skype',
         'twitter',
         'vk',
-        'mail',
         'odnoklassniki',
         'telegram',
         'whatsapp',
@@ -31,4 +30,60 @@ class UserConfig extends Model
         'residence',
         'sex',
     ];
+
+    public function email(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'email');
+    }
+
+    public function facebook(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'facebook');
+    }
+
+    public function skype(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'skype');
+    }
+
+    public function twitter(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'twitter');
+    }
+
+    public function vk(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'vk');
+    }
+
+    public function odnoklassniki(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'odnoklassniki');
+    }
+
+    public function telegram(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'telegram');
+    }
+
+    public function whatsapp(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'whatsapp');
+    }
+
+    public function viber(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'viber');
+    }
+
+    public function instagram(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'instagram');
+    }
+
+    public function youtube(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'youtube');
+    }
+
+    public function info(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'info');
+    }
+
+    public function residence(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'residence');
+    }
+
+    public function sex(){
+        return $this->hasOne(UserConfigsView::class, 'id', 'sex');
+    }
 }

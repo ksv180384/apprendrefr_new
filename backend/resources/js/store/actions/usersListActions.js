@@ -11,6 +11,7 @@ import {
 
 import axios from 'axios';
 import { config } from '../../config';
+import {SET_FOOTER} from "../../../../../frontend/src/store/actions";
 
 
 export const getPage = (path_page, params = {}) => {
@@ -40,6 +41,7 @@ export const getPage = (path_page, params = {}) => {
             if(result.data.statistic){
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

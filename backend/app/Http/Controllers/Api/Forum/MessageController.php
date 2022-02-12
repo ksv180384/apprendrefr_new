@@ -3,81 +3,87 @@
 namespace App\Http\Controllers\Api\Forum;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ForumMessageCreateRequest;
 use App\Http\Requests\Api\ForumMessageHideRequest;
 use App\Http\Requests\Api\ForumMessageUpdateRequest;
 use App\Models\Forum\Forum;
-use App\Models\Forum\ForumTopicViewed;
 use App\Models\Forum\Message;
 use App\Models\Forum\MessageStatus;
-use App\Models\Forum\Status;
 use App\Models\Forum\Topic;
-use App\Repositories\ForumMessageRepository;
-use App\Repositories\ForumRepository;
-use App\Repositories\ForumTopicRepository;
-use App\Repositories\ForumTopicViewedRepository;
-use App\Repositories\ProverbRepository;
-use App\Repositories\StatisticRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\WordRepository;
+use App\Services\ForumMessageService;
+use App\Services\ForumService;
+use App\Services\ForumTopicService;
+use App\Services\ForumTopicViewedService;
+use App\Services\ProverbService;
+use App\Services\StatisticService;
+use App\Services\UserService;
+use App\Services\WordService;
 use Illuminate\Http\Request;
 
 class MessageController extends BaseController
 {
     /**
-     * @var ForumRepository
+     * @var ForumService
      */
-    private $forumRepository;
+    private $forumService;
 
     /**
-     * @var WordRepository
+     * @var WordService
      */
-    private $wordRepository;
+    private $wordService;
 
     /**
-     * @var UserRepository
+     * @var ProverbService
      */
-    private $userRepository;
+    private $proverbService;
 
     /**
-     * @var StatisticRepository
+     * @var UserService
      */
-    private $statisticRepository;
+    private $userService;
 
     /**
-     * @var ForumMessageRepository
+     * @var StatisticService
      */
-    private $forumMessageRepository;
+    private $statisticService;
 
     /**
-     * @var ForumTopicViewedRepository
+     * @var ForumMessageService
      */
-    private $forumTopicViewedRepository;
+    private $forumMessageService;
 
     /**
-     * @var ForumTopicRepository
+     * @var ForumTopicService
      */
-    private $forumTopicRepository;
+    private $forumTopicService;
 
     /**
-     * @var ProverbRepository
+     * @var ForumTopicViewedService
      */
-    private $proverbRepository;
+    private $forumTopicViewedService;
 
-    public function __construct(){
+    public function __construct(
+        ForumService $forumService,
+        WordService $wordService,
+        ProverbService $proverbService,
+        UserService $userService,
+        StatisticService $statisticService,
+        ForumMessageService $forumMessageService,
+        ForumTopicService $forumTopicService,
+        ForumTopicViewedService $forumTopicViewedService
+    ){
         $this->middleware(['auth:api','confirm_email'], [
             'only' => ['store', 'update', 'hide', 'destroy'] // методы для выполнения которых нужна проверка пользователя
         ]);
 
-        $this->forumRepository = app(ForumRepository::class);
-        $this->wordRepository = app(WordRepository::class);
-        $this->proverbRepository = app(ProverbRepository::class);
-        $this->userRepository = app(UserRepository::class);
-        $this->statisticRepository = app(StatisticRepository::class);
-        $this->forumMessageRepository = app(ForumMessageRepository::class);
-        $this->forumTopicRepository = app(ForumTopicRepository::class);
-        $this->forumTopicViewedRepository = app(ForumTopicViewedRepository::class);
+        $this->forumService = $forumService;
+        $this->wordService = $wordService;
+        $this->proverbService = $proverbService;
+        $this->statisticService = $statisticService;
+        $this->userService = $userService;
+        $this->forumMessageService = $forumMessageService;
+        $this->forumTopicService = $forumTopicService;
+        $this->forumTopicViewedService = $forumTopicViewedService;
         parent::__construct();
     }
 
@@ -86,38 +92,39 @@ class MessageController extends BaseController
      *
      * @param $forum_id - идентификатор форума
      * @param $topic_id - идентификаотр темы форума
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index($forum_id, $topic_id, Request $request)
     {
         // Показывать ли скрытые сообщения
         $show_hidden_message = $request->show_hide_mess == 'show';
-        $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
+        $show_hidden_message = $show_hidden_message && $user && ($user->isAdmin() || $user->isModerator());
 
 
-        $topic = $this->forumTopicRepository->getById((int)$topic_id);
-        $forum = $this->forumRepository->getById((int)$forum_id);
-        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+        $topic = $this->forumTopicService->getById($topic_id);
+        $forum = $this->forumService->getById($forum_id);
+        $proverb = $this->proverbService->proverbRandomOne();
 
-        $messages = $this->forumMessageRepository->getByTopicId((int)$topic_id, $show_hidden_message);
+        $messages = $this->forumMessageService->getByTopicId($topic_id, $show_hidden_message);
         $messages = $this->formatSocialLinks($this->filterInfo($messages));
 
-        $words_list = $this->wordRepository->getRandomWords();
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+        $wordsList = $this->wordService->wordsRandom();
+        $onlineUsers = $this->statisticService->onlineUsers();
+        $countUsers = $onlineUsers->count();
+        $countGuests = $this->statisticService->countGuests();
+        $countUsersRegister = $this->userService->countUsersRegister();
+        $countAll = $countUsers + $countGuests;
+        $countMessages = $this->forumMessageService->countMessagesAll();
 
-        if(count($messages) == 0){
+        if($messages->count() == 0){
             return response()->json(['message' => 'Такой страницы не существует.'], 404);
         }
 
         $m = $messages->toArray();
         if($m['last_page'] == $m['current_page']){
             // Помечаем тему как просмотренную
-            $this->forumTopicViewedRepository->viewedTopic($topic_id);
+            $this->forumTopicViewedService->viewedTopic($topic_id);
         }
         if($m['current_page'] == 1){
             Topic::where('id', $topic_id)
@@ -140,16 +147,16 @@ class MessageController extends BaseController
                 'forum' => $forum,
                 'messages' => $messages,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
-            'words_list' => $words_list,
+            'words_list' => $wordsList,
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $onlineUsers,
+                'count_guests' => $countGuests,
+                'count_users' => $countUsers,
+                'count_all' => $countAll,
+                'count_users_register' => $countUsersRegister,
+                'count_messages' => $countMessages,
             ],
         ]);
     }
@@ -157,10 +164,11 @@ class MessageController extends BaseController
     public function getMessagesPaginate($forum_id, $topic_id, Request $request){
         // Показывать ли скрытые сообщения
         $show_hidden_message = $request->show_hide_mess == 'show';
-        $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
+        $show_hidden_message =  $show_hidden_message && $user && ($user->isAdmin() || $user->isModerator());
 
-        $topic = $this->forumTopicRepository->getById((int)$topic_id);
-        $messages = $this->forumMessageRepository->getByTopicId((int)$topic_id, $show_hidden_message);
+        $topic = $this->forumTopicService->getById($topic_id);
+        $messages = $this->forumMessageService->getByTopicId($topic_id, $show_hidden_message);
         $messages = $this->formatSocialLinks($this->filterInfo($messages));
 
         if(count($messages) == 0){
@@ -170,7 +178,7 @@ class MessageController extends BaseController
         $m = $messages->toArray();
         if($m['last_page'] == $m['current_page']){
             // Помечаем тему как просмотренную
-            $this->forumTopicViewedRepository->viewedTopic($topic_id);
+            $this->forumTopicViewedService->viewedTopic($topic_id);
             Topic::where('id', $topic_id)
                 ->update([
                     'count_views'=> \DB::raw('count_views+1'),
@@ -186,20 +194,10 @@ class MessageController extends BaseController
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(ForumMessageCreateRequest $request)
     {
@@ -208,10 +206,12 @@ class MessageController extends BaseController
         $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
 
         $status = MessageStatus::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
-        $topic = $this->forumTopicRepository->getById($request->topic);
+        $topic = $this->forumTopicService->getById($request->topic);
 
-        if($topic->status_topic_alias != 'visible_everyone' &&
-           $topic->status_topic_alias != 'visible_only_registered_users')
+        if(
+            $topic->statusTitle->alias != 'visible_everyone' &&
+            $topic->statusTitle->alias != 'visible_only_registered_users'
+        )
         {
             return response()->json(['message' => 'Тема закрыта для сообщений.'], 404);
         }
@@ -227,12 +227,12 @@ class MessageController extends BaseController
         $topic->update(['last_message_id' => $message_id]);
         Forum::where('id', '=', $topic->forum_id)->first()->update(['last_message_id' => $message_id]);
 
-        $topic = $this->forumTopicRepository->getById($request->topic);
-        $messages = $this->forumMessageRepository->getByTopicIdLastPage($request->topic, $show_hidden_message);
+        $topic = $this->forumTopicService->getById($request->topic);
+        $messages = $this->forumMessageService->getByTopicIdLastPage($request->topic, $show_hidden_message);
         $messages = $this->formatSocialLinks($this->filterInfo($messages));
 
         // Помечаем тему как просмотренную
-        $this->forumTopicViewedRepository->viewedTopic($request->topic);
+        $this->forumTopicViewedService->viewedTopic($request->topic);
 
         return response()->json([
             'title' => $topic->title . ' - Фоорум (стр ' . $messages->toArray()['current_page'] . ')',
@@ -240,28 +240,6 @@ class MessageController extends BaseController
             'keywords' => $topic->title . ' - Фоорум (стр ' . $messages->toArray()['current_page'] . ')',
             'messages' => $messages,
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -299,7 +277,7 @@ class MessageController extends BaseController
         $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
 
         $message = Message::select(['id', 'topic_id', 'status'])->where('id', '=', $request->message_id)->first();
-        $statuses = $this->forumMessageRepository->getStatusList();
+        $statuses = $this->forumMessageService->getStatusList();
 
         $mew_status_id = 0;
         foreach ($statuses as $item){
@@ -333,7 +311,7 @@ class MessageController extends BaseController
             ->first();
         Forum::where('id', '=', $t->forum_id)->first()->update(['last_message_id' => $m->id]);
 
-        $messages = $this->forumMessageRepository->getByTopicId($message->topic_id, $show_hidden_message);
+        $messages = $this->forumMessageService->getByTopicId($message->topic_id, $show_hidden_message);
         $messages = $this->formatSocialLinks($this->filterInfo($messages));
 
         return response()->json([
@@ -341,112 +319,101 @@ class MessageController extends BaseController
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 
     // Убирает информацию о пользователе взависимости от выставленных на нее прав
     private function filterInfo($messages){
 
         if(\Auth::check()){ // для зарегистрированных пользователей
             foreach ($messages as $k=>$item){
-                if($item->config_email_alias != 'zaregistrirovannym' && $item->config_email_alias != 'vsem'){
-                    $messages[$k]->user_email = null;
+
+                if(!empty($item->config->email) && $item->user->config->email->alias != 'zaregistrirovannym' && $item->user->config->email->alias != 'vsem'){
+                    $messages[$k]->user->info->email = null;
                 }
-                if($item->config_facebook_alias != 'zaregistrirovannym' && $item->config_facebook_alias != 'vsem'){
-                    $messages[$k]->info_facebook = null;
+                if(!empty($item->config->facebook) && $item->config->facebook->alias != 'zaregistrirovannym' && $item->config->facebook->alias != 'vsem'){
+                    $messages[$k]->user->info->facebook = null;
                 }
-                if($item->config_info_alias != 'zaregistrirovannym' && $item->config_info_alias != 'vsem'){
-                    $messages[$k]->user_info = null;
+                if(!empty($item->config->info) && $item->user->config->info->alias != 'zaregistrirovannym' && $item->user->config->info->alias != 'vsem'){
+                    $messages[$k]->user->info->info = null;
                 }
-                if($item->config_instagram_alias != 'zaregistrirovannym' && $item->config_instagram_alias != 'vsem'){
-                    $messages[$k]->info_instagram = null;
+                if(!empty($item->config->instagram) && $item->user->config->instagram->alias != 'zaregistrirovannym' && $item->user->config->instagram->alias != 'vsem'){
+                    $messages[$k]->user->info->instagram = null;
                 }
-                if($item->config_odnoklassniki_alias != 'zaregistrirovannym' && $item->config_odnoklassniki_alias != 'vsem'){
-                    $messages[$k]->info_odnoklassniki = null;
+                if(!empty($item->config->odnoklassniki) && $item->user->config->odnoklassniki->alias != 'zaregistrirovannym' && $item->user->config->odnoklassniki->alias != 'vsem'){
+                    $messages[$k]->user->info->odnoklassniki = null;
                 }
-                if($item->config_residence_alias != 'zaregistrirovannym' && $item->config_residence_alias != 'vsem'){
-                    $messages[$k]->user_residence = null;
+                if(!empty($item->config->residence) && $item->user->config->residence->alias != 'zaregistrirovannym' && $item->user->config->residence->alias != 'vsem'){
+                    $messages[$k]->user->info->residence = null;
                 }
-                if($item->config_sex_alias != 'zaregistrirovannym' && $item->config_sex_alias != 'vsem'){
-                    $messages[$k]->user_sex_title = null;
-                    $messages[$k]->user_sex_id = null;
+                if(!empty($item->config->sex) && $item->user->config->sex->alias != 'zaregistrirovannym' && $item->user->config->sex->alias != 'vsem'){
+                    $messages[$k]->user->info->sex = null;
                 }
-                if($item->config_skype_alias != 'zaregistrirovannym' && $item->config_skype_alias != 'vsem'){
-                    $messages[$k]->info_skype = null;
+                if(!empty($item->config->skype) && $item->user->config->skype->alias != 'zaregistrirovannym' && $item->user->config->skype->alias != 'vsem'){
+                    $messages[$k]->user->info->skype = null;
                 }
-                if($item->config_telegram_alias != 'zaregistrirovannym' && $item->config_telegram_alias != 'vsem'){
-                    $messages[$k]->info_telegram = null;
+                if(!empty($item->config->telegram) && $item->user->config->telegram->alias != 'zaregistrirovannym' && $item->user->config->telegram->alias != 'vsem'){
+                    $messages[$k]->user->info->telegram = null;
                 }
-                if($item->config_twitter_alias != 'zaregistrirovannym' && $item->config_twitter_alias != 'vsem'){
-                    $messages[$k]->info_twitter = null;
+                if(!empty($item->config->twitter) && $item->user->config->twitter->alias != 'zaregistrirovannym' && $item->user->config->twitter->alias != 'vsem'){
+                    $messages[$k]->user->info->twitter = null;
                 }
-                if($item->config_vk_alias != 'zaregistrirovannym' && $item->config_vk_alias != 'vsem'){
-                    $messages[$k]->info_vk = null;
+                if(!empty($item->config->vk) && $item->user->config->vk->alias != 'zaregistrirovannym' && $item->user->config->vk->alias != 'vsem'){
+                    $messages[$k]->user->info->vk = null;
                 }
-                if($item->config_whatsapp_alias != 'zaregistrirovannym' && $item->config_whatsapp_alias != 'vsem'){
-                    $messages[$k]->info_whatsapp = null;
+                if(!empty($item->config->whatsapp) && $item->user->config->whatsapp->alias != 'zaregistrirovannym' && $item->user->config->whatsapp->alias != 'vsem'){
+                    $messages[$k]->user->info->whatsapp = null;
                 }
-                if($item->config_youtube_alias != 'zaregistrirovannym' && $item->config_youtube_alias != 'vsem'){
-                    $messages[$k]->info_youtube = null;
+                if(!empty($item->config->youtube) && $item->user->config->youtube->alias != 'zaregistrirovannym' && $item->user->config->youtube->alias != 'vsem'){
+                    $messages[$k]->user->info->youtube = null;
                 }
-                if($item->config_viber_alias != 'zaregistrirovannym' && $item->config_viber_alias != 'vsem'){
-                    $messages[$k]->info_viber = null;
+                if(!empty($item->config->viber) && $item->user->config->viber->alias != 'zaregistrirovannym' && $item->user->config->viber->alias != 'vsem'){
+                    $messages[$k]->user->info->viber = null;
                 }
             }
         }elseif(false){ // для друзей
-
+            // TODO add info to fends
         }else{ // для всех
             foreach ($messages as $k=>$item){
-                if($item->config_email_alias != 'vsem'){
-                    $messages[$k]->user_email = null;
+                if($item->user->config->email->alias != 'vsem'){
+                    $messages[$k]->user->info->email = null;
                 }
-                if($item->config_facebook_alias != 'vsem'){
-                    $messages[$k]->info_facebook = null;
+                if($item->user->config->facebook->alias != 'vsem'){
+                    $messages[$k]->user->info->facebook = null;
                 }
-                if($item->config_info_alias != 'vsem'){
-                    $messages[$k]->user_info = null;
+                if($item->user->config->info->alias != 'vsem'){
+                    $messages[$k]->user->info->info = null;
                 }
-                if($item->config_instagram_alias != 'vsem'){
-                    $messages[$k]->info_instagram = null;
+                if($item->user->config->instagram->alias != 'vsem'){
+                    $messages[$k]->user->info->instagram = null;
                 }
-                if($item->config_odnoklassniki_alias != 'vsem'){
-                    $messages[$k]->info_odnoklassniki = null;
+                if($item->user->config->odnoklassniki->alias != 'vsem'){
+                    $messages[$k]->user->info->odnoklassniki = null;
                 }
-                if($item->config_residence_alias != 'vsem'){
-                    $messages[$k]->user_residence = null;
+                if($item->user->config->odnoklassniki->alias != 'vsem'){
+                    $messages[$k]->user->info->residence = null;
                 }
-                if($item->config_sex_alias != 'vsem'){
-                    $messages[$k]->user_sex_title = null;
-                    $messages[$k]->user_sex_id = null;
+                if($item->user->config->odnoklassniki->alias != 'vsem'){
+                    $messages[$k]->user->info->sex = null;
                 }
-                if($item->config_skype_alias != 'vsem'){
-                    $messages[$k]->info_skype = null;
+                if($item->user->config->skype->alias != 'vsem'){
+                    $messages[$k]->user->info->skype = null;
                 }
-                if($item->config_telegram_alias != 'vsem'){
-                    $messages[$k]->info_telegram = null;
+                if($item->user->config->telegram->alias != 'vsem'){
+                    $messages[$k]->user->info->telegram = null;
                 }
-                if($item->config_twitter_alias != 'vsem'){
-                    $messages[$k]->info_twitter = null;
+                if($item->user->config->twitter->alias != 'vsem'){
+                    $messages[$k]->user->info->twitter = null;
                 }
-                if($item->config_vk_alias != 'vsem'){
-                    $messages[$k]->info_vk = null;
+                if($item->user->config->telegram->alias != 'vsem'){
+                    $messages[$k]->user->info->vk = null;
                 }
-                if($item->config_whatsapp_alias != 'vsem'){
-                    $messages[$k]->info_whatsapp = null;
+                if($item->user->config->whatsapp->alias != 'vsem'){
+                    $messages[$k]->user->info->whatsapp = null;
                 }
-                if($item->config_youtube_alias != 'vsem'){
-                    $messages[$k]->info_youtube = null;
+                if($item->user->config->youtube->alias != 'vsem'){
+                    $messages[$k]->user->info->youtube = null;
                 }
-                if($item->config_viber_alias != 'vsem'){
-                    $messages[$k]->info_viber = null;
+                if($item->user->config->viber->alias != 'vsem'){
+                    $messages[$k]->user->info->viber = null;
                 }
             }
         }
@@ -457,12 +424,13 @@ class MessageController extends BaseController
     // Формирует url на соц сети
     private function formatSocialLinks($messages){
         foreach ($messages as $k=>$item){
-            $messages[$k]->info_facebook_link = 'https://fb.com/' . $item['info_facebook'];
-            $messages[$k]->info_odnoklassniki_link = 'https://ok.ru/' . $item['info_odnoklassniki'];
-            $messages[$k]->info_twitter_link = 'https://twitter.com/' . $item['info_twitter'];
-            $messages[$k]->info_vk_link = 'https://vk.com/' . $item['info_vk'];
-            $messages[$k]->info_youtube_link = 'https://youtube.com/' . $item['info_youtube'];
-            $messages[$k]->info_instagram_link = 'https://instagram.com/' . $item['info_instagram'];
+            $messages[$k]->user->info->setAttribute('facebook_link', 'https://fb.com/' . $item->user->info->facebook);
+            $messages[$k]->user->info->setAttribute('odnoklassniki_link', 'https://fb.com/' . $item->user->info->odnoklassniki);
+            $messages[$k]->user->info->setAttribute('twitter_link', 'https://fb.com/' . $item->user->info->twitter);
+            $messages[$k]->user->info->setAttribute('vk_link', 'https://fb.com/' . $item->user->info->vk);
+            $messages[$k]->user->info->setAttribute('facebook_link', 'https://fb.com/' . $item->user->info->facebook);
+            $messages[$k]->user->info->setAttribute('youtube_link', 'https://fb.com/' . $item->user->info->youtube);
+            $messages[$k]->user->info->setAttribute('instagram_link', 'https://fb.com/' . $item->user->info->instagram);
         }
 
         return $messages;

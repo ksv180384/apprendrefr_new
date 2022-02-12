@@ -10,7 +10,7 @@ import { config } from '../../config';
 import axios from 'axios';
 import {setLoader} from "./loaderActions";
 import {setUser} from "./userActions";
-import { errorNotification, successNotification } from './notificationActions';
+import { errorNotification } from './notificationActions';
 
 export const login = (form) => {
     return (dispatch) => {
@@ -21,12 +21,12 @@ export const login = (form) => {
         axios.post(config.path + 'api/auth/login', form).then((result) => {
             localStorage.setItem('user-token', result.data.token_type + ' ' + result.data.access_token);
 
-            dispatch({type: LOGIN_SUCCESS});
             if(result.data.statistic){
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
             dispatch(setUser(result.data.user_data.user));
             dispatch(setLoader(false));
+            dispatch({type: LOGIN_SUCCESS});
         }).catch((error) => {
             dispatch(setLoader(false));
             if(error.response){

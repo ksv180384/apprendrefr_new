@@ -10,6 +10,7 @@ import {
     SET_LOADER_PAGE,
     ERROR_PAGE, WORD_SET_LIST
 } from './index';
+import {SET_FOOTER} from "../../../../../frontend/src/store/actions";
 
 
 export const getPage = (search_word, lang = 'fr') => {
@@ -36,6 +37,7 @@ export const getPage = (search_word, lang = 'fr') => {
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Forum;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Api\ForumCreateTopicRequest;
 use App\Http\Requests\Api\ForumTopicUpdateRequest;
 use App\Models\Forum\Forum;
@@ -11,82 +11,92 @@ use App\Models\Forum\MessageStatus;
 use App\Models\Forum\Status;
 use App\Models\Forum\Topic;
 use App\Models\User;
-use App\Repositories\ForumMessageRepository;
-use App\Repositories\ForumRepository;
-use App\Repositories\ForumTopicRepository;
-use App\Repositories\ProverbRepository;
-use App\Repositories\StatisticRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\WordRepository;
+use App\Services\ForumMessageService;
+use App\Services\ForumService;
+use App\Services\ForumTopicService;
+use App\Services\ProverbService;
+use App\Services\StatisticService;
+use App\Services\UserService;
+use App\Services\WordService;
 use Illuminate\Http\Request;
 
-class TopicController extends Controller
+class TopicController extends BaseController
 {
     /**
-     * @var ForumRepository
+     * @var ForumService
      */
-    private $forumRepository;
+    private $topicService;
 
     /**
-     * @var WordRepository
+     * @var ForumService
      */
-    private $wordRepository;
+    private $forumService;
 
     /**
-     * @var UserRepository
+     * @var WordService
      */
-    private $userRepository;
+    private $wordService;
 
     /**
-     * @var StatisticRepository
+     * @var ProverbService
      */
-    private $statisticRepository;
+    private $proverbService;
 
     /**
-     * @var ForumMessageRepository
+     * @var StatisticService
      */
-    private $forumMessageRepository;
+    private $statisticService;
 
     /**
-     * @var ForumTopicRepository
+     * @var UserService
      */
-    private $forumTopicRepository;
+    private $userService;
 
     /**
-     * @var ProverbRepository
+     * @var ForumMessageService
      */
-    private $proverbRepository;
+    private $forumMessageService;
 
-    public function __construct(){
-        $this->forumRepository = app(ForumRepository::class);
-        $this->wordRepository = app(WordRepository::class);
-        $this->proverbRepository = app(ProverbRepository::class);
-        $this->userRepository = app(UserRepository::class);
-        $this->statisticRepository = app(StatisticRepository::class);
-        $this->forumMessageRepository = app(ForumMessageRepository::class);
-        $this->forumTopicRepository = app(ForumTopicRepository::class);
+    public function __construct(
+        ForumTopicService $topicService,
+        ForumService $forumService,
+        WordService $wordService,
+        ProverbService $proverbService,
+        StatisticService $statisticService,
+        UserService $userService,
+        ForumMessageService $forumMessageService
+    ){
+        parent::__construct();
+        $this->topicService = $topicService;
+        $this->forumService = $forumService;
+        $this->wordService = $wordService;
+        $this->proverbService = $proverbService;
+        $this->statisticService = $statisticService;
+        $this->userService = $userService;
+        $this->forumMessageService = $forumMessageService;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index($forum_id, Request $request)
     {
         $show_hidden = \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
-        $topics = $this->forumTopicRepository->getTopicByForumId((int)$forum_id, $show_hidden);
-        $forum = $this->forumRepository->getById((int)$forum_id);
-        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+        $topics = $this->topicService->getTopicByForumId((int)$forum_id, $show_hidden);
+        $forum = Forum::find($forum_id, ['id', 'title']);
+        $proverb = $this->proverbService->proverbRandomOne();
         $statuses = Status::all(['id', 'title', 'alias']);
 
-        $words_list = $this->wordRepository->getRandomWords();
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+        $wordsList = $this->wordService->wordsRandom();
+        $onlineUsers = $this->statisticService->onlineUsers();
+        $countUsers = $onlineUsers->count();
+        $countGuests = $this->statisticService->countGuests();
+        $countUsersRegister = $this->userService->countUsersRegister();
+        $countAll = $countUsers + $countGuests;
+        $countMessages = $this->forumMessageService->countMessagesAll();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         if($topics->isEmpty()){
             return response()->json(['message' => 'Такой страницы не существует.'], 404);
@@ -97,8 +107,8 @@ class TopicController extends Controller
             'description' => ' - Фоорум ',
             'keywords' => ' - Фоорум',
             'footer' => [
-                '2010 - ' . date('Y') . ' гг ApprendereFr.ru',
-                'E-mail: admin@apprendrefr.ru'
+                $this->yar_life,
+                self::EMAIL,
             ],
             'proverb' => $proverb,
             'data' => [
@@ -106,36 +116,25 @@ class TopicController extends Controller
                 'forum' => $forum,
                 'statuses' => $statuses,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
-            'words_list' => $words_list,
+            'words_list' => $wordsList,
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $onlineUsers,
+                'count_guests' => $countGuests,
+                'count_users' => $countUsers,
+                'count_all' => $countAll,
+                'count_users_register' => $countUsersRegister,
+                'count_messages' => $countMessages,
             ],
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(ForumCreateTopicRequest $request)
     {
@@ -172,28 +171,6 @@ class TopicController extends Controller
                 'topic_id' => $topic_id,
             ]
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -274,16 +251,5 @@ class TopicController extends Controller
                 'topics' => $topics,
             ]
         ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

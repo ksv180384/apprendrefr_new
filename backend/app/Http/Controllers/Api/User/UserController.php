@@ -6,13 +6,13 @@ use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Api\User\ProfileUpdateRequest;
 use App\Mail\ConfirmEmail;
 use App\Models\User;
-use App\Repositories\ForumMessageRepository;
-use App\Repositories\ProverbRepository;
-use App\Repositories\StatisticRepository;
-use App\Repositories\UserRepository;
 use App\Models\User\Sex;
 use App\Models\User\UserConfigsView;
-use App\Repositories\WordRepository;
+use App\Services\ForumMessageService;
+use App\Services\ProverbService;
+use App\Services\StatisticService;
+use App\Services\UserService;
+use App\Services\WordService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -21,56 +21,63 @@ class UserController extends BaseController
 {
 
     /**
-     * @var UserRepository
+     * @var UserService
      */
-    private $userRepository;
+    private $userService;
 
     /**
-     * @var WordRepository
+     * @var WordService
      */
-    private $wordRepository;
+    private $wordService;
 
     /**
-     * @var StatisticRepository;
+     * @var StatisticService;
      */
-    private $statisticRepository;
+    private $statisticService;
 
     /**
-     * @var ForumMessageRepository
+     * @var ForumMessageService
      */
-    private $forumMessageRepository;
+    private $forumMessageService;
 
     /**
-     * @var ProverbRepository
+     * @var ProverbService
      */
-    private $proverbRepository;
+    private $proverbService;
 
-    public function __construct()
+    public function __construct(
+        UserService $userService,
+        WordService $wordService,
+        StatisticService $statisticService,
+        ForumMessageService $forumMessageService,
+        ProverbService $proverbService
+    )
     {
         //$this->middleware('auth:api');
         $this->middleware('auth:api', [
             'except' => ['show', 'confirmEmail'] // методы с доступ неавторизованным пользователям
         ]);
 
-        $this->userRepository = app(UserRepository::class);
-        $this->wordRepository = app(WordRepository::class);
-        $this->statisticRepository = app(StatisticRepository::class);
-        $this->forumMessageRepository = app(ForumMessageRepository::class);
-        $this->proverbRepository = app(ProverbRepository::class);
+        $this->userService = $userService;
+        $this->wordService = $wordService;
+        $this->statisticService = $statisticService;
+        $this->forumMessageService = $forumMessageService;
+        $this->proverbService = $proverbService;
         parent::__construct();
     }
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         //
-        $sex_list = [['id' => 0, 'title' => 'Нет' ]];
-        $sex_list = array_merge($sex_list, Sex::select('id', 'title')->orderBy('id', 'asc')->get()->toArray());
-        $config_user_data_view_list = UserConfigsView::all();
-        $words_list = $this->wordRepository->getRandomWords();
+        $sexList = [['id' => 0, 'title' => 'Нет' ]];
+        $sexList = array_merge($sexList, Sex::select('id', 'title')->orderBy('id', 'asc')->get()->toArray());
+        $configUserDataViewList = UserConfigsView::all();
+        $wordsList = $this->wordService->wordsRandom();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         return response()->json([
             'title' => 'Ваш профиль | ' . $_SERVER['HTTP_HOST'],
@@ -80,35 +87,14 @@ class UserController extends BaseController
                 $this->yar_life,
                 self::EMAIL,
             ],
-            'words_list' => $words_list,
+            'words_list' => $wordsList,
             'data' => [
-                'config_user_data_view_list' => $config_user_data_view_list,
-                'sex_list' => $sex_list,
+                'config_user_data_view_list' => $configUserDataViewList,
+                'sex_list' => $sexList,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**

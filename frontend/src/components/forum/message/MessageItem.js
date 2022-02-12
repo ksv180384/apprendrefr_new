@@ -13,6 +13,7 @@ import TextEditor from '../../../components/forum/text_editor/TextEditor';
 //actions
 import { addQuote } from '../../../store/actions/quotesActions';
 import { updateMessage, hideMessage } from '../../../store/actions/forumActions';
+import Moment from "moment";
 
 class MessagesList extends Component{
 
@@ -49,7 +50,7 @@ class MessagesList extends Component{
                                     <div className="editor-close" title="Закрыть редактирование" onClick={ this.showEditor }>
                                         <FontAwesomeIcon icon={ faTimes }/>
                                     </div>
-                                    <TextEditor defaultText={ this.props.message.message } s
+                        MessagesList.js                   <TextEditor defaultText={ this.props.message.message } s
                                                 send={ this.updateMessage }
                                     />
                                 </div>,
@@ -84,33 +85,33 @@ class MessagesList extends Component{
                 <div className="MessageItem-user-info">
                     <div className="MessageItem-user-avatar">
                         <div className="MessageItem-user-avatar-block"
-                             style={ {backgroundImage: 'url('+ message.user_avatar +')'} }>
+                             style={ {backgroundImage: 'url('+ message.user.avatar +')'} }>
 
                         </div>
                     </div>
                     <div className="MessageItem-user-login">
-                        <Link to={ '/user/info/' + message.user_id } className="link">{ message.user_login }</Link>
+                        <Link to={ '/user/info/' + message.user.id } className="link">{ message.user.login }</Link>
                         {
-                            message.user_sex_id
+                            message.user.sex
                                 ?
-                                <span className="user-gender" title={ message.user_sex_title }>
-                                <FontAwesomeIcon icon={ message.user_sex_title === 'Мужской' ? faMars : faVenus }/>
+                                <span className="user-gender" title={ message.user.sex.title }>
+                                <FontAwesomeIcon icon={ message.user.sex.title === 'Мужской' ? faMars : faVenus }/>
                             </span>
                                 :
                                 ''
                         }
                     </div>
                     <div className="MessageItem-user-group">
-                        { message.user_rang_title }
+                        { message.user.rang.title }
                     </div>
                     <div className="MessageItem-user-user-posts">
-                        Сообщений: { message.user_posts }
+                        Сообщений: { message.user_messages_count }
                     </div>
                     <div className="MessageItem-social-block">
                         {
-                            message.info_facebook
+                            message.user.info.facebook
                                 ?
-                                <a  href={ message.info_facebook_link } title="Facebook" target="_blank"
+                                <a  href={ message.user.info.facebook_link } title="Facebook" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faFacebookF } />
                                 </a>
@@ -118,9 +119,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.info_instagram
+                            message.user.info.instagram
                                 ?
-                                <a  href={ message.info_instagram_link } title="Instagram" target="_blank"
+                                <a  href={ message.user.info.instagram_link } title="Instagram" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faInstagram } />
                                 </a>
@@ -128,9 +129,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.info_odnoklassniki
+                            message.user.info.odnoklassniki
                                 ?
-                                <a  href={ message.info_odnoklassniki_link } title="Odnoklassniki" target="_blank"
+                                <a  href={ message.user.info.odnoklassniki_link } title="Odnoklassniki" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faOdnoklassniki } />
                                 </a>
@@ -138,9 +139,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.info_vk
+                            message.user.info.vk
                                 ?
-                                <a  href={ message.info_vk_link } title="Vk" target="_blank"
+                                <a  href={ message.user.info.vk_link } title="Vk" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faVk } />
                                 </a>
@@ -148,9 +149,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.info_youtube
+                            message.user.info.youtube
                                 ?
-                                <a  href={ message.info_youtube_link } title="Youtube" target="_blank"
+                                <a  href={ message.user.info.youtube_link } title="Youtube" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faYoutube } />
                                 </a>
@@ -158,9 +159,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.info_twitter
+                            message.user.info.twitter
                                 ?
-                                <a  href={ message.info_twitter_link } title="Twitter" target="_blank"
+                                <a  href={ message.user.info.twitter_link } title="Twitter" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faTwitter } />
                                 </a>
@@ -170,9 +171,9 @@ class MessagesList extends Component{
                     </div>
                     <div className="MessageItem-messengers-block">
                         {
-                            message.info_skype
+                            message.user.info.skype
                                 ?
-                                <span data-info={ message.info_skype } title="Skype"
+                                <span data-info={ message.info.skype } title="Skype"
                                       className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faSkype } />
                             </span>
@@ -182,7 +183,7 @@ class MessagesList extends Component{
                         {
                             message.info_telegram
                                 ?
-                                <span data-info={ message.info_telegram } title="Telegram"
+                                <span data-info={ message.user.info.telegram } title="Telegram"
                                       className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faTelegram } />
                             </span>
@@ -192,7 +193,7 @@ class MessagesList extends Component{
                         {
                             message.info_whatsapp
                                 ?
-                                <span data-info={ message.info_whatsapp } title="Whatsapp"
+                                <span data-info={ message.user.info.whatsapp } title="Whatsapp"
                                       className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faWhatsapp } />
                             </span>
@@ -200,9 +201,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.info_viber
+                            message.user.info.viber
                                 ?
-                                <span data-info={ message.info_viber } title="Viber" className="MessageItem-social-item">
+                                <span data-info={ message.user.info.viber } title="Viber" className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faViber } />
                             </span>
                                 :
@@ -210,13 +211,14 @@ class MessagesList extends Component{
                         }
                     </div>
                 </div>
-                <div className={'MessageItem-content' + (message.status_message_alias === 'hidden' ? ' hide-message' : '') }>
+                <div className={'MessageItem-content' + (message.status_title.alias === 'hidden' ? ' hide-message' : '') }>
                     <div className="MessageItem-content-header">
                         <div className="MessageItem-content-login-mobile">
-                            <Link to={ '/user/info/' + message.user_id } className="link">{ message.user_login }</Link>
+                            <Link to={ '/user/info/' + message.user.id } className="link">{ message.user.login }</Link>
                         </div>
                         <div className="MessageItem-content-date-post">
-                            { message.created_message.time } <strong>{ message.created_message.day }</strong>
+                            { Moment(message.created_at, 'YYYY-MM-DDTHH:mm:ss.SSSSZ').format('HH:mm') }
+                            <strong> { Moment(message.created_at, 'YYYY-MM-DDTHH:mm:ss.SSSSZ').format('DD MMM YYYY') }</strong>
                         </div>
                         <div className="MessageItem-content-topic-title">
                             #{ message.id } { topic.title }
@@ -226,15 +228,20 @@ class MessagesList extends Component{
                          dangerouslySetInnerHTML={
                              {__html: message.message }
                          }/>
-                    { message.user_signature ? <div className="signature">{ message.user_signature }</div> : '' }
+                    { message.user.signature ? <div className="signature">{ message.user.signature }</div> : '' }
                     <div className="message-control">
                         <ul>
                             {
-                                auth && (user_auth.admin === 1 || user_auth.rang_alias === 'administrator' || user_auth.rang_alias === 'moderator')
+                                auth &&
+                                (
+                                    user_auth.admin === 1 ||
+                                    user_auth.rang.alias === 'administrator' ||
+                                    user_auth.rang.alias === 'moderator'
+                                )
                                     ?
                                     <li onClick={ this.hideMessage }>
                                         {
-                                            message.status_message_alias === 'hidden'
+                                            message.status_title.alias === 'hidden'
                                                 ?
                                                 <FontAwesomeIcon icon={ faEye } title="Показать"/>
                                                 :
@@ -245,7 +252,7 @@ class MessagesList extends Component{
                                     ''
                             }
                             {
-                                auth && user_auth.rang_alias !== 'zabanen'
+                                auth && user_auth.rang.alias !== 'zabanen'
                                     ?
                                     <li title="Цитировать" onClick={ this.setQuote }>
                                         <FontAwesomeIcon icon={ faCommentDots }/>
@@ -254,7 +261,7 @@ class MessagesList extends Component{
                                     ''
                             }
                             {
-                                auth && user_auth.id === message.user_id
+                                auth && user_auth.id === message.user.id
                                     ?
                                     <li title="Редактировать" onClick={ this.showEditor }>
                                         <FontAwesomeIcon icon={ faEdit }/>

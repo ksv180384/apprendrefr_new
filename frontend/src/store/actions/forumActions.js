@@ -13,7 +13,7 @@ import {
     FORUM_SEND_MESSAGE_REQUEST,
     FORUM_SET_STATUSES,
     FORUM_SEND_MESSAGE_SUCCESS,
-    ERROR_PAGE, FORUM_CREATE_THEM_REQUEST, FORUM_CREATE_THEM_SUCCESS, SET_LOADER, LOAD_PROVERB
+    ERROR_PAGE, FORUM_CREATE_THEM_REQUEST, FORUM_CREATE_THEM_SUCCESS, SET_LOADER, LOAD_PROVERB, SET_FOOTER
 } from './index';
 
 import axios from 'axios';
@@ -67,6 +67,7 @@ export const loadForumsListPage = (path_page, params = {}) => {
             if(result.data.statistic){
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
@@ -110,6 +111,7 @@ export const loadTopicsListPage = (path_page, params = {}) => {
             if(result.data.statistic){
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
@@ -152,10 +154,11 @@ export const loadMessagesListPage = (path_page, params = {}) => {
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });
-            dispatch({ type: SET_LOADER_PAGE, payload: false });
             if(result.data.statistic){
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
+            dispatch({ type: SET_LOADER_PAGE, payload: false });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

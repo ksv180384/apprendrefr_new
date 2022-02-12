@@ -19,28 +19,22 @@ class Message extends Model
         'update_at',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'created_at' => 'datetime:d.m.Y H:i:s',
-        'updated_at' => 'datetime:d.m.Y H:i:s',
-    ];
-
     public function topic()
     {
-        return $this->belongsTo('App\Models\Forum\Topic');
+        return $this->belongsTo(Topic::class);
     }
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
     public function statusTitle()
     {
-        return $this->hasOne('App\Models\Forum\Status','id', 'status');
+        return $this->hasOne(MessageStatus::class,'id', 'status');
+    }
+
+    public function userMessages(){
+        return $this->hasManyThrough(Message::class, User::class, 'id', 'user_id', 'user_id', 'id');
     }
 }

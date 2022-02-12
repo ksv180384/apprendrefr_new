@@ -10,52 +10,65 @@ use App\Repositories\ProverbRepository;
 use App\Repositories\StatisticRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WordRepository;
+use App\Services\ForumMessageService;
+use App\Services\ForumTopicService;
+use App\Services\ProverbService;
+use App\Services\StatisticService;
+use App\Services\UserService;
+use App\Services\WordService;
 use Illuminate\Http\Request;
 
 class GrammarController extends BaseController
 {
     /**
-     * @var WordRepository
+     * @var WordService
      */
-    private $wordRepository;
+    private $wordService;
     /**
-     * @var UserRepository
+     * @var ProverbService
      */
-    private $userRepository;
+    private $proverbService;
     /**
-     * @var ProverbRepository
+     * @var UserService
      */
-    private $proverbRepository;
+    private $userService;
 
     /**
-     * @var ForumMessageRepository
+     * @var StatisticService
      */
-    private $forumMessageRepository;
+    private $statisticService;
 
     /**
-     * @var StatisticRepository
+     * @var ForumMessageService
      */
-    private $statisticRepository;
+    private $forumMessageService;
 
     /**
-     * @var ForumTopicRepository
+     * @var ForumTopicService
      */
-    private $forumTopicRepository;
+    private $forumTopicService;
 
-    public function __construct()
+    public function __construct(
+        WordService $wordService,
+        ProverbService $proverbService,
+        UserService $userService,
+        StatisticService $statisticService,
+        ForumMessageService $forumMessageService,
+        ForumTopicService $forumTopicService
+    )
     {
         parent::__construct();
-        //$this->middleware('auth:api');
-        $this->wordRepository = app(WordRepository::class);
-        $this->proverbRepository = app(ProverbRepository::class);
-        $this->userRepository = app(UserRepository::class);
-        $this->statisticRepository = app(StatisticRepository::class);
-        $this->forumMessageRepository = app(ForumMessageRepository::class);
-        $this->forumTopicRepository = app(ForumTopicRepository::class);
+        $this->wordService = $wordService;
+        $this->proverbService = $proverbService;
+        $this->userService = $userService;
+        $this->statisticService = $statisticService;
+        $this->forumMessageService = $forumMessageService;
+        $this->forumTopicService = $forumTopicService;
     }
 
     public function index(){
         $grammars_list = Grammar::select(['id', 'title'])->get();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         return response()->json([
             'title' => 'Грамматика французского языка',
@@ -69,16 +82,14 @@ class GrammarController extends BaseController
                 'grammars_list' => $grammars_list,
                 'grammar_content' => '',
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
     }
 
     public function show($id){
-        $grammar_content = Grammar::select(['id', 'title', 'description', 'content'])->where('id', '=', (int)$id)->first();
-        if(empty($grammar_content)){
-            return response()->json(['message' => 'Такой страницы не существует.'], 404);
-        }
+        $grammar_content = Grammar::select(['id', 'title', 'description', 'content'])->findOrFail($id);
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         return response()->json([
             'title' => $grammar_content->title . ' - грамматика французского языка',
@@ -87,18 +98,15 @@ class GrammarController extends BaseController
             'data' => [
                 'grammar_content' => $grammar_content,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
     }
 
     public function showPage($id){
         $grammars_list = Grammar::select(['id', 'title'])->get();
-        $grammar_content = Grammar::select(['id', 'title', 'description', 'content'])->where('id', '=', (int)$id)->first();
-        if(empty($grammar_content)){
-            return response()->json(['message' => 'Такой страницы не существует.'], 404);
-        }
-
+        $grammar_content = Grammar::select(['id', 'title', 'description', 'content'])->findOrFail($id);
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         return response()->json([
             'title' => $grammar_content->title . ' - грамматика французского языка',
@@ -112,7 +120,7 @@ class GrammarController extends BaseController
                 'grammars_list' => $grammars_list,
                 'grammar_content' => $grammar_content,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
     }

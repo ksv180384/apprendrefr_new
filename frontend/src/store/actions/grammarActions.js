@@ -5,7 +5,7 @@ import {
     SET_LOGIN,
     SET_USER,
     SET_LOADER_PAGE,
-    SET_META, SET_LOADER,
+    SET_META, SET_LOADER, SET_FOOTER,
 } from './index';
 import {config} from "../../config";
 import axios from "axios/index";
@@ -36,6 +36,7 @@ export const getPage = (path_page) => {
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

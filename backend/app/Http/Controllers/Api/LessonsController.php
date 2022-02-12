@@ -2,39 +2,42 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Repositories\LessonRepository;
-use App\Repositories\UserRepository;
-use Illuminate\Http\Request;
+use App\Services\LessonService;
+use App\Services\UserService;
 
 class LessonsController extends BaseController
 {
 
     /**
-     * @var UserRepository
+     * @var UserService
      */
-    private $userRepository;
+    private $userService;
 
     /**
-     * @var LessonRepository
+     * @var LessonService
      */
-    private $lessonRepository;
+    private $lessonService;
 
 
-    public function __construct()
+    public function __construct(
+        UserService $userService,
+        LessonService $lessonService
+    )
     {
         parent::__construct();
-        $this->userRepository = app(UserRepository::class);
-        $this->lessonRepository = app(LessonRepository::class);
+        $this->userService = $userService;
+        $this->lessonService = $lessonService;
     }
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         //
-        $lessons = $this->lessonRepository->getTitleList()->toArray();
+        $lessons = $this->lessonService->getTitleList()->toArray();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         return response()->json([
             'title' => 'Уроки французского языка',
@@ -42,46 +45,26 @@ class LessonsController extends BaseController
             'keywords' => 'Уроки французского языка',
             'footer' => [
                 $this->yar_life,
-                'E-mail: ' . self::EMAIL,
+                self::EMAIL,
             ],
             'data' => [
                 'list' => $lessons,
                 'content' => '',
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
         //
         if($id == 0){
             return response()->json([
@@ -91,11 +74,11 @@ class LessonsController extends BaseController
                 'data' => [
                     'content' => '',
                 ],
-                'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+                'user' => $user,
                 'auth' => \Auth::check(),
             ]);
         }
-        $lesson = $this->lessonRepository->getById((int)$id)->toArray();
+        $lesson = $this->lessonService->getById($id);
         if(empty($lesson)){
             return response()->json(['message' => 'Такой страницы не существует.'], 404);
         }
@@ -103,26 +86,28 @@ class LessonsController extends BaseController
         $lesson['content'] = preg_replace(
             '/<img .*? src="([^"]*)" .*?>/',
             '<span class="lesson-play-btn"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="play" class="svg-inline--fa fa-play fa-w-14 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg></span>',
-            $lesson['content']
+            $lesson->content
         );
 
 
         return response()->json([
-            'title' => 'Тема урока' . $lesson['title'] . ' | Французский язык',
-            'description' => $lesson['description'],
-            'keywords' => 'Тема урока' . $lesson['title'] . ' | Французский язык',
+            'title' => 'Тема урока' . $lesson->title . ' | Французский язык',
+            'description' => $lesson->description,
+            'keywords' => 'Тема урока' . $lesson->title . ' | Французский язык',
             'data' => [
                 'content' => $lesson,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
     }
 
 
     public function showPage($id){
-        $lessons_list = $this->lessonRepository->getTitleList()->toArray();
-        $lesson = $this->lessonRepository->getById((int)$id)->toArray();
+        $lessons_list = $this->lessonService->getTitleList();
+        $lesson = $this->lessonService->getById($id);
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
+
         if(empty($lesson)){
             return response()->json(['message' => 'Такой страницы не существует.'], 404);
         }
@@ -130,57 +115,23 @@ class LessonsController extends BaseController
         $lesson['content'] = preg_replace(
             '/<img .*? src="([^"]*)" .*?>/',
             '<span class="lesson-play-btn"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="play" class="svg-inline--fa fa-play fa-w-14 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg></span>',
-            $lesson['content']
+            $lesson->content
         );
 
         return response()->json([
-            'title' => 'Тема урока' . $lesson['title'] . ' | Французский язык',
-            'description' => $lesson['description'],
-            'keywords' => 'Тема урока' . $lesson['title'] . ' | Французский язык',
+            'title' => 'Тема урока' . $lesson->title . ' | Французский язык',
+            'description' => $lesson->description,
+            'keywords' => 'Тема урока' . $lesson->title . ' | Французский язык',
             'footer' => [
                 $this->yar_life,
-                'E-mail: ' . self::EMAIL,
+                self::EMAIL,
             ],
             'data' => [
                 'content' => $lesson,
                 'list' => $lessons_list,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

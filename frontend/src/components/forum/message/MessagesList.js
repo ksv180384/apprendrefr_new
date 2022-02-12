@@ -45,7 +45,12 @@ class MessagesList extends Component{
                         <div className="panel_header">
                             <h1>Форум - { topic.title }</h1>
                             {
-                                user.admin === 1 || user.rang_alias === 'administrator' || user.rang_alias === 'moderator'
+                                user &&
+                                (
+                                    user.admin === 1 ||
+                                    user.rang.alias === 'administrator' ||
+                                    user.rang.alias === 'moderator'
+                                )
                                     ?
                                     <div className="control-view-items" onClick={ this.toggleShowHiddenMessage }>
                                         {

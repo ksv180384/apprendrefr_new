@@ -7,7 +7,7 @@ import {
     SET_META,
     WORD_SET_LIST,
     STATISTIC_SET_DATA,
-    LYRIC_SET_ITEM, LOAD_PROVERB
+    LYRIC_SET_ITEM, LOAD_PROVERB, SET_FOOTER
 } from './index';
 import axios from "axios/index";
 import {config} from "../../config";
@@ -37,6 +37,7 @@ export const getPageList = () => {
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
@@ -66,6 +67,7 @@ export const getPageItem = (id) => {
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

@@ -1,6 +1,19 @@
 import {
-    WORDS_PAGE, WORDS_PAGE_POS, WORDS_PAGE_NUM, SET_LOADER_PAGE, ERROR_PAGE, SET_META, SET_USER,
-    SET_LOGIN, WORD_SET_LIST, STATISTIC_SET_DATA, SET_LOADER, WORDS_PAGE_SET_LANG, WORDS_PAGE_SET_POS, LOAD_PROVERB
+    WORDS_PAGE,
+    WORDS_PAGE_POS,
+    WORDS_PAGE_NUM,
+    SET_LOADER_PAGE,
+    ERROR_PAGE,
+    SET_META,
+    SET_USER,
+    SET_LOGIN,
+    WORD_SET_LIST,
+    STATISTIC_SET_DATA,
+    SET_LOADER,
+    WORDS_PAGE_SET_LANG,
+    WORDS_PAGE_SET_POS,
+    LOAD_PROVERB,
+    SET_FOOTER
 } from './index';
 import { config } from '../../config';
 import axios from 'axios';
@@ -44,6 +57,7 @@ export const getPage = (params = {}) => {
             dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });
             dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

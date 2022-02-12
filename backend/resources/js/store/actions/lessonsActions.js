@@ -10,6 +10,7 @@ import {
 } from './index';
 import {config} from "../../config";
 import axios from "axios/index";
+import {SET_FOOTER} from "../../../../../frontend/src/store/actions";
 
 export const getPage = (path_page) => {
     return (dispatch) => {
@@ -37,6 +38,7 @@ export const getPage = (path_page) => {
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

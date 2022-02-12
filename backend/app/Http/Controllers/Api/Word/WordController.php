@@ -3,54 +3,62 @@
 namespace App\Http\Controllers\Api\Word;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Repositories\ForumMessageRepository;
-use App\Repositories\ProverbRepository;
-use App\Repositories\StatisticRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\WordRepository;
+use App\Models\Words\Word;
+use App\Services\ForumMessageService;
+use App\Services\ProverbService;
+use App\Services\StatisticService;
+use App\Services\UserService;
+use App\Services\WordService;
 use Illuminate\Http\Request;
 
 class WordController extends BaseController
 {
     /**
-     * @var WordRepository
+     * @var WordService
      */
-    private $wordRepository;
+    private $wordService;
 
     /**
-     * @var UserRepository
+     * @var ProverbService
      */
-    private $userRepository;
-    /**
-     * @var ProverbRepository
-     */
-    private $proverbRepository;
+    private $proverbService;
 
     /**
-     * @var ForumMessageRepository
+     * @var UserService
      */
-    private $forumMessageRepository;
+    private $userService;
 
     /**
-     * @var StatisticRepository
+     * @var StatisticService
      */
-    private $statisticRepository;
+    private $statisticService;
+
+    /**
+     * @var ForumMessageService
+     */
+    private $forumMessageService;
 
 
-    public function __construct()
+    public function __construct(
+        WordService $wordService,
+        ProverbService $proverbService,
+        UserService $userService,
+        StatisticService $statisticService,
+        ForumMessageService $forumMessageService
+    )
     {
-        $this->wordRepository = app(WordRepository::class);
-        $this->proverbRepository = app(ProverbRepository::class);
-        $this->userRepository = app(UserRepository::class);
-        $this->statisticRepository = app(StatisticRepository::class);
-        $this->forumMessageRepository = app(ForumMessageRepository::class);
         parent::__construct();
+        $this->wordService = $wordService;
+        $this->proverbService = $proverbService;
+        $this->userService = $userService;
+        $this->statisticService = $statisticService;
+        $this->forumMessageService = $forumMessageService;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -58,26 +66,27 @@ class WordController extends BaseController
         $pos = $request->pos ?: false;
 
         if(!empty($request->lang) && $request->lang == 'ru') {
-            $words_page = $this->wordRepository->getWordsPaginateRu($pos);
+            $wordsPage = $this->wordService->getWordsPaginateRu($pos);
         }else{
-            $words_page = $this->wordRepository->getWordsPaginateFr($pos);
+            $wordsPage = $this->wordService->getWordsPaginateFr($pos);
         }
-        if(empty($words_page->toArray()['data'])){
+        if(empty($wordsPage)){
             return response()->json(['message' => 'Такой страницы не существует.'], 404);
         }
         if(!empty($request->pos)){
-            $pos = $this->wordRepository->getPosById((int)$request->pos);
+            $pos = $this->wordService->getPosById((int)$request->pos);
         }
-        $pos_list = $this->wordRepository->getPosAll();
-        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+        $posList = $this->wordService->getPosAll();
+        $proverb = $this->proverbService->proverbRandomOne();
 
-        $words_list = $this->wordRepository->getRandomWords();
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+        $wordsList = $this->wordService->wordsRandom();
+        $onlineUsers = $this->statisticService->onlineUsers();
+        $countUsers = $onlineUsers->count();
+        $countGuests = $this->statisticService->countGuests();
+        $countUsersRegister = $this->userService->countUsersRegister();
+        $countAll = $countUsers + $countGuests;
+        $countMessages = $this->forumMessageService->countMessagesAll();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         $title = 'Французско-русский словарь' . ((!empty($pos)) ? ' ' . $pos->title : '');
         if(!empty($request->lang) && $request->lang == 'ru'){
@@ -94,19 +103,19 @@ class WordController extends BaseController
             ],
             'proverb' => $proverb,
             'data' => [
-                'words' => $words_page,
-                'pos_list' => $pos_list,
+                'words' => $wordsPage,
+                'pos_list' => $posList,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
-            'words_list' => $words_list,
+            'words_list' => $wordsList,
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $onlineUsers,
+                'count_guests' => $countGuests,
+                'count_users' => $countUsers,
+                'count_all' => $countAll,
+                'count_users_register' => $countUsersRegister,
+                'count_messages' => $countMessages,
             ],
         ]);
     }
@@ -115,25 +124,22 @@ class WordController extends BaseController
         $pos = $request->pos ?: false;
 
         if(!empty($request->lang) && $request->lang == 'ru') {
-            $words_page = $this->wordRepository->getWordsPaginateRu($pos);
+            $words_page = $this->wordService->getWordsPaginateRu($pos);
         }else{
-            $words_page = $this->wordRepository->getWordsPaginateFr($pos);
-        }
-        /*
-        if(empty($words_page)){
-            return response()->json(['message' => 'Такой страницы не существует.'], 404);
-        }
-        */
-        if(!empty($request->pos)){
-            $pos = $this->wordRepository->getPosById((int)$request->pos);
+            $words_page = $this->wordService->getWordsPaginateFr($pos);
         }
 
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+        if(!empty($request->pos)){
+            $pos = $this->wordService->getPosById((int)$request->pos);
+        }
+
+        $onlineUsers = $this->statisticService->onlineUsers();
+        $countUsers = $onlineUsers->count();
+        $countGuests = $this->statisticService->countGuests();
+        $countUsersRegister = $this->userService->countUsersRegister();
+        $countAll = $countUsers + $countGuests;
+        $countMessages = $this->forumMessageService->countMessagesAll();
+        $user = \Auth::check() ? \Auth::user() : [];
 
         $title = 'Французско-русский словарь' . ((!empty($pos)) ? ' ' . $pos->title : '');
         if(!empty($request->lang) && $request->lang == 'ru'){
@@ -151,64 +157,44 @@ class WordController extends BaseController
             'data' => [
                 'words' => $words_page,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $onlineUsers,
+                'count_guests' => $countGuests,
+                'count_users' => $countUsers,
+                'count_all' => $countAll,
+                'count_users_register' => $countUsersRegister,
+                'count_messages' => $countMessages,
             ],
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
         //
-        $word = $this->wordRepository->getItem((int)$id);
+        $word = Word::find($id);
 
         if(empty($word)){
             return response()->json(['message' => 'Такой страницы не существует.'], 404);
         }
 
-        $words_list = $this->wordRepository->getRandomWords();
-        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+        $wordsList = $this->wordService->wordsRandom();
+        $proverb = $this->proverbService->proverbRandomOne();
 
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+        $onlineUsers = $this->statisticService->onlineUsers();
+        $countUsers = $onlineUsers->count();
+        $countGuests = $this->statisticService->countGuests();
+        $countUsersRegister = $this->userService->countUsersRegister();
+        $countAll = $countUsers + $countGuests;
+        $countMessages = $this->forumMessageService->countMessagesAll();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         $title = 'Перевод слова ' . $word->word;
 
@@ -224,52 +210,18 @@ class WordController extends BaseController
             'data' => [
                 'word' => $word,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
-            'words_list' => $words_list,
+            'words_list' => $wordsList,
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $onlineUsers,
+                'count_guests' => $countGuests,
+                'count_users' => $countUsers,
+                'count_all' => $countAll,
+                'count_users_register' => $countUsersRegister,
+                'count_messages' => $countMessages,
             ],
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     /**
@@ -278,7 +230,7 @@ class WordController extends BaseController
      * @return \Illuminate\Http\JsonResponse
      */
     public function getItem($id){
-        $word = $this->wordRepository->getItem((int)$id);
+        $word = Word::findOrFail($id);
 
         return response()->json($word);
     }
@@ -288,14 +240,18 @@ class WordController extends BaseController
      * @return \Illuminate\Http\JsonResponse
      */
     public function randomList(){
-        $words = $this->wordRepository->getRandomWords(10);
+        $words = $this->wordService->wordsRandom(10);
 
-        return response()->json($words->toArray());
+        return response()->json($words);
     }
 
+    /**
+     * Выбараем случайные слова и ваиранты ответов
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function testYourSelf(){
         $result = [];
-        $wordsList = $this->wordRepository->getRandomWords(60)->toArray();
+        $wordsList = $this->wordService->wordsRandom(60)->toArray();
 
         $key = 0;
         for ($i = 0; count($wordsList) > $i; $i++){
@@ -307,7 +263,6 @@ class WordController extends BaseController
             }
         }
 
-        //var_export($result);
         return response()->json($result);
     }
 
@@ -316,31 +271,37 @@ class WordController extends BaseController
             return response()->json([]);
         }
         if($request->lang === 'ru'){
-            $search_result = $this->wordRepository->searchRu($request->search);
+            $searchResult = $this->wordService->searchRu($request->search);
         }else{
-            $search_result = $this->wordRepository->searchFr($request->search);
+            $searchResult = $this->wordService->searchFr($request->search);
         }
 
-        return response()->json($search_result);
+        return response()->json($searchResult);
     }
 
+    /**
+     * Страница поиска слов
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function searchPage(Request $request){
         if(empty($request->search)){
             return response()->json([]);
         }
         if($request->lang === 'ru'){
-            $search_result = $this->wordRepository->searchRuPage($request->search);
+            $searchResult = $this->wordService->searchRuPage($request->search);
         }else{
-            $search_result = $this->wordRepository->searchFrPage($request->search);
+            $searchResult = $this->wordService->searchFrPage($request->search);
         }
 
-        $words_list = $this->wordRepository->getRandomWords();
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+        $wordsList = $this->wordService->wordsRandom();
+        $onlineUsers = $this->statisticService->onlineUsers();
+        $countUsers = $onlineUsers->count();
+        $countGuests = $this->statisticService->countGuests();
+        $countUsersRegister = $this->userService->countUsersRegister();
+        $countAll = $countUsers + $countGuests;
+        $countMessages = $this->forumMessageService->countMessagesAll();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         $title = $request->search;
 
@@ -353,22 +314,19 @@ class WordController extends BaseController
                 self::EMAIL,
             ],
             'data' => [
-                'words' => $search_result,
+                'words' => $searchResult,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
-            'words_list' => $words_list,
+            'words_list' => $wordsList,
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $onlineUsers,
+                'count_guests' => $countGuests,
+                'count_users' => $countUsers,
+                'count_all' => $countAll,
+                'count_users_register' => $countUsersRegister,
+                'count_messages' => $countMessages,
             ],
         ]);
-
-        return response()->json($search_result);
-
     }
 }

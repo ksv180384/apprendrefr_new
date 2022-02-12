@@ -10,7 +10,9 @@ import {
     SET_LOADER_PAGE,
     STATISTIC_SET_DATA,
     WORD_SET_LIST,
-    ERROR_PAGE, LOAD_PROVERB
+    ERROR_PAGE,
+    LOAD_PROVERB,
+    SET_FOOTER
 } from './index';
 
 
@@ -38,11 +40,12 @@ export const getPage = (path_page, params = {}) => {
             });
             dispatch({ type: SET_USER, payload: result.data.user });
             dispatch({ type: SET_LOGIN, payload: result.data.auth });
-            dispatch({ type: WORD_SET_LIST, payload: result.data.words_list });
+            dispatch({ type: WORD_SET_LIST, payload: result.data.words });
             dispatch({ type: SET_LOADER_PAGE, payload: false });
             if(result.data.statistic){
                 dispatch({ type: STATISTIC_SET_DATA, payload: result.data.statistic });
             }
+            dispatch({ type: SET_FOOTER, payload: result.data.footer });
         }).catch((error) => {
             dispatch({ type: ERROR_PAGE });
             dispatch({ type: SET_LOADER_PAGE, payload: false });

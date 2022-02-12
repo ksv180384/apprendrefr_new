@@ -48,7 +48,7 @@ class UserPanel extends Component{
                 .then((response) => {
                     store.dispatch(setLoader(false));
                     store.dispatch(setLogin(response.data.auth));
-                    store.dispatch(setUser({}));
+                    store.dispatch(setUser(null));
                     if(response.data.statistic){
                         store.dispatch(setStatistic(response.data.statistic));
                     }
@@ -75,7 +75,7 @@ class UserPanel extends Component{
     componentWillUnmount(){
         window.removeEventListener('click', this.hideControlListPanelOutside);
     }
-    
+
     render(){
 
         const { login, avatar, rang_title } = this.props.user;

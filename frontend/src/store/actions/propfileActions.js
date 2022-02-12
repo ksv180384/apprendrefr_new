@@ -1,4 +1,4 @@
-import {PROFILE_FORM_REQUEST, PROFILE_FORM_SUCCESS, PROFILE_FORM_ERROR, SET_USER, SET_LOADER, LOAD_PAGE} from './index';
+import {PROFILE_FORM_REQUEST, PROFILE_FORM_SUCCESS, PROFILE_FORM_ERROR, SET_USER, SET_LOADER} from './index';
 import axios from 'axios';
 import { config } from '../../config';
 import { setLoader } from "./loaderActions";
