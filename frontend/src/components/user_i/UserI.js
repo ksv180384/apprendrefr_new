@@ -21,7 +21,7 @@ const UserI = (props) => {
     const age = Moment().diff(user_info.birthday, 'years', false);
 
     return(
-        user_info
+        user_info.infos
             ?
             <React.Fragment>
                 <div className="panel">
@@ -47,9 +47,9 @@ const UserI = (props) => {
 
                                 <div className="user-info-social-block">
                                     {
-                                        user_info.facebook
+                                        user_info.infos.facebook
                                             ?
-                                            <a  href={ user_info.info_facebook_link } title="Facebook" target="_blank"
+                                            <a  href={ user_info.infos.facebook_link } title="Facebook" target="_blank"
                                                 className="MessageItem-social-item">
                                                 <FontAwesomeIcon icon={ faFacebookF } />
                                             </a>
@@ -57,9 +57,9 @@ const UserI = (props) => {
                                             ''
                                     }
                                     {
-                                        user_info.instagram
+                                        user_info.infos.instagram
                                             ?
-                                            <a  href={ user_info.info_instagram_link } title="Instagram" target="_blank"
+                                            <a  href={ user_info.infos.instagram_link } title="Instagram" target="_blank"
                                                 className="MessageItem-social-item">
                                                 <FontAwesomeIcon icon={ faInstagram } />
                                             </a>
@@ -67,9 +67,9 @@ const UserI = (props) => {
                                             ''
                                     }
                                     {
-                                        user_info.odnoklassniki
+                                        user_info.infos.odnoklassniki
                                             ?
-                                            <a  href={ user_info.info_odnoklassniki_link } title="Odnoklassniki" target="_blank"
+                                            <a  href={ user_info.infos.odnoklassniki_link } title="Odnoklassniki" target="_blank"
                                                 className="MessageItem-social-item">
                                                 <FontAwesomeIcon icon={ faOdnoklassniki } />
                                             </a>
@@ -77,9 +77,9 @@ const UserI = (props) => {
                                             ''
                                     }
                                     {
-                                        user_info.vk
+                                        user_info.infos.vk
                                             ?
-                                            <a  href={ user_info.info_vk_link } title="Vk" target="_blank"
+                                            <a  href={ user_info.infos.vk_link } title="Vk" target="_blank"
                                                 className="MessageItem-social-item">
                                                 <FontAwesomeIcon icon={ faVk } />
                                             </a>
@@ -87,9 +87,9 @@ const UserI = (props) => {
                                             ''
                                     }
                                     {
-                                        user_info.youtube
+                                        user_info.infos.youtube
                                             ?
-                                            <a  href={ user_info.info_youtube_link } title="Youtube" target="_blank"
+                                            <a  href={ user_info.infos.youtube_link } title="Youtube" target="_blank"
                                                 className="MessageItem-social-item">
                                                 <FontAwesomeIcon icon={ faYoutube } />
                                             </a>
@@ -97,9 +97,9 @@ const UserI = (props) => {
                                             ''
                                     }
                                     {
-                                        user_info.twitter
+                                        user_info.infos.twitter
                                             ?
-                                            <a  href={ user_info.info_twitter_link } title="Twitter" target="_blank"
+                                            <a  href={ user_info.infos.twitter_link } title="Twitter" target="_blank"
                                                 className="MessageItem-social-item">
                                                 <FontAwesomeIcon icon={ faTwitter } />
                                             </a>
@@ -109,9 +109,9 @@ const UserI = (props) => {
                                 </div>
                                 <div className="user-info-messengers-block">
                                     {
-                                        user_info.skype
+                                        user_info.infos.skype
                                             ?
-                                            <span data-info={ user_info.info_skype } title="Skype"
+                                            <span data-info={ user_info.infos.skype } title="Skype"
                                                   className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faSkype } />
                             </span>
@@ -119,9 +119,9 @@ const UserI = (props) => {
                                             ''
                                     }
                                     {
-                                        user_info.telegram
+                                        user_info.infos.telegram
                                             ?
-                                            <span data-info={ user_info.info_telegram } title="Telegram"
+                                            <span data-info={ user_info.infos.telegram } title="Telegram"
                                                   className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faTelegram } />
                             </span>
@@ -129,9 +129,9 @@ const UserI = (props) => {
                                             ''
                                     }
                                     {
-                                        user_info.whatsapp
+                                        user_info.infos.whatsapp
                                             ?
-                                            <span data-info={ user_info.info_whatsapp } title="Whatsapp"
+                                            <span data-info={ user_info.infos.whatsapp } title="Whatsapp"
                                                   className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faWhatsapp } />
                             </span>
@@ -139,9 +139,9 @@ const UserI = (props) => {
                                             ''
                                     }
                                     {
-                                        user_info.viber
+                                        user_info.infos.viber
                                             ?
-                                            <span data-info={ user_info.info_viber } title="Viber" className="MessageItem-social-item">
+                                            <span data-info={ user_info.infos.viber } title="Viber" className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faViber } />
                             </span>
                                             :
@@ -174,7 +174,7 @@ const UserI = (props) => {
                                             :
                                             ''
                                     }
-                                    <li>Отправил(а) сообщений: <span className="strong">{ user_info.user_posts }</span></li>
+                                    <li>Отправил(а) сообщений: <span className="strong">{ user_info.messages_active_count }</span></li>
                                     { user_info.created_at ? <li>Дата регистрации: <span className="strong">{ Moment(user_info.created_at, 'DD.MM.YYYY').format('DD MMM YYYY') }</span></li> : '' }
                                 </ul>
                                 {

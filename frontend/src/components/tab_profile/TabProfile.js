@@ -133,7 +133,7 @@ class TabProfile extends Component{
                                     <div className="mb-10 inline-block">
                                         <BtnDropdown title="Пол"
                                                      name="sex"
-                                                     selectItem={ user.sex_id }
+                                                     selectItem={ user.sex.id }
                                                      selectList={ sex_list }
                                         />
                                     </div>
@@ -217,21 +217,21 @@ class TabProfile extends Component{
                             <div className="mb-40">
                                 <div className="w-50">
                                     <div className="pb-5 pr-5">
-                                        <BtnDropdown title="Email" name="email_view" selectItem={ user.email_view_id }
+                                        <BtnDropdown title="Email" name="email_view" selectItem={ user.config.email }
                                                      selectList={ config_user_data_view_list }/>
                                     </div>
                                     <div className="pt-5 pr-5">
-                                        <BtnDropdown title="О себе" name="info_view" selectItem={ user.info_view_id }
+                                        <BtnDropdown title="О себе" name="info_view" selectItem={ user.config.info }
                                                      selectList={ config_user_data_view_list }/>
                                     </div>
                                 </div>
                                 <div className="w-50">
                                     <div className="pb-5 pl-5">
-                                        <BtnDropdown title="Место жительства" name="residence_view" selectItem={ user.residence_view_id }
+                                        <BtnDropdown title="Место жительства" name="residence_view" selectItem={ user.config.residence }
                                                      selectList={ config_user_data_view_list }/>
                                     </div>
                                     <div className="pt-5 pl-5">
-                                        <BtnDropdown title="Пол" name="sex_view" selectItem={ user.sex_view_id }
+                                        <BtnDropdown title="Пол" name="sex_view" selectItem={ user.config.sex }
                                                      selectList={ config_user_data_view_list }/>
                                     </div>
                                 </div>
@@ -244,8 +244,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Facebook"
                                          name="facebook"
-                                         defaultValue={ user.facebook }
-                                         selectItem={ user.facebook_view_id }
+                                         defaultValue={ user.infos.facebook }
+                                         selectItem={ user.config.facebook }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>
@@ -255,8 +255,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Однокласники"
                                          name="odnoklassniki"
-                                         defaultValue={ user.odnoklassniki }
-                                         selectItem={ user.odnoklassniki_view_id }
+                                         defaultValue={ user.infos.odnoklassniki }
+                                         selectItem={ user.config.odnoklassniki }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>
@@ -266,8 +266,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Twitter"
                                          name="twitter"
-                                         defaultValue={ user.twitter }
-                                         selectItem={ user.twitter_view_id }
+                                         defaultValue={ user.infos.twitter }
+                                         selectItem={ user.config.twitter }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>
@@ -277,8 +277,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Вконтакте"
                                          name="vk"
-                                         defaultValue={ user.vk }
-                                         selectItem={ user.vk_view_id }
+                                         defaultValue={ user.infos.vk }
+                                         selectItem={ user.config.vk }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>
@@ -288,8 +288,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Youtube"
                                          name="youtube"
-                                         defaultValue={ user.youtube }
-                                         selectItem={ user.youtube_view_id }
+                                         defaultValue={ user.infos.youtube }
+                                         selectItem={ user.config.youtube }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>
@@ -302,8 +302,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Instagram"
                                          name="instagram"
-                                         defaultValue={ user.instagram }
-                                         selectItem={ user.instagram_view_id }
+                                         defaultValue={ user.infos.instagram }
+                                         selectItem={ user.config.instagram }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>
@@ -313,8 +313,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Skype"
                                          name="skype"
-                                         defaultValue={ user.skype }
-                                         selectItem={ user.skype_view_id }
+                                         defaultValue={ user.infos.skype }
+                                         selectItem={ user.config.skype }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>
@@ -324,8 +324,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Telegram"
                                          name="telegram"
-                                         defaultValue={ user.telegram }
-                                         selectItem={ user.telegram_view_id }
+                                         defaultValue={ user.infos.telegram }
+                                         selectItem={ user.config.telegram }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>
@@ -335,8 +335,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Whatsapp"
                                          name="whatsapp"
-                                         defaultValue={ user.whatsapp }
-                                         selectItem={ user.whatsapp_view_id }
+                                         defaultValue={ user.infos.whatsapp }
+                                         selectItem={ user.config.whatsapp }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>
@@ -346,8 +346,8 @@ class TabProfile extends Component{
                                          type="text"
                                          placeholder="Viber"
                                          name="viber"
-                                         defaultValue={ user.viber }
-                                         selectItem={ user.viber_view_id }
+                                         defaultValue={ user.infos.viber }
+                                         selectItem={ user.config.viber }
                                          selectList={ config_user_data_view_list }
                                 />
                             </div>

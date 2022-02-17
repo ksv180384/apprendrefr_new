@@ -109,9 +109,9 @@ class MessagesList extends Component{
                     </div>
                     <div className="MessageItem-social-block">
                         {
-                            message.user.info.facebook
+                            message.user.infos.facebook
                                 ?
-                                <a  href={ message.user.info.facebook_link } title="Facebook" target="_blank"
+                                <a  href={ message.user.infos.facebook_link } title="Facebook" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faFacebookF } />
                                 </a>
@@ -119,9 +119,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.user.info.instagram
+                            message.user.infos.instagram
                                 ?
-                                <a  href={ message.user.info.instagram_link } title="Instagram" target="_blank"
+                                <a  href={ message.user.infos.instagram_link } title="Instagram" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faInstagram } />
                                 </a>
@@ -129,9 +129,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.user.info.odnoklassniki
+                            message.user.infos.odnoklassniki
                                 ?
-                                <a  href={ message.user.info.odnoklassniki_link } title="Odnoklassniki" target="_blank"
+                                <a  href={ message.user.infos.odnoklassniki_link } title="Odnoklassniki" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faOdnoklassniki } />
                                 </a>
@@ -139,9 +139,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.user.info.vk
+                            message.user.infos.vk
                                 ?
-                                <a  href={ message.user.info.vk_link } title="Vk" target="_blank"
+                                <a  href={ message.user.infos.vk_link } title="Vk" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faVk } />
                                 </a>
@@ -149,9 +149,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.user.info.youtube
+                            message.user.infos.youtube
                                 ?
-                                <a  href={ message.user.info.youtube_link } title="Youtube" target="_blank"
+                                <a  href={ message.user.infos.youtube_link } title="Youtube" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faYoutube } />
                                 </a>
@@ -159,9 +159,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.user.info.twitter
+                            message.user.infos.twitter
                                 ?
-                                <a  href={ message.user.info.twitter_link } title="Twitter" target="_blank"
+                                <a  href={ message.user.infos.twitter_link } title="Twitter" target="_blank"
                                     className="MessageItem-social-item">
                                     <FontAwesomeIcon icon={ faTwitter } />
                                 </a>
@@ -171,9 +171,9 @@ class MessagesList extends Component{
                     </div>
                     <div className="MessageItem-messengers-block">
                         {
-                            message.user.info.skype
+                            message.user.infos.skype
                                 ?
-                                <span data-info={ message.info.skype } title="Skype"
+                                <span data-info={ message.user.infos.skype } title="Skype"
                                       className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faSkype } />
                             </span>
@@ -181,9 +181,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.info_telegram
+                            message.user.infos.telegram
                                 ?
-                                <span data-info={ message.user.info.telegram } title="Telegram"
+                                <span data-info={ message.user.infos.telegram } title="Telegram"
                                       className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faTelegram } />
                             </span>
@@ -191,9 +191,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.info_whatsapp
+                            message.user.infos.whatsapp
                                 ?
-                                <span data-info={ message.user.info.whatsapp } title="Whatsapp"
+                                <span data-info={ message.user.infos.whatsapp } title="Whatsapp"
                                       className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faWhatsapp } />
                             </span>
@@ -201,9 +201,9 @@ class MessagesList extends Component{
                                 ''
                         }
                         {
-                            message.user.info.viber
+                            message.user.infos.viber
                                 ?
-                                <span data-info={ message.user.info.viber } title="Viber" className="MessageItem-social-item">
+                                <span data-info={ message.user.infos.viber } title="Viber" className="MessageItem-social-item">
                                 <FontAwesomeIcon icon={ faViber } />
                             </span>
                                 :

@@ -90,12 +90,16 @@ class User extends Authenticatable implements JWTSubject//, MustVerifyEmail
         return $this->hasOne(Sex::class, 'id', 'sex');
     }
 
-    public function info(){
+    public function infos(){
         return $this->hasOne(UserInfo::class);
     }
 
     public function messages(){
         return $this->hasMany(Message::class, 'user_id', 'id');
+    }
+
+    public function messagesActive(){
+        return $this->hasMany(Message::class, 'user_id', 'id')->where('status', 1);
     }
 
     /**

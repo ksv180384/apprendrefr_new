@@ -29,7 +29,7 @@ Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) 
     // User
     Route::group(['prefix' => 'user', 'namespace' => 'User'], function ($router) {
 
-        Route::get('profile-page', 'UserController@index')->name('api.user.profile-page');
+        Route::get('profile-page', [\App\Http\Controllers\Api\User\UserController::class, 'index'])->name('api.user.profile-page');
         Route::get('info-page/{id}', 'UserController@show')->name('api.user.info');
         Route::get('list-page', 'UserController@listUsers')->name('api.user.list_users');
         Route::get('list/paginate', 'UserController@getUsersListPaginate')->name('api.user.list_users_paginate');

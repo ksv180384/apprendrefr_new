@@ -247,7 +247,7 @@ class MessageController extends BaseController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(ForumMessageUpdateRequest $request, $id)
     {
@@ -374,46 +374,46 @@ class MessageController extends BaseController
         }else{ // для всех
             foreach ($messages as $k=>$item){
                 if($item->user->config->email->alias != 'vsem'){
-                    $messages[$k]->user->info->email = null;
+                    $messages[$k]->user->infos->email = null;
                 }
                 if($item->user->config->facebook->alias != 'vsem'){
-                    $messages[$k]->user->info->facebook = null;
+                    $messages[$k]->user->infos->facebook = null;
                 }
                 if($item->user->config->info->alias != 'vsem'){
-                    $messages[$k]->user->info->info = null;
+                    $messages[$k]->user->infos->info = null;
                 }
                 if($item->user->config->instagram->alias != 'vsem'){
-                    $messages[$k]->user->info->instagram = null;
+                    $messages[$k]->user->infos->instagram = null;
                 }
                 if($item->user->config->odnoklassniki->alias != 'vsem'){
-                    $messages[$k]->user->info->odnoklassniki = null;
+                    $messages[$k]->user->infos->odnoklassniki = null;
+                }
+                if($item->user->config->residence->alias != 'vsem'){
+                    $messages[$k]->user->infos->residence = null;
                 }
                 if($item->user->config->odnoklassniki->alias != 'vsem'){
-                    $messages[$k]->user->info->residence = null;
-                }
-                if($item->user->config->odnoklassniki->alias != 'vsem'){
-                    $messages[$k]->user->info->sex = null;
+                    $messages[$k]->user->infos->sex = null;
                 }
                 if($item->user->config->skype->alias != 'vsem'){
-                    $messages[$k]->user->info->skype = null;
+                    $messages[$k]->user->infos->skype = null;
                 }
                 if($item->user->config->telegram->alias != 'vsem'){
-                    $messages[$k]->user->info->telegram = null;
+                    $messages[$k]->user->infos->telegram = null;
                 }
                 if($item->user->config->twitter->alias != 'vsem'){
-                    $messages[$k]->user->info->twitter = null;
+                    $messages[$k]->user->infos->twitter = null;
                 }
                 if($item->user->config->telegram->alias != 'vsem'){
-                    $messages[$k]->user->info->vk = null;
+                    $messages[$k]->user->infos->vk = null;
                 }
                 if($item->user->config->whatsapp->alias != 'vsem'){
-                    $messages[$k]->user->info->whatsapp = null;
+                    $messages[$k]->user->infos->whatsapp = null;
                 }
                 if($item->user->config->youtube->alias != 'vsem'){
-                    $messages[$k]->user->info->youtube = null;
+                    $messages[$k]->user->infos->youtube = null;
                 }
                 if($item->user->config->viber->alias != 'vsem'){
-                    $messages[$k]->user->info->viber = null;
+                    $messages[$k]->user->infos->viber = null;
                 }
             }
         }
@@ -424,13 +424,12 @@ class MessageController extends BaseController
     // Формирует url на соц сети
     private function formatSocialLinks($messages){
         foreach ($messages as $k=>$item){
-            $messages[$k]->user->info->setAttribute('facebook_link', 'https://fb.com/' . $item->user->info->facebook);
-            $messages[$k]->user->info->setAttribute('odnoklassniki_link', 'https://fb.com/' . $item->user->info->odnoklassniki);
-            $messages[$k]->user->info->setAttribute('twitter_link', 'https://fb.com/' . $item->user->info->twitter);
-            $messages[$k]->user->info->setAttribute('vk_link', 'https://fb.com/' . $item->user->info->vk);
-            $messages[$k]->user->info->setAttribute('facebook_link', 'https://fb.com/' . $item->user->info->facebook);
-            $messages[$k]->user->info->setAttribute('youtube_link', 'https://fb.com/' . $item->user->info->youtube);
-            $messages[$k]->user->info->setAttribute('instagram_link', 'https://fb.com/' . $item->user->info->instagram);
+            $messages[$k]->user->infos->setAttribute('facebook_link', 'https://fb.com/' . $item->user->infos->facebook);
+            $messages[$k]->user->infos->setAttribute('odnoklassniki_link', 'https://fb.com/' . $item->user->infos->odnoklassniki);
+            $messages[$k]->user->infos->setAttribute('twitter_link', 'https://fb.com/' . $item->user->infos->twitter);
+            $messages[$k]->user->infos->setAttribute('vk_link', 'https://fb.com/' . $item->user->infos->vk);
+            $messages[$k]->user->infos->setAttribute('youtube_link', 'https://fb.com/' . $item->user->infos->youtube);
+            $messages[$k]->user->infos->setAttribute('instagram_link', 'https://fb.com/' . $item->user->infos->instagram);
         }
 
         return $messages;

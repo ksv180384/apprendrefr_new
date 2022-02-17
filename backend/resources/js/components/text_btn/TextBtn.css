@@ -56,10 +56,10 @@
 .TextBtn-list-block>span{
     display: inline-block;
     font-size: 12px;
-    padding: 4px 6px 0;
-    /*width: 100px;*/
+    padding: 8px 6px 0;
+    /* width: 100px; */
     text-align: center;
-    height: calc(100% - 6px);
+    height: calc(100% - 0px);
     cursor: pointer;
     user-select: none;
 }

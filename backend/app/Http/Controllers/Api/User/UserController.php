@@ -77,7 +77,8 @@ class UserController extends BaseController
         $sexList = array_merge($sexList, Sex::select('id', 'title')->orderBy('id', 'asc')->get()->toArray());
         $configUserDataViewList = UserConfigsView::all();
         $wordsList = $this->wordService->wordsRandom();
-        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
+        $user = \Auth::user();
+        $user->load(['rang', 'infos', 'config', 'sex']);
 
         return response()->json([
             'title' => 'Ваш профиль | ' . $_SERVER['HTTP_HOST'],
@@ -101,47 +102,48 @@ class UserController extends BaseController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
         //
-        $user = $this->userRepository->getById((int)$id);
-        if(empty($user)){
+        $userSelect = $this->userService->getById($id);
+        if(empty($userSelect)){
             return response()->json(['message' => 'Неверный идентификатор пользователя.'], 404);
         }
-        $words_list = $this->wordRepository->getRandomWords();
-        $proverb = $this->proverbRepository->getRandomProverb(1)[0];
+        $words_list = $this->wordService->wordsRandom();
+        $proverb = $this->proverbService->proverbRandomOne();
 
-        $online_users = $this->statisticRepository->getOnlineUsers();
-        $count_users = count($online_users);
-        $count_guests = $this->statisticRepository->countGuests();
-        $count_users_register = $this->userRepository->countUsersRegister();
-        $count_all = $count_users + $count_guests;
-        $count_messages = $this->forumMessageRepository->countAll();
+        $onlineUsers = $this->statisticService->onlineUsers();
+        $countUsers = $onlineUsers->count();
+        $countGuests = $this->statisticService->countGuests();
+        $countUsersRegister = $this->userService->countUsersRegister();
+        $countAll = $countUsers + $countGuests;
+        $countMessages = $this->forumMessageService->countMessagesAll();
+        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         return response()->json([
-            'title' => $user->login . ' - профиль пользователя',
-            'description' => $user->login . ' - профиль пользователя',
-            'keywords' => $user->login . ' - профиль пользователя',
+            'title' => $userSelect->login . ' - профиль пользователя',
+            'description' => $userSelect->login . ' - профиль пользователя',
+            'keywords' => $userSelect->login . ' - профиль пользователя',
             'footer' => [
                 $this->yar_life,
                 self::EMAIL,
             ],
             'proverb' => $proverb,
             'data' => [
-                'user' => $user,
+                'user' => $userSelect,
             ],
-            'user' => \Auth::user() ? $this->userRepository->getById(\Auth::id())->toArray() : [],
+            'user' => $user,
             'auth' => \Auth::check(),
             'words_list' => $words_list,
             'statistic' => [
-                'online_users' => $online_users,
-                'count_guests' => $count_guests,
-                'count_users' => $count_users,
-                'count_all' => $count_all,
-                'count_users_register' => $count_users_register,
-                'count_messages' => $count_messages,
+                'online_users' => $onlineUsers,
+                'count_guests' => $countGuests,
+                'count_users' => $countUsers,
+                'count_all' => $countAll,
+                'count_users_register' => $countUsersRegister,
+                'count_messages' => $countMessages,
             ],
         ]);
     }
@@ -149,7 +151,7 @@ class UserController extends BaseController
     /**
      * Показывает список пользователей
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function listUsers()
     {
@@ -211,22 +213,11 @@ class UserController extends BaseController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(ProfileUpdateRequest $request, $id)
     {
@@ -239,7 +230,7 @@ class UserController extends BaseController
         $infoView = $request->only(
             'email_view', 'info_view', 'residence_view', 'sex_view', 'facebook_view', 'odnoklassniki_view',
             'twitter_view', 'vk_view', 'youtube_view', 'instagram_view', 'skype_view', 'telegram_view',
-            'whatsapp_view', 'viber_view'
+            'whatsapp_view', 'viber_view', 'day_birthday', 'yar_birthday'
         );
         // Преименуем ключи массива, что б было проще отдать массив для записи в БД
         $infoViewNew = [];
@@ -252,7 +243,7 @@ class UserController extends BaseController
         $infoViewNew['day_birthday'] = !empty($infoViewNew['day_birthday']) ?: 0;
         $infoViewNew['yar_birthday'] = !empty($infoViewNew['yar_birthday']) ?: 0;
 
-        $user = $this->userRepository->getUser($id);
+        $user = $this->userService->getById($id);
         if($user->email != $data['email']){
             $data['email_verified_at'] = null;
             $data['confirm_token'] = User::generateConfirmedToken();
@@ -271,7 +262,7 @@ class UserController extends BaseController
                     'email' => $data['email'],
                 ]);
             }
-            $user = $this->userRepository->getById($id);
+            $user = $this->userService->getById($id);
             return response()->json([
                 'message' => 'У вас не пдтвержден email. В профиле доступен для редактирования только email.',
                 'data' => [
@@ -301,7 +292,7 @@ class UserController extends BaseController
         User\UserInfo::find($id)->update($contacts);
 
 
-        $user = $this->userRepository->getById($id);
+        $user = $this->userService->getById($id);
 
         if(!$result){
             return response()->json(['message' => 'Ошибка при сохранении данных. Попробуйте позже.']);
@@ -312,17 +303,6 @@ class UserController extends BaseController
                 'user' => $user,
             ],
         ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     private function uploadFile(UploadedFile $file, $path = ''){

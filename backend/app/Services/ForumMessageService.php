@@ -38,7 +38,7 @@ class ForumMessageService {
                 'user:id,login,avatar,sex,signature,residence,rang,admin,created_at',
                 'user.sex',
                 'user.rang:id,title,alias',
-                'user.info',
+                'user.infos',
                 'user.config',
                 'statusTitle',
                 ])
