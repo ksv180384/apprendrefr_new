@@ -4,6 +4,8 @@ namespace App\Http;
 
 use App\Http\Middleware\CheckUserConfirmedEmail;
 use App\Http\Middleware\OnlineUsers;
+use App\Http\Middleware\PageInfoDefaultMiddleware;
+use App\Http\Middleware\PageInfoStatisticMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -16,8 +18,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        \App\Http\Middleware\TrustProxies::class,
-        \Fruitcake\Cors\HandleCors::class,
+        //\Fruitcake\Cors\HandleCors::class,
         \App\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
@@ -66,5 +67,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'confirm_email' => CheckUserConfirmedEmail::class,
+        'page_info_default' => PageInfoDefaultMiddleware::class,
+        'page_info_statistic' => PageInfoStatisticMiddleware::class,
     ];
 }

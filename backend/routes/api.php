@@ -24,19 +24,19 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group([ 'middleware' => 'api', 'namespace' => 'Api'], function ($router) {
 
-    Route::get('index', [\App\Http\Controllers\Api\IndexController::class, 'index']);
+    Route::get('index', [\App\Http\Controllers\Api\IndexController::class, 'index'])->middleware(['page_info_default', 'page_info_statistic']);
 
     // User
-    Route::group(['prefix' => 'user', 'namespace' => 'User'], function ($router) {
+    Route::group(['prefix' => 'user'], function () {
 
         Route::get('profile-page', [\App\Http\Controllers\Api\User\UserController::class, 'index'])->name('api.user.profile-page');
-        Route::get('info-page/{id}', 'UserController@show')->name('api.user.info');
-        Route::get('list-page', 'UserController@listUsers')->name('api.user.list_users');
-        Route::get('list/paginate', 'UserController@getUsersListPaginate')->name('api.user.list_users_paginate');
-        Route::get('confirm-email/{token}', 'UserController@confirmEmail')->name('api.user.confirm-email');
+        Route::get('info-page/{id}', [\App\Http\Controllers\Api\User\UserController::class, 'show'])->name('api.user.info');
+        Route::get('list-page', [\App\Http\Controllers\Api\User\UserController::class, 'listUsers'])->name('api.user.list_users');
+        Route::get('list/paginate', [\App\Http\Controllers\Api\User\UserController::class, 'getUsersListPaginate'])->name('api.user.list_users_paginate');
+        Route::get('confirm-email/{token}', [\App\Http\Controllers\Api\User\UserController::class, 'confirmEmail'])->name('api.user.confirm-email');
 
-        Route::post('update/{id}', 'UserController@update')->name('api.user.update');
-        Route::post('send-confirm-email', 'UserController@sendConfirmEmail')->name('api.user.send_confirm_email');
+        Route::post('update/{id}', [\App\Http\Controllers\Api\User\UserController::class, 'update'])->name('api.user.update');
+        Route::post('send-confirm-email', [\App\Http\Controllers\Api\User\UserController::class, 'sendConfirmEmail'])->name('api.user.send_confirm_email');
     });
 
     // Auth

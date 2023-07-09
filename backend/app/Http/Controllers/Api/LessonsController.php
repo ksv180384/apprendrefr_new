@@ -37,22 +37,15 @@ class LessonsController extends BaseController
     {
         //
         $lessons = $this->lessonService->getTitleList()->toArray();
-        $user = \Auth::check() ? \Auth::user()->load('rang') : null;
 
         return response()->json([
             'title' => 'Уроки французского языка',
             'description' => 'Уроки французского языка. Каждый урок французского языка для начинающих представлен в виде темы для общения.',
             'keywords' => 'Уроки французского языка',
-            'footer' => [
-                $this->yar_life,
-                self::EMAIL,
-            ],
             'data' => [
                 'list' => $lessons,
                 'content' => '',
             ],
-            'user' => $user,
-            'auth' => \Auth::check(),
         ]);
     }
 

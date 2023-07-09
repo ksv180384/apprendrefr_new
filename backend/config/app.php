@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'ApprendreFr'),
 
+    'email' => env('APP_EMAIL', 'admin@apprendrefr.ru'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
