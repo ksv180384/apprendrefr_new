@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Services\ForumMessageService;
 use App\Services\ProverbService;
-use App\Services\StatisticService;
 use App\Services\ForumTopicService;
-use App\Services\UserService;
 use App\Services\WordService;
 use Illuminate\Http\JsonResponse;
 
@@ -17,6 +14,12 @@ class IndexController extends BaseController
         parent::__construct();
     }
 
+    /**
+     * @param ForumTopicService $topicService
+     * @param WordService $wordService
+     * @param ProverbService $proverbService
+     * @return JsonResponse
+     */
     public function index(
         ForumTopicService $topicService,
         WordService $wordService,
