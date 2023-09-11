@@ -1,8 +1,0 @@
-.LayoutFull{
-    min-height: calc(100vh - 173px);
-    max-width: 1300px;
-    margin: 0 auto;
-    background-color: #e9f1f7b3;
-    position: relative;
-    color: #6a6a6a;
-}

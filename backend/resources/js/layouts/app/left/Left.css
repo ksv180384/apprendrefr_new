@@ -1,9 +1,0 @@
-.Left-block{
-    padding: 0;
-}
-
-@media (max-width: 870px) {
-    .Left-block{
-        display: none;
-    }
-}
