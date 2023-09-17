@@ -1,35 +1,15 @@
-// import '../css/app.css';
-//
-// import { createRoot } from 'react-dom/client';
-// import { createInertiaApp } from '@inertiajs/react';
-// import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-//
-// const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-//
-// createInertiaApp({
-//     title: (title) => `${title} - ${appName}`,
-//     resolve: (name) => resolvePageComponent(`./Pages/${name}.jsx`, import.meta.glob('./Pages/**/*.jsx')),
-//     setup({ el, App, props }) {
-//         const root = createRoot(el);
-//
-//         root.render(<App {...props} />);
-//     },
-//     progress: {
-//         color: '#4B5563',
-//     },
-// });
+import { Route, Routes } from 'react-router-dom';
+import Index from '@/views/index/index.jsx';
 
 
-import React from 'react';
+function App() {
+    return (
+        <>
+            <Routes>
+                <Route path="/" element={<Index />} />
+            </Routes>
+        </>
+    )
+}
 
-// import ReactDOM from 'react-dom';
-import '../css/app.css';
-import App from './App';
-
-// );
-import { createRoot } from 'react-dom/client';
-const container = document.getElementById('app');
-const root = createRoot(container); // createRoot(container!) if you use TypeScript
-root.render(
-    <App />
-);
+export default App;

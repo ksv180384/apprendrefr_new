@@ -1,0 +1,29 @@
+.LayoutTwo{
+    min-height: calc(100vh - 173px);
+    display: flex;
+    flex-direction: row;
+    /*margin-top: 56px;*/
+    max-width: 1300px;
+    margin: 0 auto;
+    background-color: #e9f1f7b3;
+    position: relative;
+    border-bottom: 1px solid #fff;
+}
+
+.LayoutTwo .Left-block{
+    flex: 1 0 280px;
+}
+
+.LayoutTwo .Center-block{
+    flex: 100%;
+}
+
+body.sidebar-open .LayoutTwo{
+    overflow: hidden;
+}
+
+@media (max-width: 870px) {
+    .LayoutTwo{
+        min-height: calc(100vh - 188px);
+    }
+}
