@@ -1,3 +1,34 @@
+<script setup>
+const props = defineProps({
+    menu: { type: Array, default: [] }
+});
+</script>
+
+<template>
+    <nav class="navigation-top">
+        <ul>
+            <template v-for="menuItem in menu">
+                <li>
+                    <router-link :to="{ name: menuItem.name }">{{ menuItem.title }}</router-link>
+                </li>
+            </template>
+        </ul>
+    </nav>
+</template>
+
+<style scoped>
+.navigation-top ul{
+    @apply flex flex-row;
+}
+
+.navigation-top ul>li{
+    @apply text-xs font-bold uppercase text-sky-900;
+}
+
+.navigation-top ul>li a{
+    @apply inline-block px-3 py-5 hover:bg-gray-50 transition duration-300 whitespace-nowrap;
+}
+/*
 nav{
 
 }
@@ -54,7 +85,6 @@ nav a:hover{
     overflow: hidden;
     z-index: 3;
     transition: all 0.3s ease 0s;
-    /*display: none;*/
 }
 
 .sidebar-block ul{
@@ -110,3 +140,5 @@ nav a:hover{
 
     }
 }
+*/
+</style>
