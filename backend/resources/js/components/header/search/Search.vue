@@ -136,11 +136,11 @@ const submitSearch = () => {
   @apply bg-blue-300 text-gray-50 w-20 py-1 text-center cursor-pointer;
 }
 
-.search-select-container .search ul{
+.search-select-container ul{
   @apply absolute text-center w-20 bg-sky-50 rounded text-gray-500 shadow-md overflow-hidden;
 }
 
-.search-select-container .search ul li{
+.search-select-container ul li{
   @apply py-1 cursor-pointer transition duration-300 hover:bg-blue-300 hover:text-gray-50;
 }
 
