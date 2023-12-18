@@ -44,8 +44,17 @@ class Kernel extends HttpKernel
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ],
 
+        /*
         'api' => [
             'throttle:60,1',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+        */
+
+        'api_v1' => [
+//            'throttle:api',
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api/v1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];

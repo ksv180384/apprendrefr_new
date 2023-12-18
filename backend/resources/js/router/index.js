@@ -2,7 +2,7 @@ import {
     createRouter,
     createWebHistory
 } from 'vue-router';
-// import { usePageStore } from '@/store/page/page_store';
+import { usePageStore } from '@/store/page.js';
 
 import LayoutTwo from '@/layouts/LayoutTwo.vue';
 // import ParserLayout from '@/views/layouts/ParserLayout.vue';
@@ -79,6 +79,8 @@ router.beforeEach(async (to, from, next) => {
     // await pageStore.loadDataPage(to.path, to.query);
     // // current page view title
     // document.title = `${to.meta?.title}`;
+    const page = usePageStore();
+    await page.loadPage(to.path);
     next();
 
     // Подстановка layout поумолчанию

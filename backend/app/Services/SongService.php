@@ -92,11 +92,11 @@ class SongService
     }
 
     /**
-     * @param $search_text - название песни или артиста
+     * @param string $searchText - название песни или артиста
      * @return mixed
      */
-    public function search($search_text){
-        $song_list = PlayerSongs::select([
+    public function search(string $searchText){
+        $songs = PlayerSongs::select([
                 'player_songs.id',
                 'player_songs.artist_id',
                 'player_songs.artist_name',
@@ -104,37 +104,34 @@ class SongService
             ])
             ->leftJoin('users', 'player_songs.user_id', '=', 'users.id')
             ->where('player_songs.hidden', '=', 0)
-            ->where(function ($query) use ($search_text) {
-                return $query->where('player_songs.artist_name', 'LIKE', '%' . $search_text . '%')
-                    ->orWhere('player_songs.title', 'LIKE', '%' . $search_text . '%');
+            ->where(function ($query) use ($searchText) {
+                return $query->where('player_songs.artist_name', 'LIKE', '%' . $searchText . '%')
+                    ->orWhere('player_songs.title', 'LIKE', '%' . $searchText . '%');
             })
             ->limit(10)
             ->get();
-        return $song_list;
+
+        return $songs;
     }
 
     /**
      * Поиск по тексту
-     * @param $search_text - название песни или артиста
+     * @param $searchText - название песни или артиста
      * @return mixed
      */
-    public function searchText($search_text){
-        $song_list = PlayerSongs::select([
-                'text_fr',
-                'text_ru',
-                'text_transcription',
-            ])
-            ->where('hidden', '=', 0)
-            ->where('text_fr', 'LIKE', '%' . $search_text . '%')
-            ->get();
+    public function searchText(string $searchText){
+        $songs = PlayerSongs::where('hidden', '=', 0)
+            ->where('text_fr', 'LIKE', '%' . $searchText . '%')
+            ->get(['text_fr', 'text_ru', 'text_transcription']);
 
-        foreach ($song_list as $k => $song){
-            $song_list[$k]->text_fr = $this->formatText($song->text_fr);
-            $song_list[$k]->text_ru = $this->formatText($song->text_ru);
-            $song_list[$k]->text_transcription = $this->formatText($song->text_transcription);
-        }
+        $songs = $songs->map(function ($item){
+            $item->text_fr = $this->formatText($item->text_fr);
+            $item->text_ru = $this->formatText($item->text_ru);
+            $item->text_transcription = $this->formatText($item->text_transcription);
+            return $item;
+        });
 
-        return $song_list;
+        return $songs;
     }
 
     public function getArtists(){

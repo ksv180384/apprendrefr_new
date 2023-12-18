@@ -7,7 +7,10 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <meta name="description" content="{{ $meta['description'] ?? 'Сайт по обмену знаниями французского языка' }}">
+    <meta name="keywords" content="{{ $meta['keywords'] ?? 'Французский язык' }}">
+
+    <title>{{ config('app.name', 'ApprendreFr') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">

@@ -4,6 +4,11 @@ import vue from '@vitejs/plugin-vue';
 import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
+    server: {
+        hmr: {
+            host: 'apprendrefr.local'
+        }
+    },
     plugins: [
         laravel({
             input: [

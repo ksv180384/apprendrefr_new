@@ -4,9 +4,14 @@ import useClickOutside from '@/composables/useClickOutside.js';
 
 import { Icon } from '@iconify/vue';
 
+const props = defineProps({
+  hints: { type: Array, default: [] }
+});
+const emits = defineEmits(['change', 'enter']);
+
 const searchTypes = [
-    { id: 'word', title: 'Слово' },
-    { id: 'song', title: 'Песня' },
+  { id: 'word', title: 'Слово' },
+  { id: 'song', title: 'Песня' },
 ];
 const refSearchTypesList = ref(null);
 const refBtnTypesList = ref(null);
@@ -14,121 +19,155 @@ const searchText = ref('');
 const isShowListBlock = ref(false);
 const activeSearchType = ref(0);
 const activeSearchTypeTitle = computed(() => searchTypes[activeSearchType.value].title);
+let searchTimeout = null;
 
 useClickOutside(
-    refSearchTypesList,
-    () => {
-        isShowListBlock.value = false
-    },
-    refBtnTypesList
+  refSearchTypesList,
+  () => {
+    isShowListBlock.value = false
+  },
+  refBtnTypesList
 );
 
 const textLang = computed(() => {
-    const fr_pattern = /[a-zëôêûâîùçèàé]+/i;
-    const ru_pattern = /[а-яё]+/i;
-    const fr = fr_pattern.test(searchText.value);
-    const ru = ru_pattern.test(searchText.value);
-    if(searchText.value.length >= 1){
-        if(fr && ru){
-            return 'non';
-        }else{
-            if(fr){
-                return 'Fr';
-            }else{
-                return 'Ru';
-            }
-        }
+  const fr_pattern = /[a-zëôêûâîùçèàé]+/i;
+  const ru_pattern = /[а-яё]+/i;
+  const fr = fr_pattern.test(searchText.value);
+  const ru = ru_pattern.test(searchText.value);
+  if(searchText.value.length >= 1){
+    if(fr && ru){
+      return 'non';
+    }else{
+      if(fr){
+        return 'Fr';
+      }else{
+        return 'Ru';
+      }
     }
-    return null;
+  }
+  return null;
 });
 
 const changeSearchType = (e, index) => {
-    activeSearchType.value = index;
-    isShowListBlock.value = false;
+  activeSearchType.value = index;
+  isShowListBlock.value = false;
 }
 
 const toggleListBlock = () => {
-    isShowListBlock.value = !isShowListBlock.value;
+  isShowListBlock.value = !isShowListBlock.value;
+}
+
+const loadHintsSearch = () => {
+  clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => {
+    emits('change', { text: searchText.value, type: searchTypes[activeSearchType.value].id });
+  }, 500);
 }
 
 const submitSearch = () => {
-    console.log(searchText.value);
+  emits('enter', { text: searchText.value, type: searchTypes[activeSearchType.value].id });
 }
 </script>
 
 <template>
-    <div class="search">
-        <div class="search-container">
-            <div
-                ref="refBtnTypesList"
-                class="select-active"
-                @click="toggleListBlock"
-            >
-                {{ activeSearchTypeTitle }}
-            </div>
-            <div class="input-block">
-                <input
-                    v-model="searchText"
-                    type="text"
-                    @keydown.enter="submitSearch"
-                />
-                <div class="lang">
-                    {{ textLang }}
-                </div>
-            </div>
-            <div class="icon-block" @click="submitSearch">
-                <Icon icon="tabler:search" width="26" height="26" />
-            </div>
+  <div class="search">
+    <div class="search-container">
+      <div class="search-select-container">
+        <div
+          ref="refBtnTypesList"
+          class="select-active"
+          @click="toggleListBlock"
+        >
+          {{ activeSearchTypeTitle }}
         </div>
-
-        <ul ref="refSearchTypesList" v-show="isShowListBlock">
-            <li
-                v-for="(type, index) in  searchTypes"
-                :key="type.id"
-                @click="(e) => changeSearchType(e, index)"
-            >
-                {{ type.title }}
-            </li>
+        <ul
+          ref="refSearchTypesList"
+          v-show="isShowListBlock"
+        >
+          <li
+            v-for="(type, index) in  searchTypes"
+            :key="type.id"
+            @click="(e) => changeSearchType(e, index)"
+          >
+            {{ type.title }}
+          </li>
         </ul>
+      </div>
+
+      <div class="input-block">
+        <input
+          v-model="searchText"
+          type="text"
+          placeholder="Поиск..."
+          @keydown="loadHintsSearch"
+          @keydown.enter="submitSearch"
+        />
+        <div class="lang">
+          {{ textLang }}
+        </div>
+      </div>
+      <div class="icon-block" @click="submitSearch">
+        <Icon icon="tabler:search" width="23" height="23" />
+      </div>
     </div>
+
+    <ul
+      v-show="hints.length"
+      class="search-result-list"
+    >
+      <li v-for="hint in hints" :key="hint.id">
+        {{ hint.title }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 <style scoped>
 .search{
-    @apply relative;
+  @apply relative;
+  font-size: 14px;
 }
 
 .search-container{
-    @apply flex flex-row items-center rounded overflow-hidden;
+  @apply flex flex-row items-center rounded overflow-hidden;
 }
 
 .search .select-active{
-    @apply bg-blue-300 text-gray-50 w-20 py-1 text-center cursor-pointer;
+  @apply bg-blue-300 text-gray-50 w-20 py-1 text-center cursor-pointer;
 }
 
-.search ul{
-    @apply absolute text-center w-20 bg-sky-50 rounded text-gray-500 shadow-md overflow-hidden;
+.search-select-container .search ul{
+  @apply absolute text-center w-20 bg-sky-50 rounded text-gray-500 shadow-md overflow-hidden;
 }
 
-.search ul li{
-    @apply py-1 cursor-pointer transition duration-300 hover:bg-blue-300 hover:text-gray-50;
+.search-select-container .search ul li{
+  @apply py-1 cursor-pointer transition duration-300 hover:bg-blue-300 hover:text-gray-50;
 }
 
 .input-block{
-    @apply flex flex-row items-center;
+  @apply flex flex-row items-center;
 }
 
 .input-block input{
-    @apply w-36 outline-none;
-    padding: 5px 26px 5px 6px;
+  @apply w-36 outline-none;
+  padding: 5px 2rem 5px 6px;
 }
 
 .input-block .lang{
-    @apply -ml-8 px-2 text-red-600;
+  @apply -ml-8 px-2 text-red-600;
+  width: 30px;
 }
 
 .icon-block{
-    @apply text-gray-50 bg-gray-600 px-3 py-1 cursor-pointer;
+  @apply text-gray-50 bg-gray-600 px-3 py-1 cursor-pointer;
+}
+
+.search-result-list{
+  @apply mt-0.5 absolute min-w-full bg-white rounded text-gray-500 shadow-md overflow-hidden;
+}
+
+.search-result-list li{
+  @apply py-1.5 px-3 whitespace-nowrap cursor-pointer transition duration-300 hover:bg-sky-100;
 }
 /*
 .search{
