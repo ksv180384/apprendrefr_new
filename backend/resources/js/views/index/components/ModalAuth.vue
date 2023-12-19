@@ -15,12 +15,23 @@ const formData = reactive({
   password: '',
 });
 
+
 watch(
   () => props.modelValue,
   (newVal, oldVal) => {
-    console.log('lllll')
+    isOpen.value = newVal;
+    // emits('update:modelValue', newVal);
   }
 );
+
+
+watch(
+  () => isOpen.value,
+  (newVal, oldVal) => {
+    emits('update:modelValue', newVal);
+  }
+);
+
 </script>
 
 <template>

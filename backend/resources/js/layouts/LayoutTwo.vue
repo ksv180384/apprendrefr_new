@@ -1,36 +1,27 @@
 <script setup>
-import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-const layout = computed(() => {
-    const layout = route?.meta?.layout;
-
-    if (layout) {
-        return layout;
-    }
-    return 'div';
-});
-
 import Header from '@/components/header/Header.vue';
 </script>
 <template>
-    <div class="layout-two">
-        <Header/>
-        <div class="container-max">
-            <router-view/>
-        </div>
+  <div class="layout-two">
+    <Header/>
+    <div class="container-max">
+      <router-view/>
     </div>
+  </div>
 </template>
 
 <style scoped>
 .layout-two{
-    @apply min-h-screen pt-14;
+  @apply min-h-screen;
+  padding-top: 57px;
 }
 
 .layout-two .container-max{
-    @apply flex flex-grow bg-blue-50;
+
 }
 /*
 .layout-two{
