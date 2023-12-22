@@ -3,6 +3,8 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { usePageStore } from '@/store/page';
 
+// TODO Книги [Маленький принц, Синяя борода]
+
 const route = useRoute();
 const pageStore = usePageStore();
 
