@@ -4,7 +4,7 @@ import { usePageStore } from '@/store/page.js';
 
 import AfrCard from '@/components/card/AfrCard.vue';
 import AfrWords from '@/views/index/components/AfrWords.vue';
-import AfrPlayer from '@/views/index/components/AfrPlayer.vue';
+import AfrPlayer from '@/views/index/components/player/AfrPlayer.vue';
 
 const page = usePageStore();
 

@@ -14,6 +14,8 @@
         "tailwindcss": "^3.3.6"
     },
     "dependencies": {
+        "dayjs": "^1.11.10",
+        "id3-parser": "^3.0.0",
         "laravel-vite-plugin": "^0.8.1",
         "pinia": "^2.1.7",
         "vue": "^3.2.36",

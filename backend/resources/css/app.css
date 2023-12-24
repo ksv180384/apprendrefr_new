@@ -27,7 +27,7 @@ body {
 
 
 .container-max{
-    @apply w-11/12 mx-auto
+    @apply max-w-[1440px] mx-auto;
 }
 
 
