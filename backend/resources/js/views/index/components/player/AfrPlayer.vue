@@ -15,9 +15,14 @@ const album = ref(null);
 const imageLink = ref(null);
 const timeInterval = ref(null);
 const duration = ref(0);
+const volume = ref(0.5);
 const durationHuman = ref(0);
 const currentTime = ref(0);
 const currentTimeHuman = ref(0);
+const progressLineValue = ref(0);
+const durationProgressBarPos = ref(0);
+const cursorPositionProgressBar = ref(0);
+const durationProgressBarPosHuman = ref(0);
 
 const play = () => {
   isPlay.value = true;
@@ -33,9 +38,11 @@ const pause = () => {
 
 const stop = () => {
   isPlay.value = false;
-  audio.value.pause();
   currentTime.value = 0;
   clearTimeout(timeInterval.value);
+  if(audio.value){
+    audio.value.pause();
+  }
 }
 
 const uploadFile = (e) => {
@@ -53,29 +60,60 @@ const checkPlayerTime = () => {
   if(audio.value){
     currentTime.value = audio.value.currentTime; // Текущее время проигрывания трека
     currentTimeHuman.value = dayjs(currentTime.value * 1000).format('mm:ss');
-    console.log(currentTime.value);
+    progressLineValue.value = currentTime.value / (duration.value / 100);
+    // console.log('currentTime: ', currentTime.value);
+    // console.log('duration: ', duration.value);
+    // console.log('progressLineValue: ', progressLineValue.value);
   }
 }
 
 const audioFileInit = async (file) => {
+  stop();
   const sound = URL.createObjectURL(file);
   audio.value = new Audio(sound);
+  audio.value.onloadedmetadata = async () => {
+    audio.value.volume = volume.value;
 
-  const fileDat = await convertFileToBuffer(file);
-  const tags = parse(fileDat);
+    const fileDat = await convertFileToBuffer(file);
+    const tags = parse(fileDat);
 
-  artist.value = tags.title;
-  track.value = tags.artist;
-  album.value = tags.album;
+    artist.value = tags.title;
+    track.value = tags.artist;
+    album.value = tags.album;
 
-  duration.value = audio.value.duration;
-  durationHuman.value = dayjs(audio.value.duration * 1000).format('mm:ss');
+    duration.value = audio.value.duration;
+    durationHuman.value = dayjs(duration.value * 1000).format('mm:ss');
 
-  const imageData = new Uint8Array(tags.image.data);
-  imageLink.value = URL.createObjectURL(
-    new Blob([imageData.buffer], { type: tags.image.mime } /* (1) */)
-  );
+    const imageData = new Uint8Array(tags.image.data);
+    imageLink.value = URL.createObjectURL(
+      new Blob([imageData.buffer], { type: tags.image.mime } /* (1) */)
+    );
+    progressLineValue.value = 0;
+  }
 };
+
+const changeVolume = (data) => {
+  if(!audio.value){
+    return true;
+  }
+  volume.value = (data / 100).toFixed(2);
+  audio.value.volume = volume.value;
+}
+
+const clickProgressBar = (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  audio.value.currentTime = durationProgressBarPos.value;
+  progressLineValue.value = cursorPositionProgressBar.value;
+}
+
+const mousemoveProgressBar = (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const cursorPosition = e.clientX - rect.left;
+  const durationTick = duration.value / rect.width;
+  durationProgressBarPos.value = durationTick * cursorPosition;
+  cursorPositionProgressBar.value = cursorPosition / (rect.width / 100);
+  durationProgressBarPosHuman.value = dayjs(durationProgressBarPos.value * 1000).format('mm:ss');
+}
 </script>
 
 <template>
@@ -87,8 +125,21 @@ const audioFileInit = async (file) => {
     </div>
 
     <div class="afr-player-bar">
-      <div class="afr-progress-bar">
-        <div class="afr-progress-line"></div>
+      <div
+        class="afr-progress-bar"
+        @click="clickProgressBar"
+        @mousemove="mousemoveProgressBar"
+      >
+        <div
+          class="afr-progress-bar-cursor-position"
+          :style="`left: ${cursorPositionProgressBar}%`"
+        >
+          {{ durationProgressBarPosHuman }}
+        </div>
+        <div
+          class="afr-progress-line"
+          :style="`width: ${progressLineValue}%`"
+        ></div>
       </div>
 
       <div class="afr-player-controls">
@@ -112,7 +163,7 @@ const audioFileInit = async (file) => {
             <img :src="imageLink" :alt="album" :title="album"/>
           </div>
         </div>
-        <AfrVolume/>
+        <AfrVolume :volume="volume * 100" @change="changeVolume"/>
         <div class="afr-track-time">
           {{currentTimeHuman}} / {{ durationHuman }}
         </div>
@@ -131,8 +182,7 @@ const audioFileInit = async (file) => {
 }
 
 .afr-progress-line{
-  @apply h-full bg-blue-300;
-  width: 20%;
+  @apply h-full bg-blue-300 rounded-tl rounded-tr;
 }
 
 .afr-player-controls{
@@ -169,5 +219,13 @@ const audioFileInit = async (file) => {
 
 .afr-track-time{
   @apply text-xs;
+}
+
+.afr-progress-bar-cursor-position{
+  @apply absolute bg-white text-xs justify-center w-[60px] -ms-[30px] py-1 rounded-xl -mt-7 hidden;
+}
+
+.afr-progress-bar:hover .afr-progress-bar-cursor-position{
+  @apply flex;
 }
 </style>
