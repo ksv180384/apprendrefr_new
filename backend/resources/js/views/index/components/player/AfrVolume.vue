@@ -35,8 +35,9 @@ const volumePointStart = (e) => {
   volumePointMove.value = true;
   volumePointMoveStartPosition.value = e.pageY;
   //const volumePointTop = refVolumePoint.value.getBoundingClientRect().top;
-  volumeProgressPositionTop.value = refVolumeProgress.value.getBoundingClientRect().top;
-  volumeProgressHeight.value = refVolumeProgress.value.getBoundingClientRect().height;
+  const rectProgress = refVolumeProgress.value.getBoundingClientRect();
+  volumeProgressHeight.value = rectProgress.height;
+  volumeProgressPositionTop.value = rectProgress.top;
 }
 
 const volumePointEnd = () => {

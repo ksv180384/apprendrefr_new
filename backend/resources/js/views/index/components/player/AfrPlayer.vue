@@ -1,14 +1,18 @@
 <script setup>
-import { ref } from 'vue';
+import {reactive, ref} from 'vue';
 import { Icon } from '@iconify/vue';
 import parse from 'id3-parser';
 import { convertFileToBuffer } from 'id3-parser/lib/util';
 import dayjs from 'dayjs';
 
 import AfrVolume from '@/views/index/components/player/AfrVolume.vue';
+import AfrProgressBar from "@/views/index/components/player/AfrProgressBar.vue";
+import api from '@/services/api';
+import AfrPlayerText from "@/views/index/components/player/AfrPlayerText.vue";
 
 const isPlay = ref(false);
 const audio = ref(null);
+const fileName = ref(null);
 const artist = ref(null);
 const track = ref(null);
 const album = ref(null);
@@ -20,9 +24,12 @@ const durationHuman = ref(0);
 const currentTime = ref(0);
 const currentTimeHuman = ref(0);
 const progressLineValue = ref(0);
-const durationProgressBarPos = ref(0);
-const cursorPositionProgressBar = ref(0);
-const durationProgressBarPosHuman = ref(0);
+const isLoadingSongText = ref(false);
+const songText = reactive({
+  fr: '',
+  ru: '',
+  transcription: '',
+});
 
 const play = () => {
   isPlay.value = true;
@@ -61,9 +68,6 @@ const checkPlayerTime = () => {
     currentTime.value = audio.value.currentTime; // Текущее время проигрывания трека
     currentTimeHuman.value = dayjs(currentTime.value * 1000).format('mm:ss');
     progressLineValue.value = currentTime.value / (duration.value / 100);
-    // console.log('currentTime: ', currentTime.value);
-    // console.log('duration: ', duration.value);
-    // console.log('progressLineValue: ', progressLineValue.value);
   }
 }
 
@@ -77,9 +81,10 @@ const audioFileInit = async (file) => {
     const fileDat = await convertFileToBuffer(file);
     const tags = parse(fileDat);
 
-    artist.value = tags.title;
-    track.value = tags.artist;
+    artist.value = tags.artist;
+    track.value = tags.title;
     album.value = tags.album;
+    fileName.value = file.name
 
     duration.value = audio.value.duration;
     durationHuman.value = dayjs(duration.value * 1000).format('mm:ss');
@@ -89,6 +94,9 @@ const audioFileInit = async (file) => {
       new Blob([imageData.buffer], { type: tags.image.mime } /* (1) */)
     );
     progressLineValue.value = 0;
+
+    // Поиск текста песни
+    searchSongText();
   }
 };
 
@@ -100,19 +108,23 @@ const changeVolume = (data) => {
   audio.value.volume = volume.value;
 }
 
-const clickProgressBar = (e) => {
-  const rect = e.currentTarget.getBoundingClientRect();
-  audio.value.currentTime = durationProgressBarPos.value;
-  progressLineValue.value = cursorPositionProgressBar.value;
+const changePositionProgressBar = (position) => {
+  audio.value.currentTime = position;
 }
 
-const mousemoveProgressBar = (e) => {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const cursorPosition = e.clientX - rect.left;
-  const durationTick = duration.value / rect.width;
-  durationProgressBarPos.value = durationTick * cursorPosition;
-  cursorPositionProgressBar.value = cursorPosition / (rect.width / 100);
-  durationProgressBarPosHuman.value = dayjs(durationProgressBarPos.value * 1000).format('mm:ss');
+const searchSongText = async () => {
+
+  isLoadingSongText.value = true;
+  try {
+    const res = await api.songText.searchByArtistTitle({ artist: artist.value, title: track.value, file_name: fileName.value });
+    songText.fr = res.text_fr;
+    songText.ru = res.text_ru;
+    songText.transcription = res.text_transcription;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    isLoadingSongText.value = false;
+  }
 }
 </script>
 
@@ -125,22 +137,18 @@ const mousemoveProgressBar = (e) => {
     </div>
 
     <div class="afr-player-bar">
-      <div
-        class="afr-progress-bar"
-        @click="clickProgressBar"
-        @mousemove="mousemoveProgressBar"
-      >
-        <div
-          class="afr-progress-bar-cursor-position"
-          :style="`left: ${cursorPositionProgressBar}%`"
-        >
-          {{ durationProgressBarPosHuman }}
-        </div>
-        <div
-          class="afr-progress-line"
-          :style="`width: ${progressLineValue}%`"
-        ></div>
-      </div>
+
+      <AfrPlayerText
+        :fr="songText.fr"
+        :ru="songText.ru"
+        :transcription="songText.transcription"
+      />
+
+      <AfrProgressBar
+        :progress-line-value="progressLineValue"
+        :duration="duration"
+        @changePosition="changePositionProgressBar"
+      />
 
       <div class="afr-player-controls">
 
@@ -163,7 +171,9 @@ const mousemoveProgressBar = (e) => {
             <img :src="imageLink" :alt="album" :title="album"/>
           </div>
         </div>
+
         <AfrVolume :volume="volume * 100" @change="changeVolume"/>
+
         <div class="afr-track-time">
           {{currentTimeHuman}} / {{ durationHuman }}
         </div>
@@ -174,19 +184,11 @@ const mousemoveProgressBar = (e) => {
 
 <style scoped>
 .afr-player-bar{
-  @apply fixed bottom-0 max-w-[1440px] w-full bg-blue-50 mx-auto z-10 rounded-t -ms-2;
-}
-
-.afr-progress-bar{
-  @apply w-full h-4 bg-blue-100 rounded-t;
-}
-
-.afr-progress-line{
-  @apply h-full bg-blue-300 rounded-tl rounded-tr;
+  @apply fixed bottom-0 max-w-[1440px] w-full mx-auto z-10 rounded-t -ms-2;
 }
 
 .afr-player-controls{
-  @apply flex flex-row justify-center items-center px-4 text-[32px];
+  @apply flex flex-row justify-center items-center px-4 text-[32px] bg-blue-50;
 }
 
 .afr-player-btn{
@@ -219,13 +221,5 @@ const mousemoveProgressBar = (e) => {
 
 .afr-track-time{
   @apply text-xs;
-}
-
-.afr-progress-bar-cursor-position{
-  @apply absolute bg-white text-xs justify-center w-[60px] -ms-[30px] py-1 rounded-xl -mt-7 hidden;
-}
-
-.afr-progress-bar:hover .afr-progress-bar-cursor-position{
-  @apply flex;
 }
 </style>
