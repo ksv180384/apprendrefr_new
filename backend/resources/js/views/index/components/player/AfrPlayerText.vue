@@ -1,11 +1,12 @@
 <script setup>
-import { ref, watchPostEffect } from 'vue';
+import { ref, computed, watchPostEffect } from 'vue';
 import AfrPlayerTextBlock from "@/views/index/components/player/AfrPlayerTextBlock.vue";
 
 const props = defineProps({
   fr: { type: String, default: '' },
   ru: { type: String, default: '' },
   transcription: { type: String, default: '' },
+  currentTime: { type: Number, default: 0 },
 });
 
 const textToArray = (text) => {
@@ -20,14 +21,14 @@ watchPostEffect(() => {
   arTextFr.value = textToArray(props.fr);
   arTextRu.value = textToArray(props.ru);
   arTextTranscription.value = textToArray(props.transcription);
-})
+});
 </script>
 
 <template>
 <div class="afr-player-text">
-  <AfrPlayerTextBlock :text="props.fr"/>
-  <AfrPlayerTextBlock :text="props.ru"/>
-  <AfrPlayerTextBlock :text="props.transcription"/>
+  <AfrPlayerTextBlock :text="props.fr" :current-time="currentTime"/>
+  <AfrPlayerTextBlock :text="props.ru" :current-time="currentTime"/>
+  <AfrPlayerTextBlock :text="props.transcription" :current-time="currentTime"/>
 </div>
 </template>
 

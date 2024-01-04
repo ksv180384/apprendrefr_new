@@ -95,7 +95,7 @@ watch(
 }
 
 .afr-volume-control{
-  @apply absolute flex-col w-12 h-[200px] -top-[200px] bg-white rounded-xl shadow-lg py-4;
+  @apply absolute flex-col w-12 h-[200px] -top-[200px] bg-white rounded-xl shadow-lg py-4 z-[2];
   display: flex;
 }
 

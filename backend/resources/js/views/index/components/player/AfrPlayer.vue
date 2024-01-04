@@ -1,14 +1,14 @@
 <script setup>
 import {reactive, ref} from 'vue';
+import api from '@/services/api';
 import { Icon } from '@iconify/vue';
 import parse from 'id3-parser';
 import { convertFileToBuffer } from 'id3-parser/lib/util';
 import dayjs from 'dayjs';
 
 import AfrVolume from '@/views/index/components/player/AfrVolume.vue';
-import AfrProgressBar from "@/views/index/components/player/AfrProgressBar.vue";
-import api from '@/services/api';
-import AfrPlayerText from "@/views/index/components/player/AfrPlayerText.vue";
+import AfrProgressBar from '@/views/index/components/player/AfrProgressBar.vue';
+import AfrPlayerText from '@/views/index/components/player/AfrPlayerText.vue';
 
 const isPlay = ref(false);
 const audio = ref(null);
@@ -25,6 +25,7 @@ const currentTime = ref(0);
 const currentTimeHuman = ref(0);
 const progressLineValue = ref(0);
 const isLoadingSongText = ref(false);
+const textPosition = ref('50%');
 const songText = reactive({
   fr: '',
   ru: '',
@@ -65,9 +66,12 @@ const uploadFile = (e) => {
 
 const checkPlayerTime = () => {
   if(audio.value){
+    // Устанавливаем позицию прогресс бара
     currentTime.value = audio.value.currentTime; // Текущее время проигрывания трека
     currentTimeHuman.value = dayjs(currentTime.value * 1000).format('mm:ss');
     progressLineValue.value = currentTime.value / (duration.value / 100);
+
+    // Устанавливаем позицию текста песни
   }
 }
 
@@ -142,6 +146,7 @@ const searchSongText = async () => {
         :fr="songText.fr"
         :ru="songText.ru"
         :transcription="songText.transcription"
+        :current-time="currentTime"
       />
 
       <AfrProgressBar
