@@ -1,144 +1,33 @@
 <script setup>
-import { watchPostEffect, ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 
 const props = defineProps({
-  text: { type: String, default: '' },
-  currentTime: { type: Number, default: 0 },
+  text: { type: Array, default: [] },
+  hRow: { type: Number, default: 28 },
+  offset: { type: Number, default: 0 }
 });
 
-const arText = ref({});
-const hRow = ref(28);
-const textPositionStart = ref('0px');
-const textPosition = ref('50%');
-const textPositionsList = ref([]);
+const textPositionStart = ref(0);
 const refTextContainer = ref(null);
-//const arTimes = ref([]);
+const textPosition = computed(() => {
+  return textPositionStart.value > 0 ? `${textPositionStart.value - props.offset}px` : '50%';
+});
 
-// Из строки, формируем массив [{ text: String, duration: Number}, ...], сортируя его по полю duration
-const textToArray = (text) => {
-  const textRows =  text.split("\n").map(textRow => textRow.replace(/\[.*?\]/ig, ''));
-  const timesRows = text.split("\n").map(textRow => textRow.match(/\[.*?\]/ig));
-
-  const arrTextRows = [];
-
-  if(!textRows || !timesRows){
-    return arrTextRows;
-  }
-
-  let newIndex = 0;
-  timesRows.forEach((time, indexTime) => {
-    if(time){
-      if(time.length > 1){
-        time.forEach((rowTime, index) => {
-          const duration = timeToSecond(rowTime);
-          arrTextRows[newIndex] = {
-            text: textRows[indexTime].replace('\r', ''),
-            duration: duration
-          };
-          newIndex++;
-        });
-      }else{
-        const duration = timeToSecond(time[0]);
-        arrTextRows[newIndex] = {
-          text: textRows[indexTime].replace('\r', ''),
-          duration: duration
-        };
-        newIndex++;
-      }
-    }
-  });
-
-  return arrTextRows.sort((a, b) => {
-    if (a.duration < b.duration){
-      return -1;
-    }
-    if (a.duration > b.duration){
-      return 1;
-    }
-    return 0;
-  });
-}
-
-const getTextPositions = (arText) => {
-  //console.log(arText);
-  const result = [];
-  arText.forEach((item, index) => {
-    const next = index + 1;
-    if(arText[next]){
-      // Получаем продолжительность времени, которое текущая строка отображается (продолжительность прокрутки строки)
-      const durationRow = arText[next].duration - arText[index].duration;
-      // Получаем время за которое происходит смещение на один пиксель
-      const tickOnePixel = durationRow / hRow.value;
-      //result.push(arText[index].duration + ' ----');
-      for (let i = 0; hRow.value > i; i++){
-        result.push(arText[index].duration + ((i + 1) * tickOnePixel));
-      }
-    }
-    //console.log(index, item);
-  });
-  return result;
-}
-
-// Отслеживаем загрузку текста
+// Отслеживаем загрузку текста и устанавливаем начальную позицию текста в пикселях (изначально 50%)
 watch(
   () => props.text,
   () => {
-    arText.value = textToArray(props.text);
-    textPositionsList.value = getTextPositions(arText.value);
-    //textPosition.value = `${refTextContainer.value.getBoundingClientRect().top}px`;
     textPositionStart.value = parseInt(window.getComputedStyle(refTextContainer.value).top);
-    textPosition.value = `${textPositionStart.value}px`;
-    //console.log(window.getComputedStyle(refTextContainer.value).top);
-    console.log(textPositionsList.value);
-    console.log(textPosition.value);
 });
 
-watch(
-  () => props.currentTime,
-  () => {
-    let currentPixel = 0;
-    let nextPixel = 1;
-    textPositionsList.value.forEach((pixelTime, pixelIndex) => {
-      //const pixels = pixelIndex + 1;
-      currentPixel = pixelIndex;
-      console.log(currentPixel, nextPixel)
-      if(currentPixel === nextPixel && pixelTime <= props.currentTime){
-        textPosition.value = `${textPositionStart.value - currentPixel}px`;
-        nextPixel = currentPixel + 1;
-        console.log(textPosition.value);
-        console.log(pixelTime);
-      }
-    });
-
-    console.log(props.currentTime);
-    // textPosition.value += '';
-  }
-);
-
-// Время в секунды
-const timeToSecond = (time) => {
-  const arTime = time.split(':');
-  const secInMin = 60;
-  let result = 0;
-
-  arTime.forEach((item, index) => {
-    item = item.replace(/\[|\]/ig, '');
-    if(index === (arTime.length - 1)){
-      result += parseFloat(item);
-    }else{
-      result += (index + 1) * secInMin * parseFloat(item);
-    }
-  });
-  return result;
-}
 </script>
 
 <template>
   <div class="afr-player-text-block">
     <div ref="refTextContainer" class="text-container" :style="`top: ${textPosition}`">
-      <template v-if="arText">
+      <template v-if="text">
         <div
-          v-for="(rowText, time) in arText"
+          v-for="(rowText, time) in text"
           :key="time"
           class="text-item"
           :style="`height: ${hRow}px`"

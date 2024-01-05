@@ -10,6 +10,7 @@ import AfrVolume from '@/views/index/components/player/AfrVolume.vue';
 import AfrProgressBar from '@/views/index/components/player/AfrProgressBar.vue';
 import AfrPlayerText from '@/views/index/components/player/AfrPlayerText.vue';
 
+const refInputMp3 = ref(null);
 const isPlay = ref(false);
 const audio = ref(null);
 const fileName = ref(null);
@@ -25,11 +26,14 @@ const currentTime = ref(0);
 const currentTimeHuman = ref(0);
 const progressLineValue = ref(0);
 const isLoadingSongText = ref(false);
-const textPosition = ref('50%');
+const pixelsToTime = ref([]);
+const offsetText = ref(0);
+const oldTime = ref(0);
+const hRow = ref(28);
 const songText = reactive({
-  fr: '',
-  ru: '',
-  transcription: '',
+  fr: [],
+  ru: [],
+  transcription: [],
 });
 
 const play = () => {
@@ -46,10 +50,54 @@ const pause = () => {
 
 const stop = () => {
   isPlay.value = false;
-  currentTime.value = 0;
   clearTimeout(timeInterval.value);
   if(audio.value){
+    audio.value.currentTime = 0;
+    offsetText.value = 0;
+    oldTime.value = 0;
+    checkPlayerTime();
     audio.value.pause();
+  }
+}
+
+const close = () => {
+  stop();
+  audio.value = null;
+  songText.fr = [];
+  songText.ru = [];
+  songText.transcription = [];
+  artist.value = null;
+  track.value = null;
+  album.value = null;
+  fileName.value = null;
+  duration.value = null;
+  durationHuman.value = null;
+  imageLink.value = null;
+  refInputMp3.value.value = '';
+}
+
+const checkPlayerTime = () => {
+  if(audio.value){
+    // Устанавливаем позицию прогресс бара
+    currentTime.value = audio.value.currentTime; // Текущее время проигрывания трека
+    currentTimeHuman.value = dayjs(currentTime.value * 1000).format('mm:ss');
+    progressLineValue.value = currentTime.value / (duration.value / 100);
+
+    // Устанавливаем позицию текста песни (сдвиг текста относительно начальной позиции)
+    let currentOffsetPixel = 0; // Текущий сдвиг в пикселях
+    let nextOffsetPixel = 1;
+
+    // Проходим по всему массиву пиксель - время и если время пикселя между текущим временем и прошлым (время пикселя
+    // установленое при прошлом сдвиге), то сдвигаем на нужное кол-во пикселей
+    pixelsToTime.value.forEach((pixelTime, pixelIndex) => {
+      currentOffsetPixel = pixelIndex;
+
+      if(pixelTime <= currentTime.value && pixelTime > oldTime.value){
+        offsetText.value = currentOffsetPixel;
+        nextOffsetPixel = currentOffsetPixel + 1;
+        oldTime.value = pixelTime;
+      }
+    });
   }
 }
 
@@ -64,19 +112,8 @@ const uploadFile = (e) => {
   }
 };
 
-const checkPlayerTime = () => {
-  if(audio.value){
-    // Устанавливаем позицию прогресс бара
-    currentTime.value = audio.value.currentTime; // Текущее время проигрывания трека
-    currentTimeHuman.value = dayjs(currentTime.value * 1000).format('mm:ss');
-    progressLineValue.value = currentTime.value / (duration.value / 100);
-
-    // Устанавливаем позицию текста песни
-  }
-}
-
 const audioFileInit = async (file) => {
-  stop();
+  close();
   const sound = URL.createObjectURL(file);
   audio.value = new Audio(sound);
   audio.value.onloadedmetadata = async () => {
@@ -88,7 +125,7 @@ const audioFileInit = async (file) => {
     artist.value = tags.artist;
     track.value = tags.title;
     album.value = tags.album;
-    fileName.value = file.name
+    fileName.value = file.name;
 
     duration.value = audio.value.duration;
     durationHuman.value = dayjs(duration.value * 1000).format('mm:ss');
@@ -112,18 +149,108 @@ const changeVolume = (data) => {
   audio.value.volume = volume.value;
 }
 
+// Меняем позицию прогресбара при клике
 const changePositionProgressBar = (position) => {
   audio.value.currentTime = position;
+  oldTime.value = 0;
+  checkPlayerTime();
 }
 
+// Из строки, формируем массив [{ text: String, duration: Number}, ...], сортируя его по полю duration
+const textToArray = (text) => {
+  const textRows =  text.split("\n").map(textRow => textRow.replace(/\[.*?\]/ig, ''));
+  const timesRows = text.split("\n").map(textRow => textRow.match(/\[.*?\]/ig));
+
+  const arrTextRows = [];
+
+  if(!textRows || !timesRows){
+    return arrTextRows;
+  }
+
+  let newIndex = 0;
+  timesRows.forEach((time, indexTime) => {
+    if(time){
+      if(time.length > 1){
+        time.forEach((rowTime, index) => {
+          const duration = timeToSecond(rowTime);
+          arrTextRows[newIndex] = {
+            text: textRows[indexTime].replace('\r', ''),
+            duration: duration
+          };
+          newIndex++;
+        });
+      }else{
+        const duration = timeToSecond(time[0]);
+        arrTextRows[newIndex] = {
+          text: textRows[indexTime].replace('\r', ''),
+          duration: duration
+        };
+        newIndex++;
+      }
+    }
+  });
+
+  return arrTextRows.sort((a, b) => {
+    if (a.duration < b.duration){
+      return -1;
+    }
+    if (a.duration > b.duration){
+      return 1;
+    }
+    return 0;
+  });
+}
+
+// Время в секунды
+const timeToSecond = (time) => {
+  const arTime = time.split(':');
+  const secInMin = 60;
+  let result = 0;
+
+  arTime.forEach((item, index) => {
+    item = item.replace(/\[|\]/ig, '');
+    if(index === (arTime.length - 1)){
+      result += parseFloat(item);
+    }else{
+      result += (index + 1) * secInMin * parseFloat(item);
+    }
+  });
+  return result;
+}
+
+// Получаем вряем для каждого пикселя
+const getTextPositions = (arText) => {
+  //console.log(arText);
+  const result = [];
+  arText.forEach((item, index) => {
+    const next = index + 1;
+    if(arText[next]){
+      // Получаем продолжительность времени, которое текущая строка отображается (продолжительность прокрутки строки)
+      const durationRow = arText[next].duration - arText[index].duration;
+      // Получаем время за которое происходит смещение на один пиксель
+      const tickOnePixel = durationRow / hRow.value;
+      for (let i = 0; hRow.value > i; i++){
+        result.push(arText[index].duration + ((i + 1) * tickOnePixel));
+      }
+    }
+    //console.log(index, item);
+  });
+  return result;
+}
+
+// Подгружаем текст песни если он найден
 const searchSongText = async () => {
 
   isLoadingSongText.value = true;
   try {
     const res = await api.songText.searchByArtistTitle({ artist: artist.value, title: track.value, file_name: fileName.value });
-    songText.fr = res.text_fr;
-    songText.ru = res.text_ru;
-    songText.transcription = res.text_transcription;
+
+    if(Object.entries(res).length !== 0){
+      songText.fr = textToArray(res.text_fr);
+      songText.ru = textToArray(res.text_ru);
+      songText.transcription = textToArray(res.text_transcription);
+      pixelsToTime.value = getTextPositions(songText.fr);
+    }
   } catch (e) {
     console.error(e);
   } finally {
@@ -137,7 +264,7 @@ const searchSongText = async () => {
 
     <div>
       Player
-      <input type="file" @change="uploadFile"/>
+      <input ref="refInputMp3" type="file" @change="uploadFile"/>
     </div>
 
     <div class="afr-player-bar">
@@ -147,6 +274,8 @@ const searchSongText = async () => {
         :ru="songText.ru"
         :transcription="songText.transcription"
         :current-time="currentTime"
+        :h-row="hRow"
+        :offset="offsetText"
       />
 
       <AfrProgressBar
@@ -157,11 +286,14 @@ const searchSongText = async () => {
 
       <div class="afr-player-controls">
 
-        <div v-if="!isPlay" class="afr-player-btn" @click="play">
+        <div v-if="!isPlay" class="afr-player-btn" title="Play" @click="play">
           <Icon icon="mingcute:play-line" />
         </div>
-        <div v-else class="afr-player-btn" @click="pause">
+        <div v-else class="afr-player-btn" title="Pause" @click="pause">
           <Icon icon="mingcute:pause-fill" />
+        </div>
+        <div class="afr-player-btn" title="Stop" @click="stop">
+          <Icon icon="mingcute:stop-line" />
         </div>
         <div class="afr-track-info">
           <div class="afr-track-tags">
@@ -177,11 +309,16 @@ const searchSongText = async () => {
           </div>
         </div>
 
-        <AfrVolume :volume="volume * 100" @change="changeVolume"/>
-
         <div class="afr-track-time">
           {{currentTimeHuman}} / {{ durationHuman }}
         </div>
+
+        <AfrVolume :volume="volume * 100" @change="changeVolume"/>
+
+        <div class="afr-player-btn"  title="Close" @click="close">
+          <Icon icon="mingcute:close-fill" />
+        </div>
+
       </div>
     </div>
   </div>

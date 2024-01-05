@@ -37,7 +37,9 @@ class SongController extends BaseController
             ]);
         }
 
-        return response()->json(SearchSongResource::make($song));
+        return response()->json(
+            $song ? SearchSongResource::make($song) : null
+        );
     }
 
     private function removeSymbols(string $text): string

@@ -1,34 +1,20 @@
 <script setup>
-import { ref, computed, watchPostEffect } from 'vue';
 import AfrPlayerTextBlock from "@/views/index/components/player/AfrPlayerTextBlock.vue";
 
 const props = defineProps({
-  fr: { type: String, default: '' },
-  ru: { type: String, default: '' },
-  transcription: { type: String, default: '' },
-  currentTime: { type: Number, default: 0 },
-});
-
-const textToArray = (text) => {
-  return text.split("\n").map(textRow => textRow.replace(/\[.*?\]/ig, ''))
-}
-
-const arTextFr = ref([]);
-const arTextRu = ref([]);
-const arTextTranscription = ref([]);
-
-watchPostEffect(() => {
-  arTextFr.value = textToArray(props.fr);
-  arTextRu.value = textToArray(props.ru);
-  arTextTranscription.value = textToArray(props.transcription);
+  fr: { type: Array, default: [] },
+  ru: { type: Array, default: [] },
+  transcription: { type: Array, default: [] },
+  offset: { type: Number, default: 0 },
+  hRow: { type: Number, default: 28 },
 });
 </script>
 
 <template>
 <div class="afr-player-text">
-  <AfrPlayerTextBlock :text="props.fr" :current-time="currentTime"/>
-  <AfrPlayerTextBlock :text="props.ru" :current-time="currentTime"/>
-  <AfrPlayerTextBlock :text="props.transcription" :current-time="currentTime"/>
+  <AfrPlayerTextBlock :text="transcription" :offset="offset" :h-row="hRow"/>
+  <AfrPlayerTextBlock :text="fr" :offset="offset" :h-row="hRow"/>
+  <AfrPlayerTextBlock :text="ru" :offset="offset" :h-row="hRow"/>
 </div>
 </template>
 

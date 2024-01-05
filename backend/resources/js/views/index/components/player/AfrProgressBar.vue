@@ -55,7 +55,7 @@ const clickProgressBar = () => {
 }
 
 .afr-progress-bar-cursor-position{
-  @apply absolute bg-white text-xs justify-center w-[60px] -ms-[30px] py-1 rounded-xl -mt-7 hidden;
+  @apply absolute bg-white text-xs justify-center w-[60px] -ms-[30px] py-1 rounded-xl -mt-7 z-[3] hidden;
 }
 
 .afr-progress-bar:hover .afr-progress-bar-cursor-position{
