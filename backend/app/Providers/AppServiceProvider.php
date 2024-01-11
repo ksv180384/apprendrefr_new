@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
-use App\Models\User;
+use App\Http\Kernel;
+use Carbon\CarbonInterval;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,6 +21,33 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
+
+        // Exception при n+1 query, обращение к несущестующему атрибуту (3 в одном)
+        // Model::preventLazyLoading()
+        // Model::preventSilentlyDiscardingAttributes()
+        // Model::preventsAccessingMissingAttributes()
+        Model::shouldBeStrict(/*!app()->isProduction()*/);
+//        Model::preventSilentlyDiscardingAttributes(); // Используется чтоб в модели можно было не куазывать $fillable
+
+        // Запрос к БД отрабатывает долго
+        \DB::whenQueryingForLongerThan(500, function (Connection $connection){
+            logger()
+                ->channel('telegram')
+                ->debug('Долгий запрос к БД: ' . $connection->query()->toSql());
+        });
+
+        // Если запрос к приложению выполняется более 4 сек, то логируем этот зпрос
+        /*
+        $kernel = app(Kernel::class);
+        $kernel->whenRequestLifecycleIsLongerThan(
+            CarbonInterval::seconds(4),
+            function(){
+                logger()
+                    ->channel('telegram')
+                    ->debug('Долгий запрос к приложению: ' . request()->url());
+            }
+        );
+        */
     }
 
     /**
