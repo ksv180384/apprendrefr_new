@@ -6,6 +6,7 @@ use App\Http\Kernel;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -30,10 +31,12 @@ class AppServiceProvider extends ServiceProvider
 //        Model::preventSilentlyDiscardingAttributes(); // Используется чтоб в модели можно было не куазывать $fillable
 
         // Запрос к БД отрабатывает долго
-        \DB::whenQueryingForLongerThan(500, function (Connection $connection){
-            logger()
-                ->channel('telegram')
-                ->debug('Долгий запрос к БД: ' . $connection->query()->toSql());
+        \DB::listen(function (QueryExecuted $query){
+            if($query->time > 500){
+                logger()
+                    ->channel('telegram')
+                    ->debug('Долгий запрос к БД: ' . $query->sql, $query->bindings);
+            }
         });
 
         // Если запрос к приложению выполняется более 4 сек, то логируем этот зпрос
