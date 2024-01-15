@@ -30,6 +30,9 @@ body {
     @apply max-w-[1440px] mx-auto;
 }
 
+.Pervod{
+    @apply text-green-600;
+}
 
 /*
 body.sidebar-open{

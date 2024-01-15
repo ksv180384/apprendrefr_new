@@ -71,7 +71,7 @@ const close = () => {
   album.value = null;
   fileName.value = null;
   duration.value = null;
-  durationHuman.value = null;
+  durationHuman.value = 0;
   imageLink.value = null;
   refInputMp3.value.value = '';
 }
@@ -309,7 +309,7 @@ const searchSongText = async () => {
           </div>
         </div>
 
-        <div class="afr-track-time">
+        <div v-if="durationHuman" class="afr-track-time">
           {{currentTimeHuman}} / {{ durationHuman }}
         </div>
 
