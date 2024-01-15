@@ -11,16 +11,16 @@ use Monolog\LogRecord;
 
 class TelegramLogger extends AbstractProcessingHandler
 {
-    private $chatId;
+    private int $chatId;
 
-    private $token;
+    private string $token;
 
     public function __construct($config)
     {
         $level = Logger::toMonologLevel($config['level']);
         parent::__construct($level);
 
-        $this->chatId = $config['chat_id'];
+        $this->chatId = (int)$config['chat_id'];
         $this->token = $config['token'];
     }
 

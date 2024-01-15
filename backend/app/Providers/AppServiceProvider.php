@@ -23,6 +23,15 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(TelescopeServiceProvider::class);
         }
 
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
         // Exception при n+1 query, обращение к несущестующему атрибуту (3 в одном)
         // Model::preventLazyLoading()
         // Model::preventSilentlyDiscardingAttributes()
@@ -35,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
             if($query->time > 500){
                 logger()
                     ->channel('telegram')
-                    ->debug('Долгий запрос к БД: ' . $query->sql, $query->bindings);
+                    ->debug('Долгий запрос к БД: ' . $query->sql . "\n" . join(' | ', $query->bindings));
             }
         });
 
@@ -43,7 +52,7 @@ class AppServiceProvider extends ServiceProvider
         /*
         $kernel = app(Kernel::class);
         $kernel->whenRequestLifecycleIsLongerThan(
-            CarbonInterval::seconds(4),
+            CarbonInterval::seconds(1),
             function(){
                 logger()
                     ->channel('telegram')
@@ -51,15 +60,6 @@ class AppServiceProvider extends ServiceProvider
             }
         );
         */
-    }
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
 
         // создание валидации «only_user»
         // Проверяет существует ли уже поле с такими данными, если существует, то

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\BaseController;
 use App\Services\SearchService;
+use App\Services\Telegram\Exceptions\TelegramBotApiException;
 use Illuminate\Http\Request;
 
 class SearchController extends BaseController
