@@ -16,7 +16,6 @@ const showInfo = (id) => {
   isShowModal.value = !isShowModal.value;
   activeWordId.value = id;
 }
-console.log(props.words);
 </script>
 
 <template>

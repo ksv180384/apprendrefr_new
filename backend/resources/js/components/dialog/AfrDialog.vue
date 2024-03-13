@@ -1,35 +1,72 @@
 <script setup>
-import { computed, useSlots } from 'vue';
+import { computed, useSlots, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
+import ShowEventsTrigger from '@/components/dialog/ShowEventsTrigger.vue';
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
   width: { type: String, default: null },
 });
-const emits = defineEmits(['update:modelValue']);
+const emits = defineEmits(['update:modelValue', 'open', 'opened', 'close', 'closed']);
 
 const slots = useSlots();
-
+const showEventsTrigger = ref(props.modelValue);
 const styleWidth = computed(() => props.width ? `width: ${props.width};` : '');
 
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if(newVal){
+      showEventsTrigger.value = true;
+    }
+  }
+);
+
+const onOpen = () => {
+  emits('open');
+}
+
+const onOpened = () => {
+  emits('opened');
+}
+
 const onClose = () => {
+  emits('close');
   emits('update:modelValue', false);
+}
+
+const onClosed = () => {
+  emits('closed');
+}
+
+const close = () => {
+  showEventsTrigger.value = false;
+
 }
 </script>
 
 <template>
   <Teleport to="body">
-    <div
+    <dialog
       v-if="modelValue"
       class="afr-overlay"
-      @click.self="onClose"
+      @click.self="close"
     >
+
+      <ShowEventsTrigger
+        v-if="showEventsTrigger"
+        @open="onOpen"
+        @opened="onOpened"
+        @close="onClose"
+        @closed="onClosed"
+      />
+
       <div class="afr-dialog" :style="[styleWidth]">
         <div v-if="slots.header" class="afr-dialog-header">
           <slot name="header"/>
           <div
             class="afr-dialog-header-close"
-            @click="onClose"
+            @click="close"
           >
             <Icon icon="jam:close" />
           </div>
@@ -41,13 +78,13 @@ const onClose = () => {
           <slot name="footer"/>
         </div>
       </div>
-    </div>
+    </dialog>
   </Teleport>
 </template>
 
 <style scoped>
 .afr-overlay {
-  @apply fixed top-0 bottom-0 left-0 right-0 bg-gray-800 z-50 bg-opacity-20 flex flex-col justify-center items-center;
+  @apply fixed top-0 h-screen left-0 w-screen bg-gray-800 z-50 bg-opacity-20 flex flex-col justify-center items-center;
 }
 
 .afr-dialog {
@@ -59,7 +96,7 @@ const onClose = () => {
 }
 
 .afr-dialog-header-close{
-  @apply absolute right-2 top-1/2 flex items-center justify-center cursor-pointer rounded h-full hover:bg-red-500
+  @apply absolute right-2 top-1/2 flex items-center justify-center cursor-pointer rounded h-full hover:bg-red-500 select-none
          transform -translate-y-1/2 transition duration-200 hover:text-red-50;
   font-size: 22px;
   width: 32px;

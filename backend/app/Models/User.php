@@ -37,7 +37,7 @@ class User extends Authenticatable//, MustVerifyEmail
         'info',
         'signature',
         'residence',
-        'rang',
+        'rang_id',
         'admin',
         'confirm_token',
         'created_at',
@@ -69,17 +69,17 @@ class User extends Authenticatable//, MustVerifyEmail
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function rang(){
-        return $this->belongsTo(Rang::class, 'rang', 'id');
+        return $this->belongsTo(Rang::class, 'rang_id', 'id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function rangTitle()
-    {
-        return $this->belongsTo(Rang::class, 'rang', 'id');
-
-    }
+//    public function rangTitle()
+//    {
+//        return $this->belongsTo(Rang::class, 'rang', 'id');
+//
+//    }
 
     /**
      * Пол пользователя
@@ -126,11 +126,11 @@ class User extends Authenticatable//, MustVerifyEmail
     }
 
     public function isAdmin(){
-        return true; /*$this->admin == 1 || */$this->rangTitle->alias == 'administrator';
+        return true; /*$this->admin == 1 || */$this->rang->alias == 'administrator';
     }
 
     public function isModerator(){
-        return $this->rangTitle->alias == 'moderator';
+        return $this->rang->alias == 'moderator';
     }
 
     /**

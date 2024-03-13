@@ -5,7 +5,7 @@ import menu from '@/store/menu.js';
 
 import Navigation from '@/components/header/navigation/Navigation.vue';
 import Search from '@/components/header/search/Search.vue';
-import Authentication  from '@/components/authentification/Authentication.vue';
+import Authentication  from '@/components/header/authentification/Authentication.vue';
 
 const searchHints = ref([]);
 

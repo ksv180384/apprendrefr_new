@@ -9,15 +9,54 @@ trait HasAlias
 {
     protected static function bootHasAlias()
     {
-        parent::boot();
 
         static::creating(function (Model $model){
-            $model->alias = $model->alias ?? str($model->{self::slugFrom()})->append(time())->slug();
+            $model->makeSlug();
         });
     }
 
-    public static function slugFrom(): string
+    protected function makeSlug(): void
+    {
+        if(!$this->{$this->slugColumn()}){
+            $slug = $this->slugUniq(
+                str($this->{$this->slugFrom()})->slug()->value()
+            );
+
+            $this->{$this->slugColumn()} = $slug;
+        }
+    }
+
+    protected function slugColumn(): string
+    {
+        return 'alias';
+    }
+
+    protected function slugFrom(): string
     {
         return 'title';
+    }
+
+    private function slugUniq(string $slug): string
+    {
+        $originalSlug = $slug;
+        $i = 0;
+
+        while ($this->isSlugExists($slug)){
+            $i++;
+
+            $slug = $originalSlug . '-' . $i;
+        }
+
+        return $slug;
+    }
+
+    private function isSlugExists(string $slug): bool
+    {
+        $query = $this->newQuery()
+            ->where(self::slugColumn(), $slug)
+            //->where($this->getKeyName(), '!=', $this->getKey())
+            ->withoutGlobalScopes();
+
+        return $query->exists();
     }
 }

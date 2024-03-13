@@ -24,6 +24,9 @@ const layout = computed(() => {
   }
   return 'div';
 });
+
+const glasnie = ['a', 'à', 'â', 'e', 'ë', 'ê', 'è', 'é', 'i', 'î', 'o', 'ô', 'u', 'û', 'ù', 'y'];
+const soglasnie = ['b', 'c', 'ç', 'd', 'g', 'k', 'm', 'n', 'p', 'q', 't', 'j', 'l', 'r', 's', 'v', 'w', 'x', 'z'];
 </script>
 
 <template>

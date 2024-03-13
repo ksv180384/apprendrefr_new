@@ -3,7 +3,6 @@
 namespace App\Http;
 
 use App\Http\Middleware\CheckUserConfirmedEmail;
-use App\Http\Middleware\OnlineUsers;
 use App\Http\Middleware\PageInfoDefaultMiddleware;
 use App\Http\Middleware\PageInfoStatisticMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -23,7 +22,6 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        OnlineUsers::class,
     ];
 
     /**
@@ -56,6 +54,7 @@ class Kernel extends HttpKernel
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api/v1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\OnlineUsersMiddleware::class,
         ],
     ];
 

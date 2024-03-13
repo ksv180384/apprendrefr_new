@@ -17,6 +17,10 @@ class Online extends Model
 
     public $timestamps = false;
 
+    public $incrementing = false;
+
+    protected $primaryKey = 'token';
+
     protected $fillable = [
         'user_id',
         'token',
@@ -44,6 +48,6 @@ class Online extends Model
      * @return string|void
      */
     public static function generateToken(){
-        return bin2hex(random_bytes(64));
+        return bin2hex(random_bytes(16));
     }
 }

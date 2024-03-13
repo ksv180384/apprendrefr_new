@@ -12,22 +12,9 @@ class StatisticService {
      * @return mixed
      */
     public function onlineUsers(){
-        $usersOnline = User::select(['users.id', 'users.login'])
-            ->distinct()
-            ->join('online', 'users.id', '=', 'online.user_id')
-            ->whereNotNull('online.user_id')
-            ->get();
+        $usersOnline = Online::with(['user:id,login,email'])
+            ->get(['user_id']);
 
         return $usersOnline;
-    }
-
-    /**
-     * Считаем количество гостей на сайте
-     * @return mixed
-     */
-    public function countGuests(){
-        $countGuests = Online::whereNull('user_id')->count();
-
-        return $countGuests;
     }
 }
