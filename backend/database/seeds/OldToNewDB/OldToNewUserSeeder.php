@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class UserSeeder extends Seeder
+class OldToNewUserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
             }
 
 
-            \App\Models\User::create([
+            \App\Models\User\User::create([
                'id' => $user->id,
                'login' => $user->login,
                'email' => $user->email?:null,

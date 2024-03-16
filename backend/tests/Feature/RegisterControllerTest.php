@@ -4,17 +4,17 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\Api\V1\Auth\Registred;
 use App\Http\Requests\Api\Auth\RegistrationFormApiRequest;
-use App\Models\User;
-use App\Models\User\Sex;
-use Database\Factories\UserFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User\Gender;
+use App\Models\User\User;
+use Database\Factories\User\UserFactory;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
 
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected array $request;
 
@@ -22,7 +22,7 @@ class RegisterControllerTest extends TestCase
     {
         parent::setUp();
 
-        $sex = Sex::first();
+        $sex = Gender::first();
         $confirmToken = User::generateConfirmedToken();
         $rang = User\Rang::select(['id'])->where('alias', '=', 'polzovatel')->first();
 

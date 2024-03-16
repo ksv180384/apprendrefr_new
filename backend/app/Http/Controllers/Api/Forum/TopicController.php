@@ -10,7 +10,6 @@ use App\Models\Forum\Message;
 use App\Models\Forum\MessageStatus;
 use App\Models\Forum\Status;
 use App\Models\Forum\Topic;
-use App\Models\User;
 use App\Services\ForumMessageService;
 use App\Services\ForumService;
 use App\Services\ForumTopicService;

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class UserConfigSeeder extends Seeder
+class OldToNewUserConfigSeeder extends Seeder
 {
     /**
      * Run the database seeds.

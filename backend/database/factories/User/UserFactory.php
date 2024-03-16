@@ -1,16 +1,15 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\User;
 
-use App\Models\User;
+use App\Models\User\Gender;
 use App\Models\User\Rang;
-use App\Models\User\Sex;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User\User>
  */
 class UserFactory extends Factory
 {
@@ -26,7 +25,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $sex = Sex::inRandomOrder()->first();
+        $gender = Gender::inRandomOrder()->first();
         $rang = Rang::where('alias', '=', 'polzovatel')->first(['id']);
         $confirmToken = User::generateConfirmedToken();
 
@@ -34,10 +33,10 @@ class UserFactory extends Factory
             'login' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= bcrypt(md5('password')),
             'remember_token' => Str::random(10),
-            'sex' => $sex->id,
-            'rang' => $rang->id,
+            'gender_id' => $gender->id,
+            'rang_id' => $rang->id,
             'confirm_token' => $confirmToken,
         ];
     }

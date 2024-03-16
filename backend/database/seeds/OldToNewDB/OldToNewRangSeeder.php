@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class RangSeeder extends Seeder
+class OldToNewRangSeeder extends Seeder
 {
     /**
      * Run the database seeds.

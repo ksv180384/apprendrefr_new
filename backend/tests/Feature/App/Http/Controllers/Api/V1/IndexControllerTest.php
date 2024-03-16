@@ -2,17 +2,19 @@
 
 namespace Tests\Feature\App\Http\Controllers\Api\V1;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class IndexControllerTest extends TestCase
 {
+    use DatabaseTransactions;
+    use WithFaker;
+
     /**
      * @test
      */
-    public function it_index_page(): void
+    public function index_page(): void
     {
         $response = $this->get('api/v1/page/');
 

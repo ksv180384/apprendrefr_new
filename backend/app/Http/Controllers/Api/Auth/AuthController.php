@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Api\BaseController;
-
 use App\Http\Requests\Api\Auth\ChangePasswordRequest;
 use App\Http\Requests\Api\Auth\RegistrationFormApiRequest;
 use App\Mail\ConfirmEmail;
 use App\Mail\LostPassword;
 use App\Mail\OrderShippedLostPassword;
-use App\Models\User;
+use App\Models\User\User;
 use App\Services\ForumMessageService;
 use App\Services\StatisticService;
 use App\Services\UserService;

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ProverbSeeder extends Seeder
+class OldToNewProverbSeeder extends Seeder
 {
     /**
      * Run the database seeds.

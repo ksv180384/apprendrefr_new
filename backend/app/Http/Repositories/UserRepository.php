@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Repositories;
 
-use App\Models\User as Model;
+use App\Models\User\User as Model;
 
 /**
  * Хранилище запросов к таблице words

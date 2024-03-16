@@ -12,4 +12,9 @@ class PlayerArtistsSong extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function songs()
+    {
+        return $this->hasMany(PlayerSongs::class, 'artist_id');
+    }
 }

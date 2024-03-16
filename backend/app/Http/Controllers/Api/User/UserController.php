@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\User;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Api\User\ProfileUpdateRequest;
 use App\Mail\ConfirmEmail;
-use App\Models\User;
-use App\Models\User\Sex;
+use App\Models\User\Gender;
+use App\Models\User\User;
 use App\Models\User\UserConfigsView;
 use App\Services\ForumMessageService;
 use App\Services\ProverbService;
@@ -14,7 +14,6 @@ use App\Services\StatisticService;
 use App\Services\UserService;
 use App\Services\WordService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 
 class UserController extends BaseController
@@ -74,7 +73,7 @@ class UserController extends BaseController
     {
         //
         $sexList = [['id' => 0, 'title' => 'Нет' ]];
-        $sexList = array_merge($sexList, Sex::select('id', 'title')->orderBy('id', 'asc')->get()->toArray());
+        $sexList = array_merge($sexList, Gender::select('id', 'title')->orderBy('id', 'asc')->get()->toArray());
         $configUserDataViewList = UserConfigsView::all();
         $wordsList = $this->wordService->wordsRandom();
         $user = \Auth::user();

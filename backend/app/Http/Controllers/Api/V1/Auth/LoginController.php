@@ -49,12 +49,18 @@ class LoginController extends Controller
         $remember = $request->boolean('remember');
 
         if (Auth::attempt($request->getCredentials(), $remember)) {
-            $request->session()->regenerate();
+            session()->regenerate();
 
             // Присваеваем токену идентификатор пользователя
             $tokenGuest = $request->headers->get('app-user-token');
             if(!empty($tokenGuest)){
                 Online::where('token', '=', $tokenGuest)->update([
+                    'user_id' => \Auth::id(),
+                ]);
+            }else{
+                $token = Online::generateToken();
+                Online::create([
+                    'token' => $token,
                     'user_id' => \Auth::id(),
                 ]);
             }

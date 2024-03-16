@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class SexSeeder extends Seeder
+class OldToNewSexSeeder extends Seeder
 {
     /**
      * Run the database seeds.

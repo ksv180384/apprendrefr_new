@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User;
 
 use App\Models\Forum\Message;
-use App\Models\User\Rang;
-use App\Models\User\Sex;
-use App\Models\User\UserConfig;
-use App\Models\User\UserInfo;
+use App\Models\Player\PlayerSongs;
 use Carbon\Carbon;
+use Database\Factories\User\UserFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -15,16 +14,12 @@ use Illuminate\Support\Str;
 class User extends Authenticatable//, MustVerifyEmail
 {
     use Notifiable;
+    use HasFactory;
 
     const NO_AVATAR = '/img/none_avatar.png';
 
     public $preventAttrGet = false;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'login',
         'email',
@@ -32,7 +27,7 @@ class User extends Authenticatable//, MustVerifyEmail
         'send_verified_email_at',
         'password',
         'avatar',
-        'sex',
+        'gender_id',
         'birthday',
         'info',
         'signature',
@@ -44,49 +39,32 @@ class User extends Authenticatable//, MustVerifyEmail
         'updated_at',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
+
     protected $casts = [
         'email_verified_at' => 'datetime:d.m.Y H:i:s',
         'birthday' => 'datetime:Y-m-d',
-        'created_at' => 'datetime:d.m.Y H:i:s',
-        'updated_at' => 'datetime:d.m.Y H:i:s',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function rang(){
         return $this->belongsTo(Rang::class, 'rang_id', 'id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-//    public function rangTitle()
-//    {
-//        return $this->belongsTo(Rang::class, 'rang', 'id');
-//
-//    }
+    public function songs()
+    {
+        return $this->hasMany(PlayerSongs::class, 'user_id');
+
+    }
 
     /**
      * Пол пользователя
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function sex(){
-        return $this->hasOne(Sex::class, 'id', 'sex');
+    public function gender(){
+        return $this->belongsTo(Gender::class, 'gender_id');
     }
 
     public function infos(){
@@ -181,5 +159,10 @@ class User extends Authenticatable//, MustVerifyEmail
      */
     public function isConfirmed(){
         return !empty($this->email_verified_at);
+    }
+
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
     }
 }

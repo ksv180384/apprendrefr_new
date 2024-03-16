@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class UserInfoSeeder extends Seeder
+class OldToNewUserInfoSeeder extends Seeder
 {
     /**
      * Run the database seeds.

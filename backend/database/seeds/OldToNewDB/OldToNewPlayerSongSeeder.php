@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class PlayerSongSeeder extends Seeder
+class OldToNewPlayerSongSeeder extends Seeder
 {
     /**
      * Run the database seeds.

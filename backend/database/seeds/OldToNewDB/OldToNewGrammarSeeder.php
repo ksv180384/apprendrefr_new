@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class GrammarSeeder extends Seeder
+class OldToNewGrammarSeeder extends Seeder
 {
     /**
      * Run the database seeds.

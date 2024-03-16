@@ -27,11 +27,11 @@ class PrivateMessages extends Model
 
     public function to()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\Models\User\User');
     }
 
     public function from()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\Models\User\User');
     }
 }

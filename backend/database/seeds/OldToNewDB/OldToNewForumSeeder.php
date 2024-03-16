@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ForumSeeder extends Seeder
+class OldToNewForumSeeder extends Seeder
 {
     /**
      * Run the database seeds.

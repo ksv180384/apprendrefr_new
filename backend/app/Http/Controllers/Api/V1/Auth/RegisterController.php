@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Mail\ConfirmEmail;
+use App\Models\User\Rang;
+use App\Models\User\User;
 use App\Models\User\UserConfig;
+use App\Models\User\UserConfigsView;
+use App\Models\User\UserInfo;
 use App\Providers\RouteServiceProvider;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
@@ -55,18 +58,18 @@ class RegisterController extends Controller
     protected function register(RegisterRequest $request)
     {
         $confirmToken = User::generateConfirmedToken();
-        $rang = User\Rang::select(['id'])->where('alias', '=', 'polzovatel')->first();
+        $rang = Rang::select(['id'])->where('alias', '=', 'polzovatel')->first();
 
         $newUser = User::create([
             'login' => $request->login,
             'email' => $request->email,
             'password' => bcrypt(md5($request->password)),
-            'sex' => $request->sex,
+            'gender_id' => $request->gender_id,
             'rang_id' => $rang->id,
             'confirm_token' => $confirmToken,
         ]);
 
-        $configsView = User\UserConfigsView::where('alias', '=', 'ne-pokazyvat-nikomu')->first(['id']);
+        $configsView = UserConfigsView::where('alias', '=', 'ne-pokazyvat-nikomu')->first(['id']);
 
         UserConfig::create([
             'user_id' => $newUser->id,
@@ -88,7 +91,7 @@ class RegisterController extends Controller
             'sex' => $configsView->id,
         ]);
 
-        User\UserInfo::create([
+        UserInfo::create([
             'user_id' => $newUser->id,
         ]);
 

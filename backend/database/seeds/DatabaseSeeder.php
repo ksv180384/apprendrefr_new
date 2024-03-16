@@ -11,18 +11,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(SexSeeder::class);
-        $this->call(RangSeeder::class);
-        $this->call(UserSeeder::class);
-        $this->call(ProverbSeeder::class);
-        $this->call(WordSeeder::class);
-        $this->call(UserConfigSeeder::class);
-        $this->call(UserInfoSeeder::class);
-        $this->call(PlayerSongArtistSeeder::class);
-        $this->call(PlayerSongSeeder::class);
-        $this->call(PlayerSongSearchSeeder::class);
-        $this->call(ForumSeeder::class);
-        $this->call(GrammarSeeder::class);
-        $this->call(LessonsSeeder::class);
+        $this->call([
+//            OldToNewSexSeeder::class,
+//            OldToNewRangSeeder::class,
+//            OldToNewUserSeeder::class,
+//            OldToNewProverbSeeder::class,
+//            OldToNewWordSeeder::class,
+//            OldToNewUserConfigSeeder::class,
+//            OldToNewUserInfoSeeder::class,
+//            OldToNewPlayerSongArtistSeeder::class,
+//            OldToNewPlayerSongSeeder::class,
+//            OldToNewPlayerSongSearchSeeder::class,
+//            OldToNewForumSeeder::class,
+//            OldToNewGrammarSeeder::class,
+//            OldToNewLessonsSeeder::class,
+//            \Database\Seeders\Words\WordSeeder::class,
+        ]);
     }
 }

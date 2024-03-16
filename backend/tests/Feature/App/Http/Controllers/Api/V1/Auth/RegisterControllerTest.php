@@ -2,18 +2,17 @@
 
 namespace Tests\Feature\App\Http\Controllers\Api\V1\Auth;
 
-use App\Http\Requests\Api\Auth\RegistrationFormApiRequest;
-use App\Models\User;
-use App\Models\User\Sex;
+use App\Models\User\Gender;
+use App\Models\User\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
-    use DatabaseTransactions, WithFaker;
+    use DatabaseTransactions;
+    use WithFaker;
 
 //    private User $user;
 //
@@ -34,16 +33,16 @@ class RegisterControllerTest extends TestCase
      * @test
      * A basic feature test example.
      */
-    public function it_register_user(): void
+    public function register_user(): void
     {
-        $sex = Sex::inRandomOrder()->first();
+        $gender = Gender::inRandomOrder()->first();
 
         $postUserData = [
             'login' => 'Login Test',
             'email' => 'login-test@mail.ru',
             'password' => '123456',
             'password_confirmation' => '123456',
-            'sex' => $sex->id,
+            'gender_id' => $gender->id,
         ];
 
         $response = $this->withServerVariables(['HTTP_HOST' => 'apprendrefr.local',])->post('api/v1/auth/register', $postUserData);
@@ -56,5 +55,13 @@ class RegisterControllerTest extends TestCase
 
         $this->assertDatabaseHas('user_configs', ['user_id' => $user->id]);
         $this->assertDatabaseHas('user_infos', ['user_id' => $user->id]);
+
+        $response->assertJsonStructure([
+            'app_user_token',
+            'message' => [
+                'ru',
+                'fr',
+            ]
+        ]);
     }
 }
