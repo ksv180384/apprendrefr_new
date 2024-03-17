@@ -1,12 +1,20 @@
 import { get } from '@/services/api/query';
 import { objToUrlParams } from '@/helpers/helper';
 
-const songText = {
-  async searchByArtistTitle(params)  {
-    const paramPage = objToUrlParams(params);
+const search = async (params) => {
+  const paramPage = objToUrlParams(params);
 
-    return await get(`/song/search-by-artist-and-title${paramPage}`);
-  }
+  return await get(`/song/search${paramPage}`);
 }
 
-export default songText;
+const  searchByArtistTitle = async (params) => {
+  const paramPage = objToUrlParams(params);
+
+  return await get(`/song/search-by-artist-and-title${paramPage}`);
+}
+
+
+export default {
+  search,
+  searchByArtistTitle,
+};

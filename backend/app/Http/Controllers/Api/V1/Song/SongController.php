@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Song;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Resources\SongText\SearchSongResource;
+use App\Http\Resources\Api\V1\SongText\SearchSongResource;
+use App\Http\Resources\Api\V1\SongText\SearchSongTextResource;
 use App\Models\Player\PlayerSearchSong;
 use App\Services\SongService;
 use Illuminate\Http\JsonResponse;
@@ -37,8 +38,22 @@ class SongController extends BaseController
             ]);
         }
 
+        return response()->json([
+            'song' => $song ? SearchSongTextResource::make($song) : null,
+        ]);
+    }
+
+    public function search(Request $request, SongService $songService): JsonResponse
+    {
+        $search = $request->query('search', '');
+
+        $song = $songService->search($search);
+
         return response()->json(
-            $song ? SearchSongResource::make($song) : null
+            [
+                'songs' => $song ? SearchSongResource::collection($song) : null,
+            ]
+
         );
     }
 

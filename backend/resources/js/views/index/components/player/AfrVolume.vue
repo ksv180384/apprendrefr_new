@@ -100,6 +100,10 @@ watch(
   display: flex;
 }
 
+.afr-player-volume-container .afr-volume-control{
+  @apply hidden;
+}
+
 .afr-player-volume-container:hover .afr-volume-control{
   @apply flex;
 }

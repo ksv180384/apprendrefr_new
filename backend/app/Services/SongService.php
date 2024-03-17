@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Player\PlayerArtistsSong;
 use App\Models\Player\PlayerSongs;
+use Illuminate\Support\Facades\DB;
 
 class SongService
 {
@@ -104,10 +105,11 @@ class SongService
             ])
             ->leftJoin('users', 'player_songs.user_id', '=', 'users.id')
             ->where('player_songs.hidden', '=', 0)
-            ->where(function ($query) use ($searchText) {
-                return $query->where('player_songs.artist_name', 'LIKE', '%' . $searchText . '%')
-                    ->orWhere('player_songs.title', 'LIKE', '%' . $searchText . '%');
-            })
+            ->where(DB::raw("CONCAT(player_songs.artist_name, ' ', player_songs.title)"), 'LIKE', '%' . $searchText . '%')
+//            ->where(function ($query) use ($searchText) {
+//                return $query->where('player_songs.artist_name', 'LIKE', '%' . $searchText . '%')
+//                    ->orWhere('player_songs.title', 'LIKE', '%' . $searchText . '%');
+//            })
             ->limit(10)
             ->get();
 

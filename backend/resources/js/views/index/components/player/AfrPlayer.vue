@@ -10,7 +10,8 @@ import dayjs from 'dayjs';
 import AfrVolume from '@/views/index/components/player/AfrVolume.vue';
 import AfrProgressBar from '@/views/index/components/player/AfrProgressBar.vue';
 import AfrPlayerText from '@/views/index/components/player/AfrPlayerText.vue';
-import AfrInput from "@/components/form/AfrInput.vue";
+import AfrCloseBtn from '@/components/form/AfrCloseBtn.vue';
+import AfrPlayerSearch from '@/views/index/components/player/AfrPlayerSearch.vue';
 
 const refInputMp3 = ref(null);
 const refDropzone = ref(null);
@@ -239,7 +240,6 @@ const getTextPositions = (arText) => {
         result.push(arText[index].duration + ((i + 1) * tickOnePixel));
       }
     }
-    //console.log(index, item);
   });
   return result;
 }
@@ -251,10 +251,10 @@ const searchSongText = async () => {
   try {
     const res = await api.songText.searchByArtistTitle({ artist: artist.value, title: track.value, file_name: fileName.value });
 
-    if(res.text_fr){
-      songText.fr = textToArray(res.text_fr);
-      songText.ru = textToArray(res.text_ru);
-      songText.transcription = textToArray(res.text_transcription);
+    if(res.song?.text_fr){
+      songText.fr = textToArray(res.song?.text_fr);
+      songText.ru = textToArray(res.song?.text_ru);
+      songText.transcription = textToArray(res.song?.text_transcription);
       pixelsToTime.value = getTextPositions(songText.fr);
     }
   } catch (e) {
@@ -287,9 +287,13 @@ const { isOverDropZone } = useDropZone(refDropzone, {
     <div>
       <div v-if="fileName">
         <div class="afr-player-file-name">{{ fileName }}</div>
-        <div class="mt-2">
-          <afr-input size="small" placeholder="Поиск подходящей песни..."/>
+        <div class="mt-2 flex flex-row items-center justify-between">
+          <div class="text-xs">Продолжилельност: {{ durationHuman }} мин</div>
+          <afr-close-btn size="small" title="Отмена" @click="close"/>
         </div>
+
+        <afr-player-search class="mt-2"/>
+
       </div>
       <div
         v-else
@@ -302,8 +306,8 @@ const { isOverDropZone } = useDropZone(refDropzone, {
           @click="() => refInputMp3.click()"
         >
           Перетащите mp3 файл. Программа попытается сама найти текст, если не найдет,
-          то нажмите на кнопку <span class="font-bold">"показать список текстов"</span>.
-          Выберите нужный текст и нажмите кнопку <span class="font-bold">"плей/пауза"</span>
+          то введите исполнителя и название необходимой песни.
+          <div class="text-center py-1 text-lg">mp3</div>
         </div>
       </div>
       <input ref="refInputMp3" type="file" @change="uploadFile" hidden/>
@@ -367,6 +371,10 @@ const { isOverDropZone } = useDropZone(refDropzone, {
 </template>
 
 <style scoped>
+.afr-player{
+
+}
+
 .afr-player-bar{
   @apply fixed bottom-0 max-w-[1440px] w-full mx-auto z-10 rounded-t -ms-2;
 }
@@ -384,7 +392,7 @@ const { isOverDropZone } = useDropZone(refDropzone, {
 }
 
 .afr-player-file-name{
-  @apply text-xs text-nowrap truncate;
+  @apply text-xs text-nowrap truncate text-center;
 }
 
 .afr-player-controls{

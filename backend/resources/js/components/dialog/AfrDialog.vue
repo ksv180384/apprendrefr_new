@@ -1,7 +1,7 @@
 <script setup>
 import { computed, useSlots, ref, watch } from 'vue';
-import { Icon } from '@iconify/vue';
 import ShowEventsTrigger from '@/components/dialog/ShowEventsTrigger.vue';
+import AfrCloseBtn from '@/components/form/AfrCloseBtn.vue';
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -64,12 +64,7 @@ const close = () => {
       <div class="afr-dialog" :style="[styleWidth]">
         <div v-if="slots.header" class="afr-dialog-header">
           <slot name="header"/>
-          <div
-            class="afr-dialog-header-close"
-            @click="close"
-          >
-            <Icon icon="jam:close" />
-          </div>
+          <afr-close-btn class="absolute right-2 top-1/2 transform -translate-y-1/2" @click="close"/>
         </div>
         <div class="afr-dialog-body">
           <slot/>
@@ -93,14 +88,6 @@ const close = () => {
 
 .afr-dialog-header{
   @apply bg-blue-100 text-center py-3 px-2 relative;
-}
-
-.afr-dialog-header-close{
-  @apply absolute right-2 top-1/2 flex items-center justify-center cursor-pointer rounded h-full hover:bg-red-500 select-none
-         transform -translate-y-1/2 transition duration-200 hover:text-red-50;
-  font-size: 22px;
-  width: 32px;
-  height: 32px;
 }
 
 .afr-dialog-body{
