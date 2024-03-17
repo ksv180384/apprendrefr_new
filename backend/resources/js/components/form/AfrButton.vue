@@ -62,7 +62,7 @@ const onClick = () => {
   >
     <button :disabled="disabled" :type="nativeType">
       <Icon v-if="icon && !loading" :icon="icon" />
-      <Icon v-if="loading" icon="svg-spinners:bars-rotate-fade" />
+      <Icon v-if="loading" icon="svg-spinners:6-dots-rotate" />
       <slot>button</slot>
     </button>
   </div>

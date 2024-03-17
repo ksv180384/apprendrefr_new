@@ -4,13 +4,16 @@ import api from '@/services/api';
 import { Icon } from '@iconify/vue';
 import parse from 'id3-parser';
 import { convertFileToBuffer } from 'id3-parser/lib/util';
+import { useDropZone } from '@vueuse/core'
 import dayjs from 'dayjs';
 
 import AfrVolume from '@/views/index/components/player/AfrVolume.vue';
 import AfrProgressBar from '@/views/index/components/player/AfrProgressBar.vue';
 import AfrPlayerText from '@/views/index/components/player/AfrPlayerText.vue';
+import AfrInput from "@/components/form/AfrInput.vue";
 
 const refInputMp3 = ref(null);
+const refDropzone = ref(null);
 const isPlay = ref(false);
 const audio = ref(null);
 const fileName = ref(null);
@@ -151,6 +154,9 @@ const changeVolume = (data) => {
 
 // Меняем позицию прогресбара при клике
 const changePositionProgressBar = (position) => {
+  if(!audio.value){
+    return;
+  }
   audio.value.currentTime = position;
   oldTime.value = 0;
   checkPlayerTime();
@@ -245,7 +251,7 @@ const searchSongText = async () => {
   try {
     const res = await api.songText.searchByArtistTitle({ artist: artist.value, title: track.value, file_name: fileName.value });
 
-    if(Object.entries(res).length !== 0){
+    if(res.text_fr){
       songText.fr = textToArray(res.text_fr);
       songText.ru = textToArray(res.text_ru);
       songText.transcription = textToArray(res.text_transcription);
@@ -257,14 +263,50 @@ const searchSongText = async () => {
     isLoadingSongText.value = false;
   }
 }
+
+const onDrop = (files) => {
+
+  let list = new DataTransfer();
+  const blob = files[0].slice(0, files[0].size, files[0].type);
+  let file = new File([blob], files[0].name, { type: files[0].type });
+  list.items.add(file);
+
+  refInputMp3.value.files = list.files;
+  const event = new Event('change');
+  refInputMp3.value.dispatchEvent(event);
+}
+
+const { isOverDropZone } = useDropZone(refDropzone, {
+  onDrop,
+});
 </script>
 
 <template>
   <div class="afr-player">
 
     <div>
-      Player
-      <input ref="refInputMp3" type="file" @change="uploadFile"/>
+      <div v-if="fileName">
+        <div class="afr-player-file-name">{{ fileName }}</div>
+        <div class="mt-2">
+          <afr-input size="small" placeholder="Поиск подходящей песни..."/>
+        </div>
+      </div>
+      <div
+        v-else
+        class="afr-player-load-file"
+        :class="{ 'is-over-drop-zone': isOverDropZone }"
+      >
+        <div
+          ref="refDropzone"
+          class="afr-player-info"
+          @click="() => refInputMp3.click()"
+        >
+          Перетащите mp3 файл. Программа попытается сама найти текст, если не найдет,
+          то нажмите на кнопку <span class="font-bold">"показать список текстов"</span>.
+          Выберите нужный текст и нажмите кнопку <span class="font-bold">"плей/пауза"</span>
+        </div>
+      </div>
+      <input ref="refInputMp3" type="file" @change="uploadFile" hidden/>
     </div>
 
     <div class="afr-player-bar">
@@ -327,6 +369,22 @@ const searchSongText = async () => {
 <style scoped>
 .afr-player-bar{
   @apply fixed bottom-0 max-w-[1440px] w-full mx-auto z-10 rounded-t -ms-2;
+}
+
+.afr-player-load-file{
+  @apply p-2 border-blue-500 border rounded-lg border-dashed relative;
+}
+
+.is-over-drop-zone{
+  @apply bg-white border-blue-800;
+}
+
+.afr-player-info{
+  @apply text-xs leading-5 cursor-pointer;
+}
+
+.afr-player-file-name{
+  @apply text-xs text-nowrap truncate;
 }
 
 .afr-player-controls{

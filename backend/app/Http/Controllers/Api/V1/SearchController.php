@@ -6,16 +6,18 @@ use App\Http\Controllers\Api\BaseController;
 use App\Services\SearchService;
 use App\Services\Telegram\Exceptions\TelegramBotApiException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SearchController extends BaseController
 {
 
     public function searchAll(Request $request, SearchService $searchService){
 
-        $text = $request->query('text', '');
-        $type = $request->query('type', '');
+        $text = $request->input('text', '');
+        $type = $request->input('type', '');
+        $lang = Str::lower($request->input('lang', ''));
 
-        $result = $searchService->search($text, $type);
+        $result = $searchService->search($text, $type, $lang);
 
         return response()->json(['search' => $result]);
     }

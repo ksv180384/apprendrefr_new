@@ -1,13 +1,12 @@
 <script setup>
 import { computed, ref } from 'vue';
 import useClickOutside from '@/composables/useClickOutside.js';
+import { vOnClickOutside } from '@vueuse/components';
+import api from '@/services/api/index.js';
 
 import { Icon } from '@iconify/vue';
-
-const props = defineProps({
-  hints: { type: Array, default: [] }
-});
-const emits = defineEmits(['change', 'enter']);
+import WordItem from '@/components/header/search/WordItem.vue';
+import SongItem from '@/components/header/search/SongItem.vue';
 
 const searchTypes = [
   { id: 'word', title: 'Слово' },
@@ -16,9 +15,15 @@ const searchTypes = [
 const refSearchTypesList = ref(null);
 const refBtnTypesList = ref(null);
 const searchText = ref('');
+const hints = ref([]);
 const isShowListBlock = ref(false);
 const activeSearchType = ref(0);
+const isShow = ref(false);
+const isSearchLoading = ref(false);
+const isShowDropdown = computed(() => isShow.value && searchText.value.length >= 2/* && props.hints.length*/);
 const activeSearchTypeTitle = computed(() => searchTypes[activeSearchType.value].title);
+const activeSearchTypeId = computed(() => searchTypes[activeSearchType.value].id);
+
 let searchTimeout = null;
 
 useClickOutside(
@@ -48,24 +53,56 @@ const textLang = computed(() => {
   return null;
 });
 
-const changeSearchType = (e, index) => {
+const changeSearchType = (index) => {
   activeSearchType.value = index;
   isShowListBlock.value = false;
+  loadHintsSearch();
 }
 
 const toggleListBlock = () => {
   isShowListBlock.value = !isShowListBlock.value;
 }
 
+const clickOutSide = (e) => {
+  if(e.target.id === 'inputSearch'){
+    return;
+  }
+  isShow.value = false;
+}
+
+const focusInputSearch = () => {
+  isShow.value = true;
+}
+
 const loadHintsSearch = () => {
-  clearTimeout(searchTimeout)
+  isSearchLoading.value = true;
+  clearTimeout(searchTimeout);
   searchTimeout = setTimeout(() => {
-    emits('change', { text: searchText.value, type: searchTypes[activeSearchType.value].id });
+    isShow.value = true;
+    loadSearchHints({ text: searchText.value, type: activeSearchTypeId.value, lang: textLang.value });
   }, 500);
 }
 
 const submitSearch = () => {
-  emits('enter', { text: searchText.value, type: searchTypes[activeSearchType.value].id });
+  // emits('enter', { text: searchText.value, type: activeSearchTypeId.value });
+}
+
+const loadSearchHints = async (search) => {
+  if(search.text.length < 2){
+    hints.value = [];
+    isSearchLoading.value = false;
+    return;
+  }
+  try{
+    const res = await api.search({ text: search.text, type: search.type, lang: search.lang });
+    hints.value = res.search.map(item => {
+      return item
+    });
+  } catch (e) {
+    console.error(e);
+  } finally {
+    isSearchLoading.value = false;
+  }
 }
 </script>
 
@@ -85,9 +122,9 @@ const submitSearch = () => {
           v-show="isShowListBlock"
         >
           <li
-            v-for="(type, index) in  searchTypes"
+            v-for="(type, index) in searchTypes"
             :key="type.id"
-            @click="(e) => changeSearchType(e, index)"
+            @click="changeSearchType(index)"
           >
             {{ type.title }}
           </li>
@@ -97,27 +134,52 @@ const submitSearch = () => {
       <div class="input-block">
         <input
           v-model="searchText"
+          id="inputSearch"
           type="text"
           placeholder="Поиск..."
+          autocomplete="off"
           @keydown="loadHintsSearch"
           @keydown.enter="submitSearch"
+          @focus.stop="focusInputSearch"
         />
         <div class="lang">
           {{ textLang }}
         </div>
       </div>
       <div class="icon-block" @click="submitSearch">
-        <Icon icon="tabler:search" width="23" height="23" />
+        <template v-if="isSearchLoading">
+          <Icon icon="svg-spinners:6-dots-rotate" width="23" height="23" />
+        </template>
+        <template v-else>
+          <Icon icon="tabler:search" width="23" height="23"/>
+        </template>
       </div>
     </div>
 
     <ul
-      v-show="hints.length"
+      v-show="isShowDropdown"
       class="search-result-list"
+      v-on-click-outside="clickOutSide"
     >
-      <li v-for="hint in hints" :key="hint.id">
-        {{ hint.title }}
-      </li>
+      <template v-if="!hints.length && !isSearchLoading">
+        <li class="text-center">
+          Ничего не найдено
+        </li>
+      </template>
+      <template v-else-if="activeSearchTypeId === 'word'">
+        <WordItem
+          v-for="word in hints"
+          :key="word.id"
+          :word="word"
+        />
+      </template>
+      <template v-else>
+        <SongItem
+          v-for="song in hints"
+          :key="song.id"
+          :song="song"
+        />
+      </template>
     </ul>
   </div>
 </template>

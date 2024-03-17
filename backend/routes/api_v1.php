@@ -1,6 +1,6 @@
 <?php
 
-Route::get('/search', [\App\Http\Controllers\Api\V1\SearchController::class, 'searchAll']);
+Route::post('/search', [\App\Http\Controllers\Api\V1\SearchController::class, 'searchAll']);
 
 Route::get('song/search-by-artist-and-title', [\App\Http\Controllers\Api\V1\Song\SongController::class, 'searchByArtistAndTitle']);
 

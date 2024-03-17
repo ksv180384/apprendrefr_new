@@ -33,6 +33,7 @@ const clickProgressBar = () => {
     @mousemove="mousemoveProgressBar"
   >
     <div
+      v-if="durationProgressBarPos"
       class="afr-progress-bar-cursor-position"
       :style="`left: ${cursorPositionProgressBar}%`"
     >

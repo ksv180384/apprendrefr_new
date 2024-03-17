@@ -1,8 +1,6 @@
-import { get } from '@/services/api/query';
+import { post } from '@/services/api/query';
 import { objToUrlParams } from '@/helpers/helper';
 
 export const search = async (params) => {
-    const paramPage = objToUrlParams(params);
-
-    return await get(`search${paramPage}`);
+    return await post(`search`, params);
 }

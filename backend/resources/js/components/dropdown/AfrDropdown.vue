@@ -2,8 +2,6 @@
 import { ref } from 'vue';
 import { vOnClickOutside } from '@vueuse/components';
 
-const refAfrDropdown = ref(null);
-const refAfrDropdownList = ref(null);
 const isShowDropdown = ref(false);
 
 
@@ -44,6 +42,6 @@ const showDropdown = () => {
 }
 
 .afr-dropdown-block{
-  @apply absolute bg-white p-2 rounded shadow-lg inline-block mt-1;
+  @apply absolute bg-white p-2 rounded shadow-lg right-0 mt-1;
 }
 </style>

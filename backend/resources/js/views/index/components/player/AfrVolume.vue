@@ -17,10 +17,11 @@ onUnmounted(() => {
 });
 
 const volumePointInfo = computed(() => {
-  if(!volumePoint.value){
+  let val = parseInt(Math.abs(volumePoint.value - 100));
+  if(!val){
     return 0;
   }
-  return parseInt(volumePoint.value);
+  return val;
 });
 
 const volumePoint = ref(props.volume);
@@ -62,9 +63,9 @@ const volumePointMoveAction = (e) => {
 }
 
 watch(
-  () => volumePoint.value,
+  () => volumePointInfo.value,
   () => {
-    emits('change', volumePoint.value);
+    emits('change', volumePointInfo.value);
   }
 );
 </script>

@@ -27,7 +27,7 @@ body {
 
 
 .container-max{
-    @apply max-w-[1440px] mx-auto;
+    @apply max-w-[1440px] w-full mx-auto;
 }
 
 .Pervod{

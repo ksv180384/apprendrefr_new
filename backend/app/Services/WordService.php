@@ -52,11 +52,20 @@ class WordService {
         return $wordsList;
     }
 
-    public function searchFrNoLimit(string $search_text){
-        $search_text = preg_replace("#\b(la |le |les |un |une |se )#", "", $search_text);
-        $wordsList = Word::select(['id', 'word', 'translation', 'example'])
-            ->where('word', 'LIKE', '%' . $search_text . '%')
-            ->get();
+    public function search(string $searchText, string $lang = 'fr')
+    {
+        if($lang === 'fr'){
+            $searchText = preg_replace("#\b(la |le |les |un |une |se )#", "", $searchText);
+            $wordsList = Word::where('word', 'LIKE', '%' . $searchText . '%')->get(['id', 'word', 'translation', 'example']);
+        }else{
+            $wordsList = Word::where('translation', 'LIKE', '%' . $searchText . '%')->get(['id', 'word', 'translation', 'example']);
+            $wordsList = $wordsList->map(function ($item){
+                $word = $item->word;
+                $item->word = $item->translation;
+                $item->translation = $word;
+                return $item;
+            });
+        }
 
         return $wordsList;
     }

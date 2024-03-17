@@ -8,25 +8,6 @@ import Search from '@/components/header/search/Search.vue';
 import Authentication  from '@/components/header/authentification/Authentication.vue';
 
 const searchHints = ref([]);
-
-const loadSearchHints = async (search) => {
-  if(search.text.length < 2){
-    searchHints.value = [];
-    return;
-  }
-  try{
-    const res = await api.search({ text: search.text, type: search.type });
-    searchHints.value = res.search;
-  } catch (e) {
-    console.error(e);
-  } finally {
-
-  }
-}
-
-const loadSearch = (searchText) => {
-  console.log(searchText);
-}
 </script>
 
 <template>
@@ -37,11 +18,7 @@ const loadSearch = (searchText) => {
           <Navigation :menu="menu"/>
         </div>
         <div class="header-actions">
-          <Search
-            :hints="searchHints"
-            @enter="loadSearch"
-            @change="loadSearchHints"
-          />
+          <Search/>
           <Authentication class="ms-5"/>
         </div>
       </div>
