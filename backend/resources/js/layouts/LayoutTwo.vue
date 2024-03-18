@@ -3,25 +3,26 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-import Header from '@/components/header/Header.vue';
+import AfrHeader from '@/components/header/AfrHeader.vue';
+import AfrFooter from '@/components/footer/AfrFooter.vue';
 </script>
 <template>
   <div class="layout-two">
-    <Header/>
+    <afr-header/>
     <div class="container-max">
       <router-view/>
     </div>
+    <afr-footer/>
   </div>
 </template>
 
 <style scoped>
 .layout-two{
-  @apply min-h-screen;
-  padding-top: 57px;
+  @apply flex min-h-screen pt-[57px] flex-col;
 }
 
 .layout-two .container-max{
-
+  @apply flex-1;
 }
 /*
 .layout-two{
