@@ -13,8 +13,12 @@ const  searchByArtistTitle = async (params) => {
   return await get(`/song/search-by-artist-and-title${paramPage}`);
 }
 
+const  getById = async (id) => {
+  return await get(`/song/show/${id}`);
+}
 
 export default {
   search,
   searchByArtistTitle,
+  getById,
 };

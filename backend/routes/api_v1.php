@@ -4,6 +4,7 @@ Route::post('/search', [\App\Http\Controllers\Api\V1\SearchController::class, 's
 
 Route::get('song/search-by-artist-and-title', [\App\Http\Controllers\Api\V1\Song\SongController::class, 'searchByArtistAndTitle']);
 Route::get('song/search', [\App\Http\Controllers\Api\V1\Song\SongController::class, 'search']);
+Route::get('song/show/{id}', [\App\Http\Controllers\Api\V1\Song\SongController::class, 'show']);
 
 Route::group(['prefix' => 'auth', 'middleware' => ['page_info_default', 'page_info_statistic']], function (){
 

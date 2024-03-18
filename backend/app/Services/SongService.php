@@ -68,9 +68,13 @@ class SongService
      * Получает трек по названию и исполнителю
      * @param string $artist - исполнитель
      * @param string $title - название трека
+     * @param string $fileName - название файла трека
      * @return mixed
      */
-    public function searchByArtistAndTitle(string $artist, string $title){
+    public function searchByArtistAndTitle(string $artist, string $title, string $fileName){
+
+        $searchText = $this->getSongNameFromFileName($fileName);
+
         $song = PlayerSongs::select([
                 'player_songs.artist_id',
                 'player_songs.artist_name',
@@ -85,8 +89,17 @@ class SongService
             ])
             ->leftJoin('users', 'player_songs.user_id', '=', 'users.id')
             ->where('player_songs.hidden', '=', 0)
-            ->where('player_songs.artist_name', '=', $artist)
-            ->where('player_songs.title', '=', $title)
+            ->where(function ($q) use ($artist, $title, $searchText) {
+                return $q->when($artist, function ($q) use ($artist) {
+                        return $q->orWhere('player_songs.artist_name', '=', $artist);
+                    })
+                    ->when($title, function ($q) use ($title) {
+                        return $q->orWhere('player_songs.title', '=', $title);
+                    })
+                    ->when(!$title && !$title && $searchText, function ($q) use ($searchText) {
+                        return $q->whereRaw("MATCH(player_songs.artist_name, player_songs.title) AGAINST (? IN BOOLEAN MODE)", [$searchText]);
+                    });
+            })
             ->first();
 
         return $song;
@@ -96,7 +109,9 @@ class SongService
      * @param string $searchText - название песни или артиста
      * @return mixed
      */
-    public function search(string $searchText){
+    public function search(string $searchText)
+    {
+
         $songs = PlayerSongs::select([
                 'player_songs.id',
                 'player_songs.artist_id',
@@ -105,11 +120,14 @@ class SongService
             ])
             ->leftJoin('users', 'player_songs.user_id', '=', 'users.id')
             ->where('player_songs.hidden', '=', 0)
-            ->where(DB::raw("CONCAT(player_songs.artist_name, ' ', player_songs.title)"), 'LIKE', '%' . $searchText . '%')
-//            ->where(function ($query) use ($searchText) {
-//                return $query->where('player_songs.artist_name', 'LIKE', '%' . $searchText . '%')
-//                    ->orWhere('player_songs.title', 'LIKE', '%' . $searchText . '%');
-//            })
+            ->where(function ($q) use ($searchText) {
+                //return $q->whereRaw("MATCH(player_songs.artist_name, player_songs.title) AGAINST (? IN BOOLEAN MODE)", [$searchText])
+                return $q->where(DB::raw("CONCAT(player_songs.artist_name, ' - ', player_songs.title)"), 'LIKE', '%' . $searchText . '%')
+                        ->orWhere(function ($query) use ($searchText) {
+                            return $query->where('player_songs.artist_name', 'LIKE', '%' . $searchText . '%')
+                                ->orWhere('player_songs.title', 'LIKE', '%' . $searchText . '%');
+                        });
+            })
             ->limit(10)
             ->get();
 
@@ -175,5 +193,19 @@ class SongService
         }
 
         return (string)$res;
+    }
+
+    private function getSongNameFromFileName(string $fileName)
+    {
+        if(empty($fileName)){
+            return '';
+        }
+
+        $fileName = str_replace(['_', '-', '.'], ' ', $fileName);
+
+        $fileName = preg_replace("/[^a-zA-Zа-яА-Я0-9\s]/u", '', $fileName);
+        $result = preg_replace('/\s+/', ' ', $fileName);
+
+        return $result;
     }
 }

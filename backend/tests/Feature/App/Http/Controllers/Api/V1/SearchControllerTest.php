@@ -28,7 +28,7 @@ class SearchControllerTest extends TestCase
             'type' => 'word',
         ];
 
-        $response = $this->get('api/v1/search', $requestData);
+        $response = $this->post('api/v1/search', $requestData);
 
         $response->assertOk();
 
@@ -55,7 +55,7 @@ class SearchControllerTest extends TestCase
             'type' => 'word',
         ];
 
-        $response = $this->get('api/v1/search', $requestData);
+        $response = $this->post('api/v1/search', $requestData);
 
         $response->assertOk();
 
@@ -81,7 +81,7 @@ class SearchControllerTest extends TestCase
             'type' => 'song',
         ];
 
-        $response = $this->get('api/v1/search', $requestData);
+        $response = $this->post('api/v1/search', $requestData);
 
         $response->assertOk();
 

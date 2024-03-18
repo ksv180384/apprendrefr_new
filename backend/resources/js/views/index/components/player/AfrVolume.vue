@@ -24,7 +24,7 @@ const volumePointInfo = computed(() => {
   return val;
 });
 
-const volumePoint = ref(props.volume);
+const volumePoint = ref(parseInt(Math.abs(props.volume - 100)));
 const volumePointMove = ref(false);
 const volumePointMoveStartPosition = ref(0);
 const volumeProgressPositionTop = ref(0);

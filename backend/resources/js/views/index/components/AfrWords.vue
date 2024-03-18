@@ -24,11 +24,11 @@ const showInfo = (id) => {
       <li
         v-for="word in words"
         :key="word.id"
-        class="flex items-center cursor-pointer"
+        class="afr-words-item"
         @click="showInfo(word.id)"
       >
-        <Icon icon="mingcute:information-fill" class="text-xl me-2 text-sky-600" />
-        <div>{{ word.word }} - <span class="Pervod">{{ word.translation }}</span></div>
+        <afr-player-word :word="word?.word" class="me-3" @click.stop="() => false"/>
+        <div :title="word.transcription">{{ word.word }} - <span class="Pervod">{{ word.translation }}</span></div>
       </li>
     </ul>
 
@@ -58,15 +58,15 @@ const showInfo = (id) => {
 
 <style scoped>
 .afr-words{
-  @apply text-sm;
+  @apply text-sm -mx-2;
 }
 
 .afr-words ul{
 
 }
 
-.afr-words ul li{
-  @apply py-1.5;
+li.afr-words-item{
+  @apply flex items-center cursor-pointer py-1.5 px-2 hover:bg-sky-100;
 }
 
 .afr-word-modal-item{

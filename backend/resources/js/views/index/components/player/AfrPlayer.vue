@@ -24,7 +24,7 @@ const album = ref(null);
 const imageLink = ref(null);
 const timeInterval = ref(null);
 const duration = ref(0);
-const volume = ref(0.5);
+const volume = ref(localStorage.getItem('player-volume') || 0.5);
 const durationHuman = ref(0);
 const currentTime = ref(0);
 const currentTimeHuman = ref(0);
@@ -134,10 +134,13 @@ const audioFileInit = async (file) => {
     duration.value = audio.value.duration;
     durationHuman.value = dayjs(duration.value * 1000).format('mm:ss');
 
-    const imageData = new Uint8Array(tags.image.data);
-    imageLink.value = URL.createObjectURL(
-      new Blob([imageData.buffer], { type: tags.image.mime } /* (1) */)
-    );
+    if(tags.image){
+      const imageData = new Uint8Array(tags.image.data);
+      imageLink.value = URL.createObjectURL(
+        new Blob([imageData.buffer], { type: tags.image.mime } /* (1) */)
+      );
+    }
+
     progressLineValue.value = 0;
 
     // Поиск текста песни
@@ -146,10 +149,13 @@ const audioFileInit = async (file) => {
 };
 
 const changeVolume = (data) => {
+  volume.value = (data / 100).toFixed(2);
+  localStorage.setItem('player-volume', volume.value);
+
   if(!audio.value){
     return true;
   }
-  volume.value = (data / 100).toFixed(2);
+  audio.value.volume = volume.value;
   audio.value.volume = volume.value;
 }
 
@@ -264,6 +270,13 @@ const searchSongText = async () => {
   }
 }
 
+const onLoadSearchSong = (song) => {
+  songText.fr = textToArray(song.text_fr);
+  songText.ru = textToArray(song.text_ru);
+  songText.transcription = textToArray(song.text_transcription);
+  pixelsToTime.value = getTextPositions(songText.fr);
+}
+
 const onDrop = (files) => {
 
   let list = new DataTransfer();
@@ -292,7 +305,10 @@ const { isOverDropZone } = useDropZone(refDropzone, {
           <afr-close-btn size="small" title="Отмена" @click="close"/>
         </div>
 
-        <afr-player-search class="mt-2"/>
+        <afr-player-search
+          class="mt-2"
+          @loadSong="onLoadSearchSong"
+        />
 
       </div>
       <div
@@ -313,7 +329,10 @@ const { isOverDropZone } = useDropZone(refDropzone, {
       <input ref="refInputMp3" type="file" @change="uploadFile" hidden/>
     </div>
 
-    <div class="afr-player-bar">
+    <div
+      v-if="fileName"
+      class="afr-player-bar"
+    >
 
       <AfrPlayerText
         :fr="songText.fr"

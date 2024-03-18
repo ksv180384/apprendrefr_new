@@ -22,7 +22,7 @@ const props = defineProps({
 });
 const emits = defineEmits(['update:modelValue']);
 
-const value = ref(props.modelValue);
+// const value = ref(props.modelValue);
 const classSize = computed(() => `size-${props.size}`);
 const onInput = (e) => {
   emits('update:modelValue', e.target.value);
@@ -33,9 +33,9 @@ const onInput = (e) => {
   <div class="afr-input" :class="[classSize]">
 
     <input
-      v-model="value"
       :type="nativeType"
       :placeholder="placeholder"
+      :value="modelValue"
       @input="onInput"
     />
 

@@ -1,12 +1,19 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import api from '@/services/api/index.js';
+import { vOnClickOutside } from '@vueuse/components';
 
 import AfrInput from '@/components/form/AfrInput.vue';
+
+const emits = defineEmits(['loadSong']);
 
 const searchText = ref('');
 const songs = ref([]);
 const isLoading = ref(false);
+
+const clickOutSide = () => {
+  songs.value = [];
+}
 
 const onInputSearch = async () => {
 
@@ -26,15 +33,31 @@ const onInputSearch = async () => {
     isLoading.value = false;
   }
 }
+
+const loadSong = async (songId) => {
+  try {
+    const res = await api.songText.getById(songId);
+    emits('loadSong', res.song);
+    songs.value = [];
+    searchText.value = `${res.song.artist_name} - ${res.song.title}`;
+  } catch (e) {
+    console.error(e);
+  } finally {
+
+  }
+}
 </script>
 
 <template>
-<div>
+<div
+  v-on-click-outside="clickOutSide"
+>
   <afr-input
     v-model="searchText"
     size="small"
     placeholder="Поиск подходящей песни..."
     @input="onInputSearch"
+    @focusin="onInputSearch"
   />
 
   <div
@@ -42,14 +65,16 @@ const onInputSearch = async () => {
     class="search-result"
   >
     <ul>
-      <li v-for="song in songs">
-        <div class="font-text-xs">
-          {{ song.artist_name }}
-        </div>
-        <div class="font-bold text-sm">
-          {{ song.title }}
-        </div>
-      </li>
+      <template v-for="song in songs">
+        <li @click="loadSong(song.id)">
+          <div class="font-text-xs">
+            {{ song.artist_name }}
+          </div>
+          <div class="font-bold text-sm">
+            {{ song.title }}
+          </div>
+        </li>
+      </template>
     </ul>
   </div>
 </div>

@@ -28,7 +28,7 @@ class SongController extends BaseController
         $title = $this->removeSymbols($request->query('title', ''));
         $fileName = $request->query('file_name', '');
 
-        $song = $songService->searchByArtistAndTitle($artist, $title);
+        $song = $songService->searchByArtistAndTitle($artist, $title, $fileName);
 
         if(empty($song)){
             PlayerSearchSong::create([
@@ -47,14 +47,20 @@ class SongController extends BaseController
     {
         $search = $request->query('search', '');
 
-        $song = $songService->search($search);
+        $songs = $songService->search($search);
 
-        return response()->json(
-            [
-                'songs' => $song ? SearchSongResource::collection($song) : null,
-            ]
+        return response()->json([
+            'songs' => $songs ? SearchSongResource::collection($songs) : null,
+        ]);
+    }
 
-        );
+    public function show(int $id, SongService $songService)
+    {
+        $song = $songService->getById($id);
+
+        return response()->json([
+            'song' => $song ? SearchSongTextResource::make($song) : null,
+        ]);
     }
 
     private function removeSymbols(string $text): string
