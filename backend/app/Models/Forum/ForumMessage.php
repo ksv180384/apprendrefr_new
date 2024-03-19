@@ -5,7 +5,7 @@ namespace App\Models\Forum;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
 
-class Message extends Model
+class ForumMessage extends Model
 {
     //
     protected $table = 'forum_messages';
@@ -14,14 +14,14 @@ class Message extends Model
         'message',
         'topic_id',
         'user_id',
-        'status',
+        'status_id',
         'create_at',
         'update_at',
     ];
 
     public function topic()
     {
-        return $this->belongsTo(Topic::class);
+        return $this->belongsTo(ForumTopic::class, 'topic_id');
     }
 
     public function user()
@@ -29,12 +29,12 @@ class Message extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function statusTitle()
+    public function status()
     {
-        return $this->hasOne(MessageStatus::class,'id', 'status');
+        return $this->belongsTo(ForumMessageStatus::class,'status_id');
     }
 
     public function userMessages(){
-        return $this->hasManyThrough(Message::class, User::class, 'id', 'user_id', 'user_id', 'id');
+        return $this->hasManyThrough(ForumMessage::class, User::class, 'id', 'user_id', 'user_id', 'id');
     }
 }

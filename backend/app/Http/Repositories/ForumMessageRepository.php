@@ -1,8 +1,8 @@
 <?php
 namespace App\Http\Repositories;
 
-use App\Models\Forum\Message as Model;
-use App\Models\Forum\MessageStatus;
+use App\Models\Forum\ForumMessage as Model;
+use App\Models\Forum\ForumMessageStatus;
 use App\Models\User\UserConfigsView;
 use Illuminate\Pagination\Paginator;
 
@@ -225,7 +225,7 @@ class ForumMessageRepository extends CoreRepository
     }
 
     public function getStatusList(){
-        $statuses = MessageStatus::all(['id', 'title', 'alias']);//->toArray();
+        $statuses = ForumMessageStatus::all(['id', 'title', 'alias']);//->toArray();
         //$statuses = array_column($statuses, null, 'id');
 
         return $statuses;

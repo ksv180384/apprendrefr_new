@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\App\Http\Controllers\Api\V1\Auth;
 
+use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Models\User\Gender;
 use App\Models\User\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -45,7 +46,7 @@ class RegisterControllerTest extends TestCase
             'gender_id' => $gender->id,
         ];
 
-        $response = $this->withServerVariables(['HTTP_HOST' => 'apprendrefr.local',])->post('api/v1/auth/register', $postUserData);
+        $response = $this->post(action([RegisterController::class, 'register']), $postUserData);
 
         $response->assertStatus(Response::HTTP_CREATED);
 

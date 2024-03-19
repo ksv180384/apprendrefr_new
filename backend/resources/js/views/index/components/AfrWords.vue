@@ -19,7 +19,7 @@ const showInfo = (id) => {
 </script>
 
 <template>
-  <div class="afr-words">
+  <div class="afr-words-component">
     <ul>
       <li
         v-for="word in words"
@@ -57,7 +57,7 @@ const showInfo = (id) => {
 </template>
 
 <style scoped>
-.afr-words{
+.afr-words-component{
   @apply text-sm -mx-2;
 }
 

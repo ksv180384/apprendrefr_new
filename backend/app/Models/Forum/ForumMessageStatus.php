@@ -4,7 +4,7 @@ namespace App\Models\Forum;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MessageStatus extends Model
+class ForumMessageStatus extends Model
 {
     protected $table = 'forum_message_status';
 

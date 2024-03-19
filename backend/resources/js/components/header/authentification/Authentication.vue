@@ -1,13 +1,13 @@
 <script setup>
-import { ref } from 'vue';
-import { usePageStore } from '@/store/page.js';
+import { computed, ref } from 'vue';
+import { useAuthUserStore } from '@/store/auth_user.js';
 
 import AfrButton from '@/components/form/AfrButton.vue';
 import ModalAuth from '@/views/index/components/ModalAuth.vue';
 import ProfileControl from '@/components/header/authentification/ProfileControl.vue';
 
-const pageStore = usePageStore();
 const isShowDialogAuth = ref(false);
+const authUser = computed(() => useAuthUserStore());
 
 const click = () => {
   isShowDialogAuth.value = true;
@@ -16,7 +16,7 @@ const click = () => {
 
 <template>
   <div>
-    <template v-if="!pageStore.user">
+    <template v-if="!authUser.is_auth">
       <afr-button size="small" type="primary" text @click="click">
         Войти
       </afr-button>
@@ -24,7 +24,7 @@ const click = () => {
       <ModalAuth v-model="isShowDialogAuth"/>
     </template>
     <template v-else>
-      <ProfileControl/>
+      <ProfileControl :user="authUser"/>
     </template>
   </div>
 </template>

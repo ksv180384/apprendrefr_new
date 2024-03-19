@@ -42,7 +42,7 @@ class UserService {
     }
 
     static function userConfigsView(){
-        $configView = User\UserConfigsView::select(['id', 'title', 'alias'])->get();
+        $configView = UserConfigsView::select(['id', 'title', 'alias'])->get();
         return $configView->keyBy('id');
     }
 

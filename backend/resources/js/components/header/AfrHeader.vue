@@ -1,13 +1,10 @@
 <script setup>
 import { ref } from 'vue';
-import api from '@/services/api';
 import menu from '@/store/menu.js';
 
 import Navigation from '@/components/header/navigation/Navigation.vue';
 import Search from '@/components/header/search/Search.vue';
 import Authentication  from '@/components/header/authentification/Authentication.vue';
-
-const searchHints = ref([]);
 </script>
 
 <template>

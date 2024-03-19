@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Api\V1\SearchController;
 use App\Models\Player\PlayerSongs;
 use App\Models\Words\Word;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -28,7 +29,7 @@ class SearchControllerTest extends TestCase
             'type' => 'word',
         ];
 
-        $response = $this->post('api/v1/search', $requestData);
+        $response = $this->post(action([SearchController::class, 'searchAll']), $requestData);
 
         $response->assertOk();
 
@@ -55,7 +56,7 @@ class SearchControllerTest extends TestCase
             'type' => 'word',
         ];
 
-        $response = $this->post('api/v1/search', $requestData);
+        $response = $this->post(action([SearchController::class, 'searchAll']), $requestData);
 
         $response->assertOk();
 
@@ -81,7 +82,7 @@ class SearchControllerTest extends TestCase
             'type' => 'song',
         ];
 
-        $response = $this->post('api/v1/search', $requestData);
+        $response = $this->post(action([SearchController::class, 'searchAll']), $requestData);
 
         $response->assertOk();
 

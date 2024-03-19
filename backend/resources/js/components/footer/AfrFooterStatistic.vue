@@ -1,9 +1,9 @@
 <script setup>
 import { computed } from 'vue';
-import { usePageStore } from '@/store/page.js';
+import { useStatisticStore } from '@/store/statistic.js';
 
-const pageStore = usePageStore();
-const statistic = computed(() => pageStore.statistic);
+const statisticStore = useStatisticStore();
+const statistic = computed(() => statisticStore);
 </script>
 
 <template>
@@ -37,6 +37,10 @@ const statistic = computed(() => pageStore.statistic);
 
 .afr-footer-statistic-users-list{
   @apply flex-1 p-2 bg-blue-100 rounded;
+}
+
+.afr-footer-statistic-users-list ul{
+  @apply flex flex-row gap-2;
 }
 
 .afr-footer-statistic-online{

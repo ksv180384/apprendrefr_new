@@ -54,7 +54,7 @@ class OldToNewForumSeeder extends Seeder
         DB::connection('mysql');
         foreach ($topics as $topic){
 
-            \App\Models\Forum\Topic::create([
+            \App\Models\Forum\ForumTopic::create([
                 'id' => $topic->id_tem,
                 'forum_id' => $topic->cat_tem,
                 'title' => $topic->naz_tem,
@@ -73,7 +73,7 @@ class OldToNewForumSeeder extends Seeder
         DB::connection('mysql');
         foreach ($messages as $message){
 
-            \App\Models\Forum\Message::create([
+            \App\Models\Forum\ForumMessage::create([
                 'id' => $message->id_mess,
                 'message' => $message->message,
                 'topic_id' => $message->cat_mess,

@@ -1,3 +1,8 @@
+import { useStatisticStore } from '@/store/statistic.js';
+import { useAuthUserStore } from '@/store/auth_user.js';
+import { useProverbStore } from '@/store/proverb.js';
+import { useWordsStore } from '@/store/words.js';
+
 export const interceptors = (api) => {
   api.interceptors.request.use(
     function (config) {
@@ -17,6 +22,26 @@ export const interceptors = (api) => {
 
       // Добавляем токен пользователя (user/guest), чтоб определять сколько человек на сайте
       localStorage.setItem('user-token-page', responseData.app_user_token);
+
+      if(responseData.statistic){
+        const statisticStore = useStatisticStore();
+        statisticStore.setStatistic(responseData.statistic);
+      }
+      if(responseData.words_list){
+        const wordsStore = useWordsStore();
+        wordsStore.setWords(responseData.words_list);
+      }
+      if(responseData.proverb){
+        const proverbStore = useProverbStore();
+        proverbStore.setProverb(responseData.proverb);
+      }
+
+      const authUserStore = useAuthUserStore();
+      if(responseData.user){
+        authUserStore.setUser(responseData.user);
+      } else {
+        authUserStore.reset();
+      }
 
       return responseData;
     },

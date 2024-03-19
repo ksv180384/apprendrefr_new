@@ -32,7 +32,7 @@ class Forum extends Model
 
     public function topics()
     {
-        return $this->hasMany(Topic::class);
+        return $this->hasMany(ForumTopic::class);
     }
 
     public function user()
@@ -47,11 +47,11 @@ class Forum extends Model
 
     public function messages()
     {
-        return $this->hasManyThrough(Message::class, Topic::class, 'forum_id', 'topic_id', 'id', 'id')->where('forum_messages.status', 1);
+        return $this->hasManyThrough(ForumMessage::class, ForumTopic::class, 'forum_id', 'topic_id', 'id', 'id')->where('forum_messages.status', 1);
     }
 
     public function lastMessages()
     {
-        return $this->hasOne(Message::class, 'id', 'last_message_id');
+        return $this->hasOne(ForumMessage::class, 'id', 'last_message_id');
     }
 }

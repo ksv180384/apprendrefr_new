@@ -7,9 +7,9 @@ use App\Http\Requests\Api\ForumMessageCreateRequest;
 use App\Http\Requests\Api\ForumMessageHideRequest;
 use App\Http\Requests\Api\ForumMessageUpdateRequest;
 use App\Models\Forum\Forum;
-use App\Models\Forum\Message;
-use App\Models\Forum\MessageStatus;
-use App\Models\Forum\Topic;
+use App\Models\Forum\ForumMessage;
+use App\Models\Forum\ForumMessageStatus;
+use App\Models\Forum\ForumTopic;
 use App\Services\ForumMessageService;
 use App\Services\ForumService;
 use App\Services\ForumTopicService;
@@ -127,7 +127,7 @@ class MessageController extends BaseController
             $this->forumTopicViewedService->viewedTopic($topic_id);
         }
         if($m['current_page'] == 1){
-            Topic::where('id', $topic_id)
+            ForumTopic::where('id', $topic_id)
                 ->update([
                     'count_views'=> \DB::raw('count_views+1'),
                 ]);
@@ -179,7 +179,7 @@ class MessageController extends BaseController
         if($m['last_page'] == $m['current_page']){
             // Помечаем тему как просмотренную
             $this->forumTopicViewedService->viewedTopic($topic_id);
-            Topic::where('id', $topic_id)
+            ForumTopic::where('id', $topic_id)
                 ->update([
                     'count_views'=> \DB::raw('count_views+1'),
                 ]);
@@ -205,7 +205,7 @@ class MessageController extends BaseController
         $show_hidden_message = $request->show_hide_mess == 'show';
         $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
 
-        $status = MessageStatus::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
+        $status = ForumMessageStatus::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
         $topic = $this->forumTopicService->getById($request->topic);
 
         if(
@@ -216,14 +216,14 @@ class MessageController extends BaseController
             return response()->json(['message' => 'Тема закрыта для сообщений.'], 404);
         }
 
-        $message_id = Message::create([
+        $message_id = ForumMessage::create([
             'message' => $request->message,
             'topic_id' => $request->topic,
             'user_id' => \Auth::id(),
             'status' => $status->id,
         ])->id;
 
-        $topic = Topic::select(['id', 'forum_id', 'status'])->where('id', '=', $request->topic)->first();
+        $topic = ForumTopic::select(['id', 'forum_id', 'status'])->where('id', '=', $request->topic)->first();
         $topic->update(['last_message_id' => $message_id]);
         Forum::where('id', '=', $topic->forum_id)->first()->update(['last_message_id' => $message_id]);
 
@@ -252,7 +252,7 @@ class MessageController extends BaseController
     public function update(ForumMessageUpdateRequest $request, $id)
     {
         //
-        $message = Message::select(['id', 'topic_id', 'message', 'user_id'])->where('id', '=', $id)->first();
+        $message = ForumMessage::select(['id', 'topic_id', 'message', 'user_id'])->where('id', '=', $id)->first();
         $user = $this->userRepository->getById(\Auth::id());
         if(!$message){
             return response()->json(['message' => 'Неудалось найти редактируемое сообщение.'], 404);
@@ -276,7 +276,7 @@ class MessageController extends BaseController
         $show_hidden_message = $request->show_hide_mess == 'show';
         $show_hidden_message =  $show_hidden_message && \Auth::check() && (\Auth::user()->isAdmin() || \Auth::user()->isModerator());
 
-        $message = Message::select(['id', 'topic_id', 'status'])->where('id', '=', $request->message_id)->first();
+        $message = ForumMessage::select(['id', 'topic_id', 'status'])->where('id', '=', $request->message_id)->first();
         $statuses = $this->forumMessageService->getStatusList();
 
         $mew_status_id = 0;
@@ -290,17 +290,17 @@ class MessageController extends BaseController
         $message->update(['status' => $mew_status_id]);
 
         // Получаем последнеесообщение темы
-        $last_message_topic = Message::select(['forum_messages.id'])
+        $last_message_topic = ForumMessage::select(['forum_messages.id'])
                                 ->leftJoin('forum_message_status', 'forum_messages.status', 'forum_message_status.id')
                                 ->where('topic_id', '=', $message->topic_id)
                                 ->where('forum_message_status.alias', '<>', 'hidden')
                                 ->orderBy('created_at', 'DESC')->first();
 
-        $t = Topic::select(['id', 'forum_id'])->where('id', '=', $message->topic_id)->first();
+        $t = ForumTopic::select(['id', 'forum_id'])->where('id', '=', $message->topic_id)->first();
         $t->update(['last_message_id' => $last_message_topic->id]);
 
         // Получам последнее сообщение форума
-        $m = Message::select(['forum_messages.id'])
+        $m = ForumMessage::select(['forum_messages.id'])
             ->leftJoin('forum_topics', 'forum_messages.topic_id', 'forum_topics.id')
             ->leftJoin('forum_message_status', 'forum_messages.status', 'forum_message_status.id')
             ->leftJoin('forum_statuses', 'forum_topics.status', 'forum_statuses.id')

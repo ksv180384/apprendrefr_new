@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Forum\Message;
-use App\Models\Forum\MessageStatus;
+use App\Models\Forum\ForumMessage;
+use App\Models\Forum\ForumMessageStatus;
 use App\Models\User\UserConfigsView;
 use Illuminate\Pagination\Paginator;
 
@@ -16,7 +16,7 @@ class ForumMessageService {
      * @return int
      */
     public function countMessagesAll(){
-        $countMessages = Message::join('forum_message_status', 'forum_message_status.id', '=', 'forum_messages.status')
+        $countMessages = ForumMessage::join('forum_message_status', 'forum_message_status.id', '=', 'forum_messages.status_id')
             ->where('forum_message_status.alias', '=', 'visible_everyone')
             ->count();
 
@@ -31,7 +31,7 @@ class ForumMessageService {
      */
     public function getByTopicId(int $topic_id, $hidden_message = false){
 
-        $messages = Message::select(['forum_messages.*', 'forum_message_status.alias'])
+        $messages = ForumMessage::select(['forum_messages.*', 'forum_message_status.alias'])
             ->with([
                 'topic:id,title',
                 'topic.forum:id,title',
@@ -43,7 +43,7 @@ class ForumMessageService {
                 'statusTitle',
                 ])
             ->withCount(['userMessages'])
-            ->join('forum_message_status', 'forum_messages.status', '=', 'forum_message_status.id')
+            ->join('forum_message_status', 'forum_messages.status_id', '=', 'forum_message_status.id')
             ->where('forum_messages.topic_id', '=', $topic_id)
             ->when(!$hidden_message, function($q){
                 return $q->where('forum_message_status.alias', '<>', 'hidden');
@@ -63,7 +63,7 @@ class ForumMessageService {
 
     public function getByTopicIdLastPage(int $topic_id, $show_hide_mess = false){
         // Получаем номер последней страницы
-        $p = Message::join('forum_message_status', 'forum_messages.status', '=', 'forum_message_status.id')
+        $p = ForumMessage::join('forum_message_status', 'forum_messages.status_id', '=', 'forum_message_status.id')
             ->where('forum_messages.topic_id', '=', $topic_id)
             ->when(!$show_hide_mess, function($q){
                 return $q->where('forum_message_status.alias', '<>', 'hidden');
@@ -76,7 +76,7 @@ class ForumMessageService {
             return $lastPage;
         });
 
-        $messages = Message::select(['forum_messages.*', 'forum_message_status.alias'])
+        $messages = ForumMessage::select(['forum_messages.*', 'forum_message_status.alias'])
             ->with([
                 'topic:id,title',
                 'topic.forum:id,title',
@@ -88,7 +88,7 @@ class ForumMessageService {
                 'statusTitle',
             ])
             ->withCount(['userMessages'])
-            ->join('forum_message_status', 'forum_messages.status', '=', 'forum_message_status.id')
+            ->join('forum_message_status', 'forum_messages.status_id', '=', 'forum_message_status.id')
             ->where('forum_messages.topic_id', '=', $topic_id)
             ->when(!$show_hide_mess, function($q){
                 return $q->where('forum_message_status.alias', '<>', 'hidden');
@@ -107,10 +107,10 @@ class ForumMessageService {
     }
 
     /**
-     * @return MessageStatus[]|\Illuminate\Database\Eloquent\Collection
+     * @return ForumMessageStatus[]|\Illuminate\Database\Eloquent\Collection
      */
     public function getStatusList(){
-        $statuses = MessageStatus::all(['id', 'title', 'alias']);
+        $statuses = ForumMessageStatus::all(['id', 'title', 'alias']);
 
         return $statuses;
     }
@@ -126,7 +126,7 @@ class ForumMessageService {
 
     /**
      * добавляеи объекты прав просмотра личной информации
-     * @param Message $message
+     * @param ForumMessage $message
      * @param UserConfigsView[] $configView
      * @return mixed
      */

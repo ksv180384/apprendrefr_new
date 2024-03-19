@@ -33,7 +33,7 @@ class OnlineUsersMiddleware
         }
         // Определяем был ли пользователь ранее на сайте по токену, если нет, то генерируем токен и
         // добавляем пользователя, если да, то обновляем данные
-        $token = $request->headers->get('app-user-token');
+        $token = $request->headers->get('App-User-Token');
 
         $currentUserId = \Auth::check() ? \Auth::id() : null;
         $onlineUser = Online::where('token', '=', $token)->first();

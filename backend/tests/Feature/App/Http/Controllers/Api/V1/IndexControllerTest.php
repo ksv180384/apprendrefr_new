@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Api\V1\IndexController;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -16,7 +17,7 @@ class IndexControllerTest extends TestCase
      */
     public function index_page(): void
     {
-        $response = $this->get('api/v1/page/');
+        $response = $this->get(action([IndexController::class, 'index']));
 
         $response->assertOk();
 

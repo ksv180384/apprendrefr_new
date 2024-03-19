@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\App\Http\Controllers\Api\V1\Auth;
 
+use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Models\User\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -29,7 +30,7 @@ class LoginControllerTest extends TestCase
             'remember' => true,
         ];
 
-        $response = $this->post('api/v1/auth/login', $formData);
+        $response = $this->post(action([LoginController::class, 'authenticate']), $formData);
 
         $this->assertDatabaseHas('online', ['user_id' => $user->id]);
 
@@ -46,5 +47,21 @@ class LoginControllerTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
+     * @test
+     */
+    public function fail_login_user(): void
+    {
+        $formData = [
+            'email' => 'fail-test-email@mail.ru',
+            'password' => 'password22222',
+            'remember' => true,
+        ];
+
+        $this->post(action([LoginController::class, 'authenticate']), $formData);
+
+        $this->assertGuest();
     }
 }

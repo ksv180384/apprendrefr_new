@@ -6,10 +6,10 @@ use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Api\ForumCreateTopicRequest;
 use App\Http\Requests\Api\ForumTopicUpdateRequest;
 use App\Models\Forum\Forum;
-use App\Models\Forum\Message;
-use App\Models\Forum\MessageStatus;
+use App\Models\Forum\ForumMessage;
+use App\Models\Forum\ForumMessageStatus;
 use App\Models\Forum\Status;
-use App\Models\Forum\Topic;
+use App\Models\Forum\ForumTopic;
 use App\Services\ForumMessageService;
 use App\Services\ForumService;
 use App\Services\ForumTopicService;
@@ -144,23 +144,23 @@ class TopicController extends BaseController
             ], 404);
         }
         $status = Status::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
-        $message_status = MessageStatus::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
+        $message_status = ForumMessageStatus::select(['id', 'title', 'alias'])->where('alias', '=', 'visible_everyone')->first();
 
-        $topic_id = Topic::create([
+        $topic_id = ForumTopic::create([
             'forum_id' => $request->forum_id,
             'title' => $request->topic_title,
             'user_id' => \Auth::id(),
             'status' => $status->id,
         ])->id;
 
-        $message_id = Message::create([
+        $message_id = ForumMessage::create([
             'message' => $request->message,
             'topic_id' => $topic_id,
             'user_id' => \Auth::id(),
             'status' => $message_status->id,
         ])->id;
 
-        $topic = Topic::select(['id', 'forum_id'])->where('id', '=', $topic_id)->first();
+        $topic = ForumTopic::select(['id', 'forum_id'])->where('id', '=', $topic_id)->first();
         $topic->update(['last_message_id' => $message_id]);
         Forum::where('id', '=', $request->forum_id)->first()->update(['last_message_id' => $message_id]);
 
@@ -182,7 +182,7 @@ class TopicController extends BaseController
     public function update(ForumTopicUpdateRequest $request, $id)
     {
         //
-        $topic = Topic::select(['id', 'title', 'forum_id', 'user_id'])->where('id', '=', $id)->first();
+        $topic = ForumTopic::select(['id', 'title', 'forum_id', 'user_id'])->where('id', '=', $id)->first();
         $user = $this->userRepository->getById(\Auth::id());
 
         if(!$topic){
@@ -207,7 +207,7 @@ class TopicController extends BaseController
     }
 
     public function updateStatus(Request $request){
-        $topic = Topic::select(['id', 'title', 'forum_id', 'user_id'])->where('id', '=', (int)$request->topic_id)->first();
+        $topic = ForumTopic::select(['id', 'title', 'forum_id', 'user_id'])->where('id', '=', (int)$request->topic_id)->first();
         $user = $this->userRepository->getById(\Auth::id());
 
         if(!$topic){
@@ -229,7 +229,7 @@ class TopicController extends BaseController
         ]);
 
         // Получам последнее сообщение форума
-        $message = Message::select(['forum_messages.id'])
+        $message = ForumMessage::select(['forum_messages.id'])
             ->leftJoin('forum_topics', 'forum_messages.topic_id', 'forum_topics.id')
             ->leftJoin('forum_message_status', 'forum_messages.status', 'forum_message_status.id')
             ->leftJoin('forum_statuses', 'forum_topics.status', 'forum_statuses.id')

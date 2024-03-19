@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Repositories;
 
-use App\Models\Forum\Topic as Model;
+use App\Models\Forum\ForumTopic as Model;
 use Carbon\Carbon;
 
 /**

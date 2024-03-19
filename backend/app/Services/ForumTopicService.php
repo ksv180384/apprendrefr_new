@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Forum\Topic;
+use App\Models\Forum\ForumTopic;
 
 class ForumTopicService {
 
     public function getById($topic_id){
-        $topic = Topic::select('forum_topics.*')
+        $topic = ForumTopic::select('forum_topics.*')
             ->with([
                 'user:id,login',
                 'forum:id,title',
@@ -33,7 +33,7 @@ class ForumTopicService {
      */
     public function getTopicByForumId(int $forum_id, $show_hidden = false){
 
-        $topics = Topic::select('forum_topics.*')
+        $topics = ForumTopic::select('forum_topics.*')
             ->with([
                 'user:id,login',
                 'forum:id,title',
@@ -64,10 +64,10 @@ class ForumTopicService {
      * @return mixed
      */
     public function topicsLastActive(){
-        $topics = Topic::select('forum_topics.*')
+        $topics = ForumTopic::select('forum_topics.*')
             ->with(['user:id,login', 'forum:id,title', 'lastMessages.user:id,login'])
             ->withCount(['messages' => function($q){
-                $q->join('forum_message_status', 'forum_message_status.id', 'forum_messages.status')
+                $q->join('forum_message_status', 'forum_message_status.id', 'forum_messages.status_id')
                     ->where('forum_message_status.alias', '=', 'visible_everyone');
             }])
             ->join('forum_statuses', 'forum_statuses.id', '=', 'forum_topics.status')

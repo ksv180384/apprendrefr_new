@@ -2,12 +2,9 @@
 
 namespace Tests\Feature\App\Http\Controllers\Api\V1\Song;
 
-use App\Models\Player\PlayerArtistsSong;
+use App\Http\Controllers\Api\V1\Song\SongController;
 use App\Models\Player\PlayerSongs;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class SongControllerTest extends TestCase
@@ -28,7 +25,7 @@ class SongControllerTest extends TestCase
             'file_name' => '',
         ];
 
-        $response = $this->get('api/v1/song/search-by-artist-and-title', $requestData);
+        $response = $this->get(action([SongController::class, 'searchByArtistAndTitle']), $requestData);
 
         $response->assertOk();
 
@@ -52,7 +49,7 @@ class SongControllerTest extends TestCase
             'file_name' => '',
         ];
 
-        $response = $this->get('api/v1/song/search-by-artist-and-title', $requestData);
+        $response = $this->get(action([SongController::class, 'searchByArtistAndTitle']), $requestData);
 
         $response->assertOk();
 
@@ -76,7 +73,7 @@ class SongControllerTest extends TestCase
             'file_name' => $song->artist_name . ' - ' . $song->title,
         ];
 
-        $response = $this->get('api/v1/song/search-by-artist-and-title', $requestData);
+        $response = $this->get(action([SongController::class, 'searchByArtistAndTitle']), $requestData);
 
         $response->assertOk();
 
@@ -100,7 +97,7 @@ class SongControllerTest extends TestCase
             'file_name' => $song->artist_name . ' - ' . $song->title,
         ];
 
-        $response = $this->get('api/v1/song/search-by-artist-and-title', $requestData);
+        $response = $this->get(action([SongController::class, 'searchByArtistAndTitle']), $requestData);
 
         $response->assertOk();
 
@@ -118,7 +115,7 @@ class SongControllerTest extends TestCase
 
         $song = PlayerSongs::inRandomOrder()->first();
 
-        $response = $this->get('api/v1/song/show/' . $song->id);
+        $response = $this->get(action([SongController::class, 'show'], ['id' => $song->id]));
 
         $response->assertOk();
 

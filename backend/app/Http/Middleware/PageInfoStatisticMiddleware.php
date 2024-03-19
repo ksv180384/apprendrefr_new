@@ -27,7 +27,8 @@ class PageInfoStatisticMiddleware
         $forumMessageService = new ForumMessageService();
 
         $usersOnline = $statisticService->onlineUsers();
-        $usersOnlineCount = $usersOnline->whereNotNull('user_id')->count();
+        $usersAuthOnline = $statisticService->onlineUsers()->whereNotNull('user_id');
+        $usersOnlineCount = $usersAuthOnline->count();
         $guestsCount = $usersOnline->whereNull('user_id')->count();
         $usersRegisterCount = $userService->countUsersRegister();
         $usersOnlineAllCount = $usersOnline->count();
@@ -46,7 +47,7 @@ class PageInfoStatisticMiddleware
 
         $arrResponse = json_decode($response->content(), true); // Получаем массив текущего ответа
         $arrResponse['statistic'] = [
-            'online_users' => $usersOnline,
+            'online_users' => $usersAuthOnline,
             'count_users' => $usersOnlineCount,
             'count_guests' => $guestsCount,
             'count_users_register' => $usersRegisterCount,

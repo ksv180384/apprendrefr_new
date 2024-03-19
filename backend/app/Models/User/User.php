@@ -2,7 +2,7 @@
 
 namespace App\Models\User;
 
-use App\Models\Forum\Message;
+use App\Models\Forum\ForumMessage;
 use App\Models\Player\PlayerSongs;
 use Carbon\Carbon;
 use Database\Factories\User\UserFactory;
@@ -72,11 +72,11 @@ class User extends Authenticatable//, MustVerifyEmail
     }
 
     public function messages(){
-        return $this->hasMany(Message::class, 'user_id', 'id');
+        return $this->hasMany(ForumMessage::class, 'user_id', 'id');
     }
 
     public function messagesActive(){
-        return $this->hasMany(Message::class, 'user_id', 'id')->where('status', 1);
+        return $this->hasMany(ForumMessage::class, 'user_id', 'id')->where('status_id', 1);
     }
 
     /**

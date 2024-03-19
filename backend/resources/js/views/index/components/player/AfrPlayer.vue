@@ -295,7 +295,7 @@ const { isOverDropZone } = useDropZone(refDropzone, {
 </script>
 
 <template>
-  <div class="afr-player">
+  <div class="afr-player-component">
 
     <div>
       <div v-if="fileName">
@@ -390,7 +390,7 @@ const { isOverDropZone } = useDropZone(refDropzone, {
 </template>
 
 <style scoped>
-.afr-player{
+.afr-player-component{
 
 }
 

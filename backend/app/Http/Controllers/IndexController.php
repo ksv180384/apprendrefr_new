@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Forum\Topic;
+use App\Models\Forum\ForumTopic;
 use App\Http\Repositories\ForumTopicRepository;
 use App\Services\ForumMessageService;
 
