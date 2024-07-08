@@ -32,9 +32,9 @@ class LoginControllerTest extends TestCase
 
         $response = $this->post(action([LoginController::class, 'authenticate']), $formData);
 
-        $this->assertDatabaseHas('online', ['user_id' => $user->id]);
-
-        $this->assertAuthenticatedAs($user);
+        $response
+            ->assertValid()
+            ->assertStatus(Response::HTTP_OK);
 
         $response->assertJsonStructure([
             'app_user_token',
@@ -46,7 +46,9 @@ class LoginControllerTest extends TestCase
             ]
         ]);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas('online', ['user_id' => $user->id]);
+
+        $this->assertAuthenticatedAs($user);
     }
 
     /**

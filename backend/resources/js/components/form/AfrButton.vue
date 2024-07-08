@@ -74,7 +74,7 @@ const onClick = () => {
 }
 
 .arf-button button{
-  @apply flex-grow text-center flex items-center;
+  @apply flex flex-grow justify-center items-center;
 }
 
 .arf-button button>svg{
@@ -105,7 +105,7 @@ const onClick = () => {
 }
 
 .type-primary{
-  @apply bg-blue-400 text-gray-50 hover:bg-blue-300;
+  @apply bg-blue-300 text-gray-50 hover:bg-blue-400;
 }
 
 .type-primary.is-disabled{

@@ -2,8 +2,9 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { usePageStore } from "@/store/page.js";
-import { useProverbStore } from "@/store/proverb.js";
-import { useWordsStore } from "@/store/words.js";
+import { useProverbStore } from '@/store/proverb.js';
+import { useWordsStore } from '@/store/words.js';
+
 const pageStore = usePageStore();
 const proverbStore = useProverbStore();
 const wordsStore = useWordsStore();
@@ -17,8 +18,8 @@ import AfrCard from '@/components/card/AfrCard.vue';
 import AfrPlayer from '@/views/index/components/player/AfrPlayer.vue';
 import AfrWords from '@/views/index/components/AfrWords.vue';
 import AfrProverb from "@/components/proverb/AfrProverb.vue";
-import AfrAnecdote from "@/components/anecdote/AfrAnecdote.vue";
-
+import AfrAnecdote from '@/components/anecdote/AfrAnecdote.vue';
+import AfrLearningWrite from '@/components/AfrLearningWrite.vue';
 
 const route = useRoute();
 </script>
@@ -35,7 +36,8 @@ const route = useRoute();
         </afr-card>
 
         <afr-card>
-          проверь себя
+          <afr-learning-write/>
+          <button>Проверь себя</button>
         </afr-card>
 
         <afr-card header="Слова">

@@ -43,11 +43,9 @@ class IndexControllerTest extends TestCase
             'words_list' => [
                 '*' => [
                     'id',
-                    'pronunciation',
                     'word',
                     'translation',
                     'transcription',
-                    'example',
                 ]
             ],
             'data' => [

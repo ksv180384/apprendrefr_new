@@ -28,7 +28,7 @@ class IndexController extends BaseController
     ): JsonResponse
     {
         $topics = $topicService->topicsLastActive();
-        $words = $wordService->wordsRandom();
+        $words = $wordService->wordsRandom(['id', 'word', 'translation', 'transcription', 'example']);
         $proverb = $proverbService->proverbRandomOne();
 
         return response()->json([

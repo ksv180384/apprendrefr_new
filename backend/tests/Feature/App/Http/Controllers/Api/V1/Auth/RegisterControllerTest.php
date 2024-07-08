@@ -3,11 +3,13 @@
 namespace Tests\Feature\App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
+use App\Mail\ConfirmEmail;
 use App\Models\User\Gender;
 use App\Models\User\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
@@ -48,9 +50,15 @@ class RegisterControllerTest extends TestCase
 
         $response = $this->post(action([RegisterController::class, 'register']), $postUserData);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response
+            ->assertValid()
+            ->assertStatus(Response::HTTP_CREATED);
 
         $user = User::where('email', $postUserData['email'])->first();
+
+        Mail::fake();
+
+        Mail::assertSent(ConfirmEmail::class);
 
         $this->assertDatabaseHas('users', ['email' => $postUserData['email']]);
 

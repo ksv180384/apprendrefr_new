@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\User\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -15,11 +16,12 @@ class ConfirmEmail extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param User $user
+     * @param Registered $event
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(Registered $event)
     {
+        dd($event);
         //
         $this->user = $user;
     }

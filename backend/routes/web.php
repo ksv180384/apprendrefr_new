@@ -38,7 +38,7 @@ if(!empty($_GET['gramm'])){
 }
 
 Route::get('/', [\App\Http\Controllers\IndexController::class, 'index'])->name('index');
-Route::get('/registration', 'RegistrationController@index')->name('registration');
+Route::get('/registration', [\App\Http\Controllers\RegistrationController::class, 'index'])->name('registration');
 Route::get('/lost-password', 'RegistrationController@lostPassword')->name('lost_assword');
 Route::get('/profile', 'User\UserController@index')->name('profile');
 

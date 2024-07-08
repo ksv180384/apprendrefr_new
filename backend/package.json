@@ -3,7 +3,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "tsc && vite build"
+        "build": "vite build"
     },
     "devDependencies": {
         "@iconify/vue": "^4.1.1",

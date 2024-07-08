@@ -66,7 +66,7 @@ class OnlineUsersMiddleware
 //        $response->setData($currentData);
 
         $arrResponse = json_decode($response->content(), true); // Получаем массив текущего ответа
-        $arrResponse['app_user_token'] = $token; // Добавляем токен в ответ
+        $arrResponse['app_user_token'] = $token; // Добавляем токен пользователя (user/guest), чтоб определять сколько человек на сайте
         $response->setContent(json_encode($arrResponse)); // Добавляем измененый ответ
 
         return $response;

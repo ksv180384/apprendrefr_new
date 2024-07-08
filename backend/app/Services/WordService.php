@@ -4,21 +4,26 @@ namespace App\Services;
 
 use App\Models\Words\Word;
 use App\Models\Words\WordsPartOfSpeech;
+use Illuminate\Database\Eloquent\Collection;
 
 class WordService {
 
-    const PGINATE = 90;
+    const PAGINATE = 90;
 
     /**
      * Получает заданное количество случайных слов
      * @param int $count
-     * @return mixed
+     * @param array $columns
+     * @return Collection
      */
-    public function wordsRandom($count = 10){
-        $words = Word::select(['id', 'word', 'translation', 'transcription', 'example', 'pronunciation'])
+    public function wordsRandom(array $columns = [], int $count = 10): Collection
+    {
+        $columns = empty($columns) ? ['id', 'word', 'translation', 'transcription', 'example', 'pronunciation'] : $columns;
+
+        $words = Word::query()
             ->inRandomOrder()
             ->limit($count)
-            ->get();
+            ->get($columns);
 
         return $words;
     }
@@ -102,7 +107,7 @@ class WordService {
         if($pos){
             $wordsList = $wordsList->where('id_part_of_speech', '=', $pos);
         }
-        $wordsList = $wordsList->orderBy('word', 'ASC')->paginate(self::PGINATE);
+        $wordsList = $wordsList->orderBy('word', 'ASC')->paginate(self::PAGINATE);
         return $wordsList;
     }
 

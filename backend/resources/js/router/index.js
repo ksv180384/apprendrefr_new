@@ -5,6 +5,7 @@ import {
 import { usePageStore } from '@/store/page.js';
 
 import LayoutTwo from '@/layouts/LayoutTwo.vue';
+import LayoutAuth from '@/layouts/LayoutAuth.vue';
 // import ParserLayout from '@/views/layouts/ParserLayout.vue';
 
 const routes = [
@@ -13,7 +14,6 @@ const routes = [
     name: 'index',
     component: () => import('@/views/index/Index.vue'),
     meta: {
-      title: 'index',
       layout: LayoutTwo,
     },
   },
@@ -22,7 +22,6 @@ const routes = [
     name: 'grammar',
     component: () => import('@/views/grammar/Grammar.vue'),
     meta: {
-      title: 'index',
       layout: LayoutTwo,
     },
   },
@@ -31,7 +30,6 @@ const routes = [
     name: 'lyrics',
     component: () => import('@/views/lyrics/Lyrics.vue'),
     meta: {
-      title: 'index',
       layout: LayoutTwo,
     },
   },
@@ -40,8 +38,15 @@ const routes = [
     name: 'lessons',
     component: () => import('@/views/lessons/Lessons.vue'),
     meta: {
-      title: 'index',
       layout: LayoutTwo,
+    },
+  },
+  {
+    path: '/registration',
+    name: 'registration',
+    component: () => import('@/views/auth/Registration.vue'),
+    meta: {
+      layout: LayoutAuth,
     },
   },
   {
@@ -49,7 +54,6 @@ const routes = [
     name: 'forum',
     component: () => import('@/views/forum/Forum.vue'),
     meta: {
-      title: 'index',
       layout: LayoutTwo,
     },
   },
@@ -58,7 +62,6 @@ const routes = [
     name: 'dictionary',
     component: () => import('@/views/dictionary/Dictionary.vue'),
     meta: {
-      title: 'index',
       layout: LayoutTwo,
     },
   },

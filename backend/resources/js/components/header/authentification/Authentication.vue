@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { useAuthUserStore } from '@/store/auth_user.js';
 
 import AfrButton from '@/components/form/AfrButton.vue';
-import ModalAuth from '@/views/index/components/ModalAuth.vue';
+import ModalAuth from '@/components/header/authentification/ModalAuth.vue';
 import ProfileControl from '@/components/header/authentification/ProfileControl.vue';
 
 const isShowDialogAuth = ref(false);

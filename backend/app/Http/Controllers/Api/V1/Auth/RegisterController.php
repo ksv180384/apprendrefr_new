@@ -12,9 +12,11 @@ use App\Models\User\UserConfigsView;
 use App\Models\User\UserInfo;
 use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -46,6 +48,11 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    public function index()
+    {
+        return response()->json([]);
     }
 
 
@@ -95,7 +102,8 @@ class RegisterController extends Controller
             'user_id' => $newUser->id,
         ]);
 
-        \Mail::to($newUser)->send(new ConfirmEmail($newUser));
+        event(new Registered($newUser));
+//        Mail::to($newUser)->send(new ConfirmEmail($newUser));
 
         $newUser->update([
             'send_verified_email_at' => Carbon::now(),

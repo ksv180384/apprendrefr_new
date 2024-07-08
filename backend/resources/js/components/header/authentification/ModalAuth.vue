@@ -83,6 +83,16 @@ const submit = async () => {
         </afr-button>
       </div>
     </form>
+
+    <div class="flex flex-col">
+      <div>
+        <router-link :to="{ name: 'registration' }">Регистрация</router-link>
+      </div>
+      <div>
+
+      </div>
+    </div>
+
   </afr-dialog>
 </template>
 
